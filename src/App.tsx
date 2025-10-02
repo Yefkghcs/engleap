@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import VocabularyHome from "./pages/VocabularyHome";
 import VocabularyBook from "./pages/VocabularyBook";
 import Learn from "./pages/Learn";
+import LearnCards from "./pages/LearnCards";
+import Challenge from "./pages/Challenge";
 import Mistakes from "./pages/Mistakes";
 import LearnedWords from "./pages/LearnedWords";
 import NotFound from "./pages/NotFound";
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/vocabulary" element={<VocabularyHome />} />
           <Route path="/vocabulary/:bookId" element={<VocabularyBook />} />
           <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
+          <Route path="/vocabulary/:bookId/learn-cards" element={<LearnCards />} />
+          <Route path="/vocabulary/:bookId/challenge" element={<Challenge />} />
           <Route path="/vocabulary/mistakes/learn" element={<Learn />} />
           <Route path="/vocabulary/learned/learn" element={<Learn />} />
           <Route path="/mistakes" element={<Mistakes />} />

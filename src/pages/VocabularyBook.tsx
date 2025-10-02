@@ -232,7 +232,10 @@ const VocabularyBook = () => {
           </div>
 
           <div className="flex gap-4">
-            <Link to={`/vocabulary/${bookId}/learn`}>
+            <Link 
+              to={`/vocabulary/${bookId}/learn-cards`}
+              state={{ words: currentWords }}
+            >
               <Button className="px-12">学习</Button>
             </Link>
             <Link 
@@ -241,7 +244,12 @@ const VocabularyBook = () => {
             >
               <Button className="px-12">听写</Button>
             </Link>
-            <Button className="px-12">挑战</Button>
+            <Link 
+              to={`/vocabulary/${bookId}/challenge`}
+              state={{ words: currentWords }}
+            >
+              <Button className="px-12">挑战</Button>
+            </Link>
           </div>
         </div>
 
