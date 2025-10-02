@@ -96,6 +96,7 @@ const Mistakes = () => {
                     mode="multiple"
                     selected={selectedDates}
                     onSelect={(dates) => setSelectedDates(dates || [])}
+                    disabled={(date) => date > new Date()}
                     initialFocus
                     className={cn("p-3 pointer-events-auto")}
                   />
