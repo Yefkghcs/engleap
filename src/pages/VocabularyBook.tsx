@@ -250,7 +250,12 @@ const VocabularyBook = () => {
             <Link to={`/vocabulary/${bookId}/learn`}>
               <Button className="px-12">学习</Button>
             </Link>
-            <Button className="px-12">听写</Button>
+            <Link 
+              to={`/vocabulary/${bookId}/learn`}
+              state={{ words: filteredWords, mode: 'dictation' }}
+            >
+              <Button className="px-12">听写</Button>
+            </Link>
             <Button className="px-12">挑战</Button>
           </div>
         </div>

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -8,9 +8,25 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
+interface Word {
+  id: number;
+  word: string;
+  tags: string[];
+  phonetic: string;
+  meaning: string;
+  example: string;
+  exampleCn: string;
+  collocations: string;
+  collocationsCn: string;
+  status: "unmarked" | "known" | "unknown";
+}
+
 const Learn = () => {
   const navigate = useNavigate();
   const { bookId } = useParams();
+  const location = useLocation();
+  const words = (location.state?.words as Word[]) || [];
+  
   const [userInput, setUserInput] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
@@ -20,28 +36,40 @@ const Learn = () => {
   const [playSound, setPlaySound] = useState(true);
   const [showCompletion, setShowCompletion] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-  const totalWords = 10;
+  const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
 
-  const words = [
-    {
-      chinese: "大量的; 丰富的, 充裕的",
-      tag: "adj.",
-      english: "abundant",
-      phonetic: "n."
-    },
-    {
-      chinese: "小溪, 溪流; 忍受, 容忍",
-      tag: "adj.",
-      english: "brook",
-      phonetic: "n."
+  const totalWords = words.length;
+  const currentWord = words[currentIndex];
+
+  // Play audio function
+  const playAudio = (text: string) => {
+    if (playSound) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.8;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
     }
-  ];
+  };
 
-  const currentWord = words[currentIndex % words.length];
+  // Auto-play when word changes
+  useEffect(() => {
+    if (currentWord && !showResult && playSound && !hasPlayedAudio) {
+      playAudio(currentWord.word);
+      setHasPlayedAudio(true);
+    }
+  }, [currentIndex, showResult, playSound, hasPlayedAudio]);
+
+  // Redirect if no words
+  useEffect(() => {
+    if (words.length === 0) {
+      navigate(`/vocabulary/${bookId}`);
+    }
+  }, [words, bookId, navigate]);
 
   const handleSubmit = () => {
     if (!showResult) {
-      const correct = userInput.toLowerCase().trim() === currentWord.english.toLowerCase();
+      const correct = userInput.toLowerCase().trim() === currentWord.word.toLowerCase();
       setIsCorrect(correct);
       setShowResult(true);
       if (correct) {
@@ -56,6 +84,7 @@ const Learn = () => {
         setUserInput("");
         setShowResult(false);
         setIsCorrect(null);
+        setHasPlayedAudio(false);
       }
     }
   };
@@ -68,7 +97,19 @@ const Learn = () => {
       setUserInput("");
       setShowResult(false);
       setIsCorrect(null);
+      setHasPlayedAudio(false);
     }
+  };
+
+  const handleInputFocus = () => {
+    if (!showResult && !hasPlayedAudio) {
+      playAudio(currentWord.word);
+      setHasPlayedAudio(true);
+    }
+  };
+
+  const handlePlayClick = () => {
+    playAudio(currentWord.word);
   };
 
   const handleViewMistakes = () => {
@@ -76,8 +117,12 @@ const Learn = () => {
   };
 
   const handleExit = () => {
-    navigate(-1);
+    navigate(`/vocabulary/${bookId}`);
   };
+
+  if (!currentWord) {
+    return null;
+  }
 
   // Completion Screen
   if (showCompletion) {
@@ -135,12 +180,19 @@ const Learn = () => {
           <div className="max-w-2xl w-full space-y-8">
             <div className="text-center space-y-4">
               <div className="space-y-2">
-                <h2 className="text-4xl font-bold">{showTranslation ? currentWord.chinese : "吊念"}</h2>
-                <span className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
-                  {currentWord.tag}
-                </span>
+                <h2 className="text-4xl font-bold">{showTranslation ? currentWord.meaning : "听写"}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  {currentWord.tags.map((tag, i) => (
+                    <span key={i} className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <button className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors">
+              <button 
+                onClick={handlePlayClick}
+                className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+              >
                 <Play className="w-6 h-6" />
               </button>
             </div>
@@ -149,12 +201,13 @@ const Learn = () => {
               <Input
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                placeholder="可以使用拼写写单字，iPad带翻打开随手写，并切换成纯英语输"
-                className="text-center text-lg py-6"
+                onFocus={handleInputFocus}
+                placeholder="可以使用手写输入单词，iPad请打开随手写，并且选择该语言"
+                className="text-center text-lg py-6 placeholder:text-muted-foreground/40"
               />
               <Button 
                 onClick={handleSubmit}
-                className="w-full bg-foreground text-background hover:bg-foreground/90 py-6"
+                className="w-auto mx-auto block bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
               >
                 确认
               </Button>
@@ -235,15 +288,17 @@ const Learn = () => {
           <div className="text-center space-y-4">
             {showResult && (
               <div className="mb-4">
-                <h3 className="text-3xl font-bold mb-2">{currentWord.english}</h3>
+                <h3 className="text-3xl font-bold mb-2">{currentWord.word}</h3>
               </div>
             )}
             <div className="space-y-2">
-              <h2 className="text-4xl font-bold">{currentWord.chinese}</h2>
+              <h2 className="text-4xl font-bold">{currentWord.meaning}</h2>
               <div className="flex items-center justify-center gap-2">
-                <span className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
-                  {currentWord.tag}
-                </span>
+                {currentWord.tags.map((tag, i) => (
+                  <span key={i} className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
+                    {tag}
+                  </span>
+                ))}
                 {showResult && (
                   <span className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
                     {currentWord.phonetic}
@@ -251,7 +306,10 @@ const Learn = () => {
                 )}
               </div>
             </div>
-            <button className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors">
+            <button 
+              onClick={handlePlayClick}
+              className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+            >
               <Play className="w-6 h-6" />
             </button>
           </div>
@@ -260,8 +318,9 @@ const Learn = () => {
             <Input
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              placeholder="可以使用拼写写单字，iPad带翻打开随手写，并切换成纯英语输"
-              className={`text-center text-lg py-6 ${
+              onFocus={handleInputFocus}
+              placeholder="可以使用手写输入单词，iPad请打开随手写，并且选择该语言"
+              className={`text-center text-lg py-6 placeholder:text-muted-foreground/40 ${
                 showResult 
                   ? isCorrect 
                     ? "text-green-600 dark:text-green-400" 
@@ -272,7 +331,7 @@ const Learn = () => {
             />
             <Button 
               onClick={handleSubmit}
-              className="w-full bg-foreground text-background hover:bg-foreground/90 py-6"
+              className="w-auto mx-auto block bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
             >
               确认
             </Button>
