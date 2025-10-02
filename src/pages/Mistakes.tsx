@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { CalendarIcon, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const mockDates = [
   "2025-09-28",
@@ -21,10 +24,14 @@ const mockWords: any[] = [];
 
 const Mistakes = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(mockDates[0]);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [selectedWords, setSelectedWords] = useState<number[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+  const removeDate = (dateToRemove: Date) => {
+    setSelectedDates(prev => prev.filter(date => date.getTime() !== dateToRemove.getTime()));
+  };
 
   const handleWordSelect = (wordId: number) => {
     setSelectedWords(prev => 
@@ -65,39 +72,75 @@ const Mistakes = () => {
         <h1 className="text-3xl font-bold mb-8">我的错题本</h1>
         
         {/* Controls */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <span className="text-sm">日期</span>
-            <Select value={selectedDate} onValueChange={setSelectedDate}>
-              <SelectTrigger className="w-48 bg-background">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border border-border z-50">
-                {mockDates.map((date) => (
-                  <SelectItem key={date} value={date} className="hover:bg-accent">
-                    {date}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-sm">日期</span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "justify-start text-left font-normal",
+                      !selectedDates.length && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDates.length > 0 
+                      ? `已选择 ${selectedDates.length} 个日期` 
+                      : "选择日期"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-popover border border-border z-50" align="start">
+                  <Calendar
+                    mode="multiple"
+                    selected={selectedDates}
+                    onSelect={(dates) => setSelectedDates(dates || [])}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="text-sm">已经选择 {selectedWords.length} 个单词</span>
+              <Button 
+                onClick={handleListen}
+                className="bg-foreground text-background hover:bg-foreground/90"
+              >
+                听写
+              </Button>
+              <Button 
+                onClick={handleDelete}
+                variant="outline"
+              >
+                删除
+              </Button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm">已经选择 {selectedWords.length} 个单词</span>
-            <Button 
-              onClick={handleListen}
-              className="bg-foreground text-background hover:bg-foreground/90"
-            >
-              听写
-            </Button>
-            <Button 
-              onClick={handleDelete}
-              variant="outline"
-            >
-              删除
-            </Button>
-          </div>
+          {/* Selected Dates Display */}
+          {selectedDates.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selectedDates.map((date) => (
+                <div 
+                  key={date.getTime()} 
+                  className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm"
+                >
+                  <span>{format(date, "yyyy-MM-dd")}</span>
+                  <button
+                    onClick={() => removeDate(date)}
+                    className="hover:bg-primary/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+
 
         {/* Error Alert */}
         {showErrorAlert && (
