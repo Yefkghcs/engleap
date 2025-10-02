@@ -37,11 +37,11 @@ const Index = () => {
                 <p>四六级、考研、高中</p>
                 <p>办公、旅游实用单词</p>
               </div>
-              <Link to="/vocabulary">
-                <Button className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-full py-6 text-lg flex items-center justify-center gap-2">
+              <Button asChild className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-full py-6 text-lg">
+                <Link to="/vocabulary" className="flex items-center justify-center gap-2">
                   Start <ArrowRight className="w-5 h-5" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </Card>
 
