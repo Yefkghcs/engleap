@@ -205,12 +205,14 @@ const Learn = () => {
                 placeholder="可以使用手写输入单词，iPad请打开随手写，并且选择该语言"
                 className="text-center text-lg py-6 placeholder:text-muted-foreground/40"
               />
-              <Button 
-                onClick={handleSubmit}
-                className="w-auto mx-auto block bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
-              >
-                确认
-              </Button>
+              <div className="flex justify-center">
+                <Button 
+                  onClick={handleSubmit}
+                  className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
+                >
+                  确认
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -329,24 +331,20 @@ const Learn = () => {
               }`}
               disabled={showResult}
             />
-            <Button 
-              onClick={handleSubmit}
-              className="w-auto mx-auto block bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
-            >
-              确认
-            </Button>
+            <div className="flex justify-center">
+              <Button 
+                onClick={handleSubmit}
+                className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
+              >
+                确认
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="p-4 border-t border-border">
         <div className="max-w-4xl mx-auto flex justify-between">
-          <Button 
-            variant="ghost" 
-            onClick={handleSkip}
-          >
-            跳题
-          </Button>
           <Button 
             variant="ghost" 
             onClick={() => setShowSettings(true)}
