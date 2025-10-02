@@ -237,7 +237,7 @@ const VocabularyBook = () => {
             </Link>
             <Link 
               to={`/vocabulary/${bookId}/learn`}
-              state={{ words: words, mode: 'dictation' }}
+              state={{ words: currentWords, mode: 'dictation' }}
             >
               <Button className="px-12">听写</Button>
             </Link>
