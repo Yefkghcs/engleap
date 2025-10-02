@@ -38,8 +38,8 @@ const Index = () => {
                 <p>办公、旅游实用单词</p>
               </div>
               <Link to="/vocabulary">
-                <Button className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-full py-6 text-lg">
-                  Start <ArrowRight className="ml-2 w-5 h-5" />
+                <Button className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-full py-6 text-lg flex items-center justify-center gap-2">
+                  Start <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
             </div>
