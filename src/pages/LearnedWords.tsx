@@ -11,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ieltsWords } from "@/data/ieltsWords";
 
 interface Word {
   id: number;
@@ -43,60 +44,8 @@ const LearnedWords = () => {
     try {
       const statuses: Record<number, string> = JSON.parse(stored);
       
-      // Get all IELTS words
-      const initialWordData = [
-        {
-          id: 1,
-          word: "abundant",
-          tags: ["adj."],
-          phonetic: "/əˈbʌndənt/",
-          meaning: "大量的; 丰富的，充裕的",
-          example: "The forest is abundant with wildlife.",
-          exampleCn: "这片森林里野生动物资源十分丰富。",
-          collocations: "abundant resources / abundant evidence",
-          collocationsCn: "丰富的资源 / 充足的证据",
-          status: "unmarked" as const,
-        },
-        {
-          id: 2,
-          word: "grief",
-          tags: ["n."],
-          phonetic: "/ɡriːf/",
-          meaning: "悲伤，悲痛",
-          example: "There was no grief in his eyes, only anger.",
-          exampleCn: "他的眼中没有悲伤，只有愤怒。",
-          collocations: "drown one's grief / suffer grief",
-          collocationsCn: "借酒浇愁 / 遭受悲痛",
-          status: "unmarked" as const,
-        },
-        {
-          id: 3,
-          word: "brook",
-          tags: ["n.", "v."],
-          phonetic: "/brʊk/",
-          meaning: "小溪，溪流; 忍受，容忍",
-          example: "The children played by the brook all afternoon.",
-          exampleCn: "孩子们整个下午都在小溪边玩耍。",
-          collocations: "babbling brook",
-          collocationsCn: "潺潺的小溪",
-          status: "known" as const,
-        },
-        {
-          id: 4,
-          word: "endanger",
-          tags: ["vt."],
-          phonetic: "/ɪnˈdeɪn.dʒər/",
-          meaning: "危及，使陷入危险",
-          example: "Pollution has endangered many species of birds.",
-          exampleCn: "污染已危及了许多鸟类。",
-          collocations: "endanger species",
-          collocationsCn: "危及物种",
-          status: "unknown" as const,
-        },
-      ];
-
       // Filter words that have been marked
-      const learnedWords = initialWordData
+      const learnedWords = ieltsWords
         .filter(word => statuses[word.id] && (statuses[word.id] === 'known' || statuses[word.id] === 'unknown'))
         .map(word => ({
           ...word,

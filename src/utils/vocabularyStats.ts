@@ -5,7 +5,7 @@ import { getMistakes } from './mistakesStorage';
 export const getTotalWords = (bookId: string): number => {
   // Only IELTS has words currently
   const wordCounts: Record<string, number> = {
-    ielts: 4, // Current actual data
+    ielts: 100, // Updated to 100 words
     toefl: 0,
     kaoyan: 0,
     sat: 0,
