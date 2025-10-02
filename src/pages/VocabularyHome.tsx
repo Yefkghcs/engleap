@@ -1,26 +1,36 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-const vocabularyBooks = [
-  { id: "ielts", name: "雅思", count: 1023 },
-  { id: "toefl", name: "托福", count: 1023 },
-  { id: "kaoyan", name: "考研", count: 1023 },
-  { id: "sat", name: "SAT", count: 1023 },
-  { id: "gre", name: "GRE", count: 1023 },
-  { id: "cet6", name: "六级", count: 1023 },
-  { id: "cet4", name: "四级", count: 1023 },
-  { id: "college", name: "大学", count: 1023 },
-  { id: "special", name: "专升本", count: 1023 },
-  { id: "highschool", name: "高中", count: 1023 },
-  { id: "middleschool", name: "初中", count: 1023 },
-  { id: "elementary", name: "小学", count: 1023 },
-  { id: "nce", name: "新概念英语", count: 1023 },
-];
+import { getTotalWords, getLearnedWordsCount, getMistakesCount } from "@/utils/vocabularyStats";
 
 const VocabularyHome = () => {
+  const [learnedCount, setLearnedCount] = useState(0);
+  const [mistakesCount, setMistakesCount] = useState(0);
+
+  useEffect(() => {
+    // Update counts on mount
+    setLearnedCount(getLearnedWordsCount());
+    setMistakesCount(getMistakesCount());
+  }, []);
+
+  const vocabularyBooks = [
+    { id: "ielts", name: "雅思", count: getTotalWords("ielts") },
+    { id: "toefl", name: "托福", count: getTotalWords("toefl") },
+    { id: "kaoyan", name: "考研", count: getTotalWords("kaoyan") },
+    { id: "sat", name: "SAT", count: getTotalWords("sat") },
+    { id: "gre", name: "GRE", count: getTotalWords("gre") },
+    { id: "cet6", name: "六级", count: getTotalWords("cet6") },
+    { id: "cet4", name: "四级", count: getTotalWords("cet4") },
+    { id: "college", name: "大学", count: getTotalWords("college") },
+    { id: "special", name: "专升本", count: getTotalWords("special") },
+    { id: "highschool", name: "高中", count: getTotalWords("highschool") },
+    { id: "middleschool", name: "初中", count: getTotalWords("middleschool") },
+    { id: "elementary", name: "小学", count: getTotalWords("elementary") },
+    { id: "nce", name: "新概念英语", count: getTotalWords("nce") },
+  ];
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const currentDay = -1; // No check-in yet this week
 
@@ -97,7 +107,7 @@ const VocabularyHome = () => {
               <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <div className="h-32 bg-muted rounded-lg mb-4"></div>
                 <h3 className="text-xl font-bold mb-2">你背过的单词</h3>
-                <p className="text-sm text-muted-foreground">1023个单词</p>
+                <p className="text-sm text-muted-foreground">{learnedCount}个单词</p>
               </Card>
             </Link>
             
@@ -105,7 +115,7 @@ const VocabularyHome = () => {
               <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <div className="h-32 bg-muted rounded-lg mb-4"></div>
                 <h3 className="text-xl font-bold mb-2">错题本</h3>
-                <p className="text-sm text-muted-foreground">1023个单词</p>
+                <p className="text-sm text-muted-foreground">{mistakesCount}个单词</p>
               </Card>
             </Link>
           </div>

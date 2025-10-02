@@ -117,11 +117,20 @@ const VocabularyBook = () => {
 
   // Toggle word status
   const toggleWordStatus = (wordId: number, newStatus: WordStatus) => {
-    setWords(prevWords =>
-      prevWords.map(word =>
+    setWords(prevWords => {
+      const updatedWords = prevWords.map(word =>
         word.id === wordId ? { ...word, status: newStatus } : word
-      )
-    );
+      );
+      
+      // Save statuses to localStorage for statistics
+      const statuses: Record<number, WordStatus> = {};
+      updatedWords.forEach(word => {
+        statuses[word.id] = word.status;
+      });
+      localStorage.setItem('vocabulary_word_statuses', JSON.stringify(statuses));
+      
+      return updatedWords;
+    });
   };
 
   // Toggle translation visibility
