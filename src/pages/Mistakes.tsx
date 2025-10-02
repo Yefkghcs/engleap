@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { CalendarIcon, X } from "lucide-react";
@@ -11,6 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getMistakes, getMistakesByDates, deleteMistakes, getAllMistakeDates } from "@/utils/mistakesStorage";
 
 const mockDates = [
   "2025-09-28",
@@ -28,6 +29,28 @@ const Mistakes = () => {
   const [selectedWords, setSelectedWords] = useState<number[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [displayedWords, setDisplayedWords] = useState<any[]>([]);
+
+  // Load mistakes on mount and when dates change
+  useEffect(() => {
+    if (selectedDates.length > 0) {
+      const mistakes = getMistakesByDates(selectedDates);
+      setDisplayedWords(mistakes);
+    } else {
+      // Show all mistakes if no date selected
+      const allMistakes = getMistakes();
+      setDisplayedWords(allMistakes);
+    }
+  }, [selectedDates]);
+
+  // Play audio function
+  const playAudio = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.8;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
 
   const removeDate = (dateToRemove: Date) => {
     setSelectedDates(prev => prev.filter(date => date.getTime() !== dateToRemove.getTime()));
@@ -59,9 +82,18 @@ const Mistakes = () => {
   };
 
   const confirmDelete = () => {
-    // Handle delete action
+    deleteMistakes(selectedWords);
     setSelectedWords([]);
     setShowDeleteDialog(false);
+    
+    // Refresh displayed words
+    if (selectedDates.length > 0) {
+      const mistakes = getMistakesByDates(selectedDates);
+      setDisplayedWords(mistakes);
+    } else {
+      const allMistakes = getMistakes();
+      setDisplayedWords(allMistakes);
+    }
   };
 
   return (
@@ -153,7 +185,7 @@ const Mistakes = () => {
         )}
 
         {/* Word Grid or Empty State */}
-        {mockWords.length === 0 ? (
+        {displayedWords.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-32 h-32 bg-muted rounded-full mb-6 flex items-center justify-center">
               <svg className="w-16 h-16 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -161,13 +193,17 @@ const Mistakes = () => {
               </svg>
             </div>
             <h3 className="text-xl font-semibold mb-2">暂无错题</h3>
-            <p className="text-muted-foreground">继续学习，保持完美记录！</p>
+            <p className="text-muted-foreground">
+              {selectedDates.length > 0 
+                ? "所选日期没有错题记录" 
+                : "继续学习，保持完美记录！"}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {mockWords.map((word) => (
+            {displayedWords.map((word) => (
               <Card
-                key={word.id}
+                key={`${word.id}-${word.date}`}
                 className={`p-4 cursor-pointer transition-all ${
                   selectedWords.includes(word.id) 
                     ? "ring-2 ring-primary bg-primary/5" 
@@ -178,16 +214,27 @@ const Mistakes = () => {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{word.word}</span>
-                    <span className="text-xs bg-foreground text-background px-2 py-0.5 rounded">
-                      {word.pos}
-                    </span>
-                    <button className="text-muted-foreground hover:text-foreground">
+                    {word.tags.map((tag: string, i: number) => (
+                      <span key={i} className="text-xs bg-foreground text-background px-2 py-0.5 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                    <button 
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playAudio(word.word);
+                      }}
+                    >
                       <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-                <p className="text-sm text-foreground mb-3">{word.meaning}</p>
-                <p className="text-sm text-destructive">{word.errorCount}</p>
+                <p className="text-sm text-foreground mb-2">{word.meaning}</p>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{word.date}</span>
+                  <span className="text-destructive">错误 {word.errorCount} 次</span>
+                </div>
               </Card>
             ))}
           </div>

@@ -7,6 +7,7 @@ import { Play } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { addMistake } from "@/utils/mistakesStorage";
 
 interface Word {
   id: number;
@@ -37,6 +38,7 @@ const Learn = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
+  const [incorrectWords, setIncorrectWords] = useState<Word[]>([]);
 
   const totalWords = words.length;
   const currentWord = words[currentIndex];
@@ -72,8 +74,13 @@ const Learn = () => {
       const correct = userInput.toLowerCase().trim() === currentWord.word.toLowerCase();
       setIsCorrect(correct);
       setShowResult(true);
+      
       if (correct) {
         setCorrectCount(prev => prev + 1);
+      } else {
+        // Add to mistakes and track incorrect words
+        addMistake(currentWord);
+        setIncorrectWords(prev => [...prev, currentWord]);
       }
     } else {
       // Move to next word
@@ -138,7 +145,8 @@ const Learn = () => {
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="max-w-md w-full space-y-8 text-center">
             <h2 className="text-3xl font-bold">完成全部单词听写</h2>
-            <p className="text-xl">本次正确率：{Math.round((correctCount / totalWords) * 100)}%</p>
+            <p className="text-xl">本次正确率：{totalWords > 0 ? Math.round((correctCount / totalWords) * 100) : 0}%</p>
+            <p className="text-muted-foreground">正确 {correctCount} / {totalWords}</p>
             
             <div className="flex gap-4 justify-center">
               <Button 
