@@ -93,17 +93,21 @@ const VocabularyHome = () => {
 
           {/* Word Records */}
           <div className="grid grid-cols-2 gap-6">
-            <Card className="p-6">
-              <div className="h-32 bg-muted rounded-lg mb-4"></div>
-              <h3 className="text-xl font-bold mb-2">你背过的单词</h3>
-              <p className="text-sm text-muted-foreground">1023个单词</p>
-            </Card>
+            <Link to="/vocabulary/learned">
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="h-32 bg-muted rounded-lg mb-4"></div>
+                <h3 className="text-xl font-bold mb-2">你背过的单词</h3>
+                <p className="text-sm text-muted-foreground">1023个单词</p>
+              </Card>
+            </Link>
             
-            <Card className="p-6">
-              <div className="h-32 bg-muted rounded-lg mb-4"></div>
-              <h3 className="text-xl font-bold mb-2">错题本</h3>
-              <p className="text-sm text-muted-foreground">1023个单词</p>
-            </Card>
+            <Link to="/mistakes">
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="h-32 bg-muted rounded-lg mb-4"></div>
+                <h3 className="text-xl font-bold mb-2">错题本</h3>
+                <p className="text-sm text-muted-foreground">1023个单词</p>
+              </Card>
+            </Link>
           </div>
         </div>
 
