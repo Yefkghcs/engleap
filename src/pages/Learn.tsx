@@ -87,6 +87,11 @@ const Learn = () => {
 
   const handleSubmit = () => {
     if (!showResult) {
+      // Mark check-in on first answer submission
+      if (currentIndex === 0) {
+        addCheckIn();
+      }
+      
       const correct = userInput.toLowerCase().trim() === currentWord.word.toLowerCase();
       setIsCorrect(correct);
       setShowResult(true);
@@ -101,8 +106,6 @@ const Learn = () => {
     } else {
       // Move to next word
       if (currentIndex + 1 >= totalWords) {
-        // Mark check-in when completing dictation
-        addCheckIn();
         setShowCompletion(true);
       } else {
         setCurrentIndex(prev => prev + 1);
