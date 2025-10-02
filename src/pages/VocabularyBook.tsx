@@ -3,59 +3,80 @@ import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Eye, Volume2 } from "lucide-react";
+import { Eye, EyeOff, Volume2 } from "lucide-react";
 
-const wordData = [
+type WordStatus = "unmarked" | "known" | "unknown";
+
+interface Word {
+  id: number;
+  word: string;
+  tags: string[];
+  phonetic: string;
+  meaning: string;
+  example: string;
+  exampleCn: string;
+  collocations: string;
+  collocationsCn: string;
+  status: WordStatus;
+}
+
+const initialWordData: Word[] = [
   {
+    id: 1,
     word: "abundant",
     tags: ["adj."],
     phonetic: "/əˈbʌndənt/",
     meaning: "大量的; 丰富的，充裕的",
-    example: '"The forest is abundant with wildlife."',
+    example: "The forest is abundant with wildlife.",
     exampleCn: "这片森林里野生动物资源十分丰富。",
     collocations: "abundant resources / abundant evidence",
     collocationsCn: "丰富的资源 / 充足的证据",
-    mastered: false,
+    status: "unmarked",
   },
   {
+    id: 2,
     word: "grief",
-    tags: ["adj."],
+    tags: ["n."],
     phonetic: "/ɡriːf/",
-    meaning: "",
-    example: '"There was no grief in his eyes, only anger."',
-    exampleCn: "",
+    meaning: "悲伤，悲痛",
+    example: "There was no grief in his eyes, only anger.",
+    exampleCn: "他的眼中没有悲伤，只有愤怒。",
     collocations: "drown one's grief / suffer grief",
-    collocationsCn: "",
-    mastered: false,
+    collocationsCn: "借酒浇愁 / 遭受悲痛",
+    status: "unmarked",
   },
   {
+    id: 3,
     word: "brook",
-    tags: ["动词", "名"],
+    tags: ["n.", "v."],
     phonetic: "/brʊk/",
     meaning: "小溪，溪流; 忍受，容忍",
-    example: '"The children played by the brook all afternoon."',
+    example: "The children played by the brook all afternoon.",
     exampleCn: "孩子们整个下午都在小溪边玩耍。",
     collocations: "babbling brook",
     collocationsCn: "潺潺的小溪",
-    mastered: true,
+    status: "known",
   },
   {
+    id: 4,
     word: "endanger",
     tags: ["vt."],
     phonetic: "/ɪnˈdeɪn.dʒər/",
     meaning: "危及，使陷入危险",
-    example: '"Pollution has endangered many species of birds."',
+    example: "Pollution has endangered many species of birds.",
     exampleCn: "污染已危及了许多鸟类。",
     collocations: "endanger species",
     collocationsCn: "危及物种",
-    mastered: false,
+    status: "unknown",
   },
 ];
 
 const VocabularyBook = () => {
   const { bookId } = useParams();
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState<"all" | "unmarked" | "known" | "unknown">("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [words, setWords] = useState<Word[]>(initialWordData);
+  const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
   
   const bookNames: Record<string, string> = {
     ielts: "雅思",
@@ -64,6 +85,50 @@ const VocabularyBook = () => {
   };
 
   const bookName = bookNames[bookId || "ielts"] || "雅思";
+
+  // Calculate statistics
+  const learnedCount = words.filter(w => w.status === "known" || w.status === "unknown").length;
+  const totalWords = 8000; // Total words in the book
+
+  // Filter words based on selected filter
+  const filteredWords = words.filter(word => {
+    if (filter === "all") return true;
+    if (filter === "unmarked") return word.status === "unmarked";
+    if (filter === "known") return word.status === "known";
+    if (filter === "unknown") return word.status === "unknown";
+    return true;
+  });
+
+  // Toggle word status
+  const toggleWordStatus = (wordId: number, newStatus: WordStatus) => {
+    setWords(prevWords =>
+      prevWords.map(word =>
+        word.id === wordId ? { ...word, status: newStatus } : word
+      )
+    );
+  };
+
+  // Toggle translation visibility
+  const toggleTranslation = (wordId: number) => {
+    setVisibleTranslations(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(wordId)) {
+        newSet.delete(wordId);
+      } else {
+        newSet.add(wordId);
+      }
+      return newSet;
+    });
+  };
+
+  // Play audio using Web Speech API
+  const playAudio = (text: string, lang: string = "en-US") => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.8;
+    window.speechSynthesis.cancel(); // Cancel any ongoing speech
+    window.speechSynthesis.speak(utterance);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,7 +147,7 @@ const VocabularyBook = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-bold">{bookName}单词库</h2>
-            <span className="text-sm text-muted-foreground">已学 0 / 8000</span>
+            <span className="text-sm text-muted-foreground">已学 {learnedCount} / {totalWords}</span>
             <Button variant="ghost" size="icon">
               <Eye className="h-5 w-5" />
             </Button>
@@ -101,9 +166,9 @@ const VocabularyBook = () => {
               全部
             </Button>
             <Button
-              variant={filter === "marked" ? "default" : "ghost"}
+              variant={filter === "unmarked" ? "default" : "ghost"}
               size="sm"
-              onClick={() => setFilter("marked")}
+              onClick={() => setFilter("unmarked")}
             >
               未标注
             </Button>
@@ -142,55 +207,133 @@ const VocabularyBook = () => {
           </div>
 
           <div className="divide-y divide-border">
-            {wordData.map((word, index) => (
-              <div key={index} className="px-6 py-4 grid grid-cols-12 gap-4 items-start">
-                {/* Word Column */}
-                <div className="col-span-2">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-bold">{word.word}</span>
-                    {word.tags.map((tag, i) => (
-                      <span key={i} className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                    <span>{word.phonetic}</span>
-                    <Volume2 className="h-4 w-4" />
-                  </div>
-                  <div className="text-sm">{word.meaning}</div>
-                </div>
+            {filteredWords.map((word) => {
+              const isTranslationVisible = visibleTranslations.has(word.id);
+              const wordColorClass = 
+                word.status === "known" ? "text-green-600" : 
+                word.status === "unknown" ? "text-red-600" : "";
 
-                {/* Example Column */}
-                <div className="col-span-4 text-sm">
-                  <p className="italic mb-1">{word.example}</p>
-                  {word.exampleCn && <p className="text-muted-foreground">{word.exampleCn}</p>}
-                </div>
-
-                {/* Collocations Column */}
-                <div className="col-span-3 text-sm">
-                  <p className="italic mb-1">{word.collocations}</p>
-                  {word.collocationsCn && <p className="text-muted-foreground">{word.collocationsCn}</p>}
-                </div>
-
-                {/* Actions Column */}
-                <div className="col-span-3 flex items-center gap-2">
-                  {word.mastered ? (
-                    <Button variant="ghost" size="icon">
-                      <Eye className="h-5 w-5" />
-                    </Button>
-                  ) : (
-                    <>
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-5 w-5" />
+              return (
+                <div key={word.id} className="px-6 py-4 grid grid-cols-12 gap-4 items-start">
+                  {/* Word Column */}
+                  <div className="col-span-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`font-bold ${wordColorClass}`}>{word.word}</span>
+                      {word.tags.map((tag, i) => (
+                        <span key={i} className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      <span>{word.phonetic}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6"
+                        onClick={() => playAudio(word.word)}
+                      >
+                        <Volume2 className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="sm">认识</Button>
-                      <Button variant="outline" size="sm">不认识</Button>
-                    </>
-                  )}
+                    </div>
+                    {isTranslationVisible && (
+                      <div className="text-sm">{word.meaning}</div>
+                    )}
+                  </div>
+
+                  {/* Example Column */}
+                  <div className="col-span-4 text-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="italic flex-1">{word.example}</p>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 flex-shrink-0"
+                        onClick={() => playAudio(word.example)}
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {isTranslationVisible && word.exampleCn && (
+                      <p className="text-muted-foreground">{word.exampleCn}</p>
+                    )}
+                  </div>
+
+                  {/* Collocations Column */}
+                  <div className="col-span-3 text-sm">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="italic flex-1">{word.collocations}</p>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 flex-shrink-0"
+                        onClick={() => playAudio(word.collocations)}
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    {isTranslationVisible && word.collocationsCn && (
+                      <p className="text-muted-foreground">{word.collocationsCn}</p>
+                    )}
+                  </div>
+
+                  {/* Actions Column */}
+                  <div className="col-span-3 flex items-center gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => toggleTranslation(word.id)}
+                      className={isTranslationVisible ? "text-primary" : ""}
+                    >
+                      {isTranslationVisible ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </Button>
+                    
+                    {word.status === "unmarked" && (
+                      <>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => toggleWordStatus(word.id, "known")}
+                        >
+                          认识
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => toggleWordStatus(word.id, "unknown")}
+                        >
+                          不认识
+                        </Button>
+                      </>
+                    )}
+                    
+                    {word.status === "known" && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => toggleWordStatus(word.id, "unknown")}
+                      >
+                        不认识
+                      </Button>
+                    )}
+                    
+                    {word.status === "unknown" && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => toggleWordStatus(word.id, "known")}
+                      >
+                        认识
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </Card>
 
