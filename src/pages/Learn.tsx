@@ -359,7 +359,7 @@ const Learn = () => {
               onChange={(e) => setUserInput(e.target.value)}
               onFocus={handleInputFocus}
               placeholder="可以使用手写输入单词，iPad请打开随手写，并且选择该语言"
-              className={`text-center text-2xl py-6 placeholder:text-muted-foreground/40 ${
+              className={`text-center text-3xl py-6 placeholder:text-muted-foreground/40 placeholder:text-base ${
                 showResult 
                   ? isCorrect 
                     ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500 border-2 bg-green-50 dark:bg-green-950/20" 
