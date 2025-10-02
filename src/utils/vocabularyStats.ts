@@ -3,22 +3,21 @@ import { getMistakes } from './mistakesStorage';
 // In a real app, this would come from a backend or more sophisticated storage
 // For now, we'll use the same approach as the VocabularyBook page
 export const getTotalWords = (bookId: string): number => {
-  // This matches the initialWordData in VocabularyBook
-  // In production, this would be fetched from a database
+  // Only IELTS has words currently
   const wordCounts: Record<string, number> = {
     ielts: 4, // Current actual data
-    toefl: 4,
-    kaoyan: 4,
-    sat: 4,
-    gre: 4,
-    cet6: 4,
-    cet4: 4,
-    college: 4,
-    special: 4,
-    highschool: 4,
-    middleschool: 4,
-    elementary: 4,
-    nce: 4,
+    toefl: 0,
+    kaoyan: 0,
+    sat: 0,
+    gre: 0,
+    cet6: 0,
+    cet4: 0,
+    college: 0,
+    special: 0,
+    highschool: 0,
+    middleschool: 0,
+    elementary: 0,
+    nce: 0,
   };
   
   return wordCounts[bookId] || 0;

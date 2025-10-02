@@ -72,11 +72,20 @@ const initialWordData: Word[] = [
   },
 ];
 
+// Get words data based on book ID
+const getWordsForBook = (bookId: string): Word[] => {
+  // Only IELTS has data currently
+  if (bookId === "ielts") {
+    return initialWordData;
+  }
+  return []; // Other books are empty
+};
+
 const VocabularyBook = () => {
   const { bookId } = useParams();
   const [filter, setFilter] = useState<"all" | "unmarked" | "known" | "unknown">("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [words, setWords] = useState<Word[]>(initialWordData);
+  const [words, setWords] = useState<Word[]>(getWordsForBook(bookId || "ielts"));
   const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
   const [globalTranslationVisible, setGlobalTranslationVisible] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
