@@ -331,12 +331,19 @@ const Learn = () => {
               className={`text-center text-lg py-6 placeholder:text-muted-foreground/40 ${
                 showResult 
                   ? isCorrect 
-                    ? "text-green-600 dark:text-green-400" 
-                    : "text-red-600 dark:text-red-400"
+                    ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500 border-2 bg-green-50 dark:bg-green-950/20" 
+                    : "text-red-600 dark:text-red-400 border-red-500 dark:border-red-500 border-2 bg-red-50 dark:bg-red-950/20"
                   : ""
               }`}
               disabled={showResult}
             />
+            {showResult && (
+              <div className={`text-center text-sm font-medium ${
+                isCorrect ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+              }`}>
+                {isCorrect ? "✓ 回答正确！" : `✗ 回答错误，正确答案是：${currentWord.word}`}
+              </div>
+            )}
             <div className="flex justify-center">
               <Button 
                 onClick={handleSubmit}
