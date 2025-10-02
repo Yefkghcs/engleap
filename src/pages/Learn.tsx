@@ -79,6 +79,8 @@ const Learn = () => {
     if (words.length === 0) {
       if (location.pathname.includes('mistakes')) {
         navigate('/mistakes');
+      } else if (location.pathname.includes('learned')) {
+        navigate('/vocabulary/learned');
       } else {
         navigate(`/vocabulary/${bookId}`);
       }
@@ -149,9 +151,11 @@ const Learn = () => {
   };
 
   const handleConfirmExit = () => {
-    // Check if coming from mistakes page
+    // Check if coming from mistakes or learned page
     if (location.pathname.includes('mistakes')) {
       navigate('/mistakes');
+    } else if (location.pathname.includes('learned')) {
+      navigate('/vocabulary/learned');
     } else {
       navigate(`/vocabulary/${bookId}`);
     }
@@ -168,7 +172,11 @@ const Learn = () => {
       <div className="p-4 border-b border-border">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-xl font-bold mb-2">
-            {location.pathname.includes('mistakes') ? '错题本听写' : (bookId === "ielts" ? "雅思" : bookId)}
+            {location.pathname.includes('mistakes') 
+              ? '错题本听写' 
+              : location.pathname.includes('learned')
+              ? '背过的单词听写'
+              : (bookId === "ielts" ? "雅思" : bookId)}
           </h1>
           <p className="text-sm text-muted-foreground">全部单词</p>
         </div>
@@ -310,7 +318,11 @@ const Learn = () => {
         <div className="max-w-4xl mx-auto flex items-start justify-between">
           <div className="flex-1">
             <h1 className="text-xl font-bold mb-2">
-              {location.pathname.includes('mistakes') ? '错题本听写' : (bookId === "ielts" ? "雅思" : bookId)}
+              {location.pathname.includes('mistakes') 
+                ? '错题本听写' 
+                : location.pathname.includes('learned')
+                ? '背过的单词听写'
+                : (bookId === "ielts" ? "雅思" : bookId)}
             </h1>
             <p className="text-sm text-muted-foreground mb-4">全部单词</p>
             <div className="flex items-center gap-4">

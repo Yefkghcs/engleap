@@ -8,6 +8,7 @@ import VocabularyHome from "./pages/VocabularyHome";
 import VocabularyBook from "./pages/VocabularyBook";
 import Learn from "./pages/Learn";
 import Mistakes from "./pages/Mistakes";
+import LearnedWords from "./pages/LearnedWords";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,7 +25,9 @@ const App = () => (
           <Route path="/vocabulary/:bookId" element={<VocabularyBook />} />
           <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
           <Route path="/vocabulary/mistakes/learn" element={<Learn />} />
+          <Route path="/vocabulary/learned/learn" element={<Learn />} />
           <Route path="/mistakes" element={<Mistakes />} />
+          <Route path="/vocabulary/learned" element={<LearnedWords />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
