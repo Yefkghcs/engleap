@@ -70,7 +70,17 @@ const Mistakes = () => {
       setShowErrorAlert(true);
       return;
     }
-    // Handle listen action
+    
+    // Get selected words data
+    const wordsToTest = displayedWords.filter(w => selectedWords.includes(w.id));
+    
+    // Navigate to dictation page with selected words
+    navigate("/vocabulary/mistakes/learn", {
+      state: { 
+        words: wordsToTest,
+        mode: 'dictation'
+      }
+    });
   };
 
   const handleDelete = () => {

@@ -65,9 +65,13 @@ const Learn = () => {
   // Redirect if no words
   useEffect(() => {
     if (words.length === 0) {
-      navigate(`/vocabulary/${bookId}`);
+      if (location.pathname.includes('mistakes')) {
+        navigate('/mistakes');
+      } else {
+        navigate(`/vocabulary/${bookId}`);
+      }
     }
-  }, [words, bookId, navigate]);
+  }, [words, bookId, navigate, location.pathname]);
 
   const handleSubmit = () => {
     if (!showResult) {
@@ -124,7 +128,12 @@ const Learn = () => {
   };
 
   const handleExit = () => {
-    navigate(`/vocabulary/${bookId}`);
+    // Check if coming from mistakes page
+    if (location.pathname.includes('mistakes')) {
+      navigate('/mistakes');
+    } else {
+      navigate(`/vocabulary/${bookId}`);
+    }
   };
 
   if (!currentWord) {
@@ -135,12 +144,14 @@ const Learn = () => {
   if (showCompletion) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <div className="p-4 border-b border-border">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-xl font-bold mb-2">{bookId === "ielts" ? "雅思" : bookId}</h1>
-            <p className="text-sm text-muted-foreground">全部单词</p>
-          </div>
+      <div className="p-4 border-b border-border">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-xl font-bold mb-2">
+            {location.pathname.includes('mistakes') ? '错题本听写' : (bookId === "ielts" ? "雅思" : bookId)}
+          </h1>
+          <p className="text-sm text-muted-foreground">全部单词</p>
         </div>
+      </div>
 
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="max-w-md w-full space-y-8 text-center">
@@ -277,7 +288,9 @@ const Learn = () => {
       <div className="p-4 border-b border-border">
         <div className="max-w-4xl mx-auto flex items-start justify-between">
           <div className="flex-1">
-            <h1 className="text-xl font-bold mb-2">{bookId === "ielts" ? "雅思" : bookId}</h1>
+            <h1 className="text-xl font-bold mb-2">
+              {location.pathname.includes('mistakes') ? '错题本听写' : (bookId === "ielts" ? "雅思" : bookId)}
+            </h1>
             <p className="text-sm text-muted-foreground mb-4">全部单词</p>
             <div className="flex items-center gap-4">
               <Progress value={(currentIndex / totalWords) * 100} className="flex-1 h-2" />
