@@ -7,6 +7,16 @@ import { Play } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { addMistake } from "@/utils/mistakesStorage";
 import { addCheckIn } from "@/utils/checkInStorage";
 
@@ -40,6 +50,7 @@ const Learn = () => {
   const [correctCount, setCorrectCount] = useState(0);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState<Word[]>([]);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   const totalWords = words.length;
   const currentWord = words[currentIndex];
@@ -130,7 +141,11 @@ const Learn = () => {
     navigate("/mistakes");
   };
 
-  const handleExit = () => {
+  const handleExitClick = () => {
+    setShowExitDialog(true);
+  };
+
+  const handleConfirmExit = () => {
     // Check if coming from mistakes page
     if (location.pathname.includes('mistakes')) {
       navigate('/mistakes');
@@ -170,7 +185,7 @@ const Learn = () => {
                 查看错题本
               </Button>
               <Button 
-                onClick={handleExit}
+                onClick={handleConfirmExit}
                 variant="outline"
                 className="px-8"
               >
@@ -272,7 +287,7 @@ const Learn = () => {
                 设置
               </Button>
               <Button 
-                onClick={handleExit}
+                onClick={handleExitClick}
                 variant="outline"
                 className="flex-1"
               >
@@ -383,12 +398,28 @@ const Learn = () => {
           </Button>
           <Button 
             variant="ghost" 
-            onClick={handleExit}
+            onClick={handleExitClick}
           >
             退出
           </Button>
         </div>
       </div>
+
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认退出？</AlertDialogTitle>
+            <AlertDialogDescription>
+              退出后当前进度将不会保存，确定要退出吗？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmExit}>退出</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

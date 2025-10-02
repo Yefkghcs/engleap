@@ -72,11 +72,28 @@ const initialWordData: Word[] = [
   },
 ];
 
-// Get words data based on book ID
+// Get words data based on book ID and restore statuses from localStorage
 const getWordsForBook = (bookId: string): Word[] => {
   // Only IELTS has data currently
   if (bookId === "ielts") {
-    return initialWordData;
+    const words = [...initialWordData];
+    
+    // Restore statuses from localStorage
+    const stored = localStorage.getItem('vocabulary_word_statuses');
+    if (stored) {
+      try {
+        const statuses: Record<number, WordStatus> = JSON.parse(stored);
+        words.forEach(word => {
+          if (statuses[word.id]) {
+            word.status = statuses[word.id];
+          }
+        });
+      } catch (e) {
+        console.error('Failed to load word statuses:', e);
+      }
+    }
+    
+    return words;
   }
   return []; // Other books are empty
 };
