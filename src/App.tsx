@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import VocabularyHome from "./pages/VocabularyHome";
 import VocabularyBook from "./pages/VocabularyBook";
 import Learn from "./pages/Learn";
+import Mistakes from "./pages/Mistakes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,10 +19,11 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<VocabularyHome />} />
+          <Route path="/" element={<Index />} />
           <Route path="/vocabulary" element={<VocabularyHome />} />
           <Route path="/vocabulary/:bookId" element={<VocabularyBook />} />
           <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
+          <Route path="/mistakes" element={<Mistakes />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
