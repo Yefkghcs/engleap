@@ -77,6 +77,7 @@ const VocabularyBook = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [words, setWords] = useState<Word[]>(initialWordData);
   const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
+  const [globalTranslationVisible, setGlobalTranslationVisible] = useState(false);
   
   const bookNames: Record<string, string> = {
     ielts: "雅思",
@@ -130,6 +131,33 @@ const VocabularyBook = () => {
     window.speechSynthesis.speak(utterance);
   };
 
+  // Toggle global translation visibility
+  const toggleGlobalTranslation = () => {
+    const newState = !globalTranslationVisible;
+    setGlobalTranslationVisible(newState);
+    
+    if (newState) {
+      // Show all translations
+      const allWordIds = new Set(words.map(w => w.id));
+      setVisibleTranslations(allWordIds);
+    } else {
+      // Hide all translations
+      setVisibleTranslations(new Set());
+    }
+  };
+
+  // Shuffle word order
+  const shuffleWords = () => {
+    setWords(prevWords => {
+      const shuffled = [...prevWords];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -148,10 +176,25 @@ const VocabularyBook = () => {
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-bold">{bookName}单词库</h2>
             <span className="text-sm text-muted-foreground">已学 {learnedCount} / {totalWords}</span>
-            <Button variant="ghost" size="icon">
-              <Eye className="h-5 w-5" />
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={toggleGlobalTranslation}
+              className={globalTranslationVisible ? "text-primary" : ""}
+            >
+              {globalTranslationVisible ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
             </Button>
-            <Button variant="secondary" size="sm">打卡属性</Button>
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={shuffleWords}
+            >
+              打乱顺序
+            </Button>
           </div>
         </div>
 
