@@ -17,56 +17,7 @@ const mockDates = [
   "2025-08-11",
 ];
 
-const mockWords = [
-  {
-    id: 1,
-    word: "abundant",
-    pos: "adj.",
-    phonetic: "",
-    meaning: "大量的; 丰富的, 充裕的",
-    errorCount: "累计错1次"
-  },
-  {
-    id: 2,
-    word: "abundant",
-    pos: "adj.",
-    phonetic: "",
-    meaning: "大量的; 丰富的, 充裕的",
-    errorCount: "累计错1次"
-  },
-  {
-    id: 3,
-    word: "abundant",
-    pos: "adj.",
-    phonetic: "",
-    meaning: "大量的; 丰富的, 充裕的",
-    errorCount: "累计错1次"
-  },
-  {
-    id: 4,
-    word: "abundant",
-    pos: "adj.",
-    phonetic: "",
-    meaning: "大量的; 丰富的, 充裕的",
-    errorCount: "累计错1次"
-  },
-  {
-    id: 5,
-    word: "abundant",
-    pos: "adj.",
-    phonetic: "",
-    meaning: "大量的; 丰富的, 充裕的",
-    errorCount: "累计错1次"
-  },
-  {
-    id: 6,
-    word: "abundant",
-    pos: "adj.",
-    phonetic: "",
-    meaning: "大量的; 丰富的, 充裕的",
-    errorCount: "累计错1次"
-  },
-];
+const mockWords: any[] = [];
 
 const Mistakes = () => {
   const navigate = useNavigate();
@@ -157,34 +108,46 @@ const Mistakes = () => {
           </Alert>
         )}
 
-        {/* Word Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {mockWords.map((word) => (
-            <Card
-              key={word.id}
-              className={`p-4 cursor-pointer transition-all ${
-                selectedWords.includes(word.id) 
-                  ? "ring-2 ring-primary bg-primary/5" 
-                  : "hover:shadow-lg"
-              }`}
-              onClick={() => handleWordSelect(word.id)}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{word.word}</span>
-                  <span className="text-xs bg-foreground text-background px-2 py-0.5 rounded">
-                    {word.pos}
-                  </span>
-                  <button className="text-muted-foreground hover:text-foreground">
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+        {/* Word Grid or Empty State */}
+        {mockWords.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-32 h-32 bg-muted rounded-full mb-6 flex items-center justify-center">
+              <svg className="w-16 h-16 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">暂无错题</h3>
+            <p className="text-muted-foreground">继续学习，保持完美记录！</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {mockWords.map((word) => (
+              <Card
+                key={word.id}
+                className={`p-4 cursor-pointer transition-all ${
+                  selectedWords.includes(word.id) 
+                    ? "ring-2 ring-primary bg-primary/5" 
+                    : "hover:shadow-lg"
+                }`}
+                onClick={() => handleWordSelect(word.id)}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{word.word}</span>
+                    <span className="text-xs bg-foreground text-background px-2 py-0.5 rounded">
+                      {word.pos}
+                    </span>
+                    <button className="text-muted-foreground hover:text-foreground">
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <p className="text-sm text-foreground mb-3">{word.meaning}</p>
-              <p className="text-sm text-destructive">{word.errorCount}</p>
-            </Card>
-          ))}
-        </div>
+                <p className="text-sm text-foreground mb-3">{word.meaning}</p>
+                <p className="text-sm text-destructive">{word.errorCount}</p>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}

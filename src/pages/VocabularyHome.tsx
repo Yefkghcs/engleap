@@ -22,7 +22,7 @@ const vocabularyBooks = [
 
 const VocabularyHome = () => {
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const currentDay = 1; // Tuesday is checked
+  const currentDay = -1; // No check-in yet this week
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,7 +51,7 @@ const VocabularyHome = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">本周已打卡</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">1</span>
+                  <span className="text-4xl font-bold">0</span>
                   <span className="text-lg text-muted-foreground">天</span>
                 </div>
               </div>
@@ -80,11 +80,11 @@ const VocabularyHome = () => {
               <div className="flex items-center justify-between pt-4 border-t border-border">
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm text-muted-foreground">已累计打卡</span>
-                  <span className="text-3xl font-bold">28</span>
+                  <span className="text-3xl font-bold">0</span>
                   <span className="text-lg text-muted-foreground">天</span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  <div>25年09月29日</div>
+                  <div>25年10月02日</div>
                   <div className="text-right">今日还未打卡</div>
                 </div>
               </div>
