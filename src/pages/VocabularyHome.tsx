@@ -114,7 +114,7 @@ const VocabularyHome = () => {
             <Link to="/vocabulary/learned" className="h-full">
               <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <div className="h-32 bg-muted rounded-lg mb-4"></div>
-                <h3 className="text-xl font-bold mb-2">你背过的单词</h3>
+                <h3 className="text-xl font-bold mb-2">你学过的单词</h3>
                 <p className="text-sm text-muted-foreground">{learnedCount}个单词</p>
               </Card>
             </Link>

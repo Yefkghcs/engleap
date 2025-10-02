@@ -175,7 +175,7 @@ const Learn = () => {
             {location.pathname.includes('mistakes') 
               ? '错题本听写' 
               : location.pathname.includes('learned')
-              ? '背过的单词听写'
+              ? '学过的单词听写'
               : (bookId === "ielts" ? "雅思" : bookId)}
           </h1>
           <p className="text-sm text-muted-foreground">全部单词</p>
@@ -321,7 +321,7 @@ const Learn = () => {
               {location.pathname.includes('mistakes') 
                 ? '错题本听写' 
                 : location.pathname.includes('learned')
-                ? '背过的单词听写'
+                ? '学过的单词听写'
                 : (bookId === "ielts" ? "雅思" : bookId)}
             </h1>
             <p className="text-sm text-muted-foreground mb-4">全部单词</p>
