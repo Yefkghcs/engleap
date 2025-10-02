@@ -304,11 +304,6 @@ const Learn = () => {
                     {tag}
                   </span>
                 ))}
-                {showResult && (
-                  <span className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
-                    {currentWord.phonetic}
-                  </span>
-                )}
               </div>
             </div>
             <button 
