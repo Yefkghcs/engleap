@@ -211,7 +211,7 @@ const Learn = () => {
                 <Button 
                   onClick={handleSubmit}
                   disabled={!userInput.trim()}
-                  className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16 disabled:opacity-50"
                 >
                   确认
                 </Button>
@@ -332,7 +332,8 @@ const Learn = () => {
             <div className="flex justify-center">
               <Button 
                 onClick={handleSubmit}
-                className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
+                disabled={!showResult && !userInput.trim()}
+                className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16 disabled:opacity-50"
               >
                 {showResult ? "下一题" : "确认"}
               </Button>
