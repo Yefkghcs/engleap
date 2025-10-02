@@ -5,15 +5,24 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getTotalWords, getLearnedWordsCount, getMistakesCount } from "@/utils/vocabularyStats";
+import { getTotalCheckInDays, getThisWeekCheckInDays, getWeekCheckInStatus, hasCheckedInToday } from "@/utils/checkInStorage";
 
 const VocabularyHome = () => {
   const [learnedCount, setLearnedCount] = useState(0);
   const [mistakesCount, setMistakesCount] = useState(0);
+  const [totalCheckIns, setTotalCheckIns] = useState(0);
+  const [weekCheckIns, setWeekCheckIns] = useState(0);
+  const [weekStatus, setWeekStatus] = useState<boolean[]>([]);
+  const [checkedInToday, setCheckedInToday] = useState(false);
 
   useEffect(() => {
     // Update counts on mount
     setLearnedCount(getLearnedWordsCount());
     setMistakesCount(getMistakesCount());
+    setTotalCheckIns(getTotalCheckInDays());
+    setWeekCheckIns(getThisWeekCheckInDays());
+    setWeekStatus(getWeekCheckInStatus());
+    setCheckedInToday(hasCheckedInToday());
   }, []);
 
   const vocabularyBooks = [
@@ -32,7 +41,6 @@ const VocabularyHome = () => {
     { id: "nce", name: "新概念英语", count: getTotalWords("nce") },
   ];
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const currentDay = -1; // No check-in yet this week
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,7 +69,7 @@ const VocabularyHome = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">本周已打卡</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">0</span>
+                  <span className="text-4xl font-bold">{weekCheckIns}</span>
                   <span className="text-lg text-muted-foreground">天</span>
                 </div>
               </div>
@@ -72,12 +80,12 @@ const VocabularyHome = () => {
                     <span className="text-xs text-muted-foreground">{day}</span>
                     <div 
                       className={`w-10 h-10 rounded flex items-center justify-center ${
-                        index === currentDay 
+                        weekStatus[index]
                           ? "bg-primary text-primary-foreground" 
                           : "bg-muted"
                       }`}
                     >
-                      {index === currentDay && (
+                      {weekStatus[index] && (
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
@@ -90,12 +98,12 @@ const VocabularyHome = () => {
               <div className="flex items-center justify-between pt-4 border-t border-border">
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm text-muted-foreground">已累计打卡</span>
-                  <span className="text-3xl font-bold">0</span>
+                  <span className="text-3xl font-bold">{totalCheckIns}</span>
                   <span className="text-lg text-muted-foreground">天</span>
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  <div>25年10月02日</div>
-                  <div className="text-right">今日还未打卡</div>
+                  <div>{new Date().toLocaleDateString('zh-CN', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\//g, '年').replace(/年(\d+)年/, '年$1月') + '日'}</div>
+                  <div className="text-right">{checkedInToday ? '今日已打卡' : '今日还未打卡'}</div>
                 </div>
               </div>
             </div>

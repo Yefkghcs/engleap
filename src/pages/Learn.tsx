@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { addMistake } from "@/utils/mistakesStorage";
+import { addCheckIn } from "@/utils/checkInStorage";
 
 interface Word {
   id: number;
@@ -89,6 +90,8 @@ const Learn = () => {
     } else {
       // Move to next word
       if (currentIndex + 1 >= totalWords) {
+        // Mark check-in when completing dictation
+        addCheckIn();
         setShowCompletion(true);
       } else {
         setCurrentIndex(prev => prev + 1);
