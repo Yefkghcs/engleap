@@ -44,10 +44,10 @@ const VocabularyHome = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
           {/* Check-in Card */}
-          <Card className="p-6">
+          <Card className="p-6 h-full flex flex-col">
             <h2 className="text-xl font-bold mb-6">打卡记录</h2>
             
-            <div className="space-y-6">
+            <div className="space-y-6 flex-1 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">本周已打卡</span>
                 <div className="flex items-baseline gap-2">
@@ -92,17 +92,17 @@ const VocabularyHome = () => {
           </Card>
 
           {/* Word Records */}
-          <div className="grid grid-cols-2 gap-6">
-            <Link to="/vocabulary/learned">
-              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+          <div className="grid grid-cols-2 gap-6 h-full">
+            <Link to="/vocabulary/learned" className="h-full">
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <div className="h-32 bg-muted rounded-lg mb-4"></div>
                 <h3 className="text-xl font-bold mb-2">你背过的单词</h3>
                 <p className="text-sm text-muted-foreground">1023个单词</p>
               </Card>
             </Link>
             
-            <Link to="/mistakes">
-              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <Link to="/mistakes" className="h-full">
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <div className="h-32 bg-muted rounded-lg mb-4"></div>
                 <h3 className="text-xl font-bold mb-2">错题本</h3>
                 <p className="text-sm text-muted-foreground">1023个单词</p>
