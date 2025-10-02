@@ -180,7 +180,9 @@ const Learn = () => {
           <div className="max-w-2xl w-full space-y-8">
             <div className="text-center space-y-4">
               <div className="space-y-2">
-                <h2 className="text-4xl font-bold">{showTranslation ? currentWord.meaning : "听写"}</h2>
+                <h2 className={`text-4xl font-bold ${!showTranslation ? 'blur-md select-none' : ''}`}>
+                  {currentWord.meaning}
+                </h2>
                 <div className="flex items-center justify-center gap-2">
                   {currentWord.tags.map((tag, i) => (
                     <span key={i} className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
@@ -208,7 +210,8 @@ const Learn = () => {
               <div className="flex justify-center">
                 <Button 
                   onClick={handleSubmit}
-                  className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
+                  disabled={!userInput.trim()}
+                  className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   确认
                 </Button>
@@ -336,7 +339,7 @@ const Learn = () => {
                 onClick={handleSubmit}
                 className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16"
               >
-                确认
+                {showResult ? "下一题" : "确认"}
               </Button>
             </div>
           </div>
