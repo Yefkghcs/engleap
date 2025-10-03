@@ -169,8 +169,8 @@ const LearnCards = () => {
 
           {/* Translation */}
           {showTranslation && (
-            <div className="mb-8 p-6 bg-muted/50 rounded-lg animate-fade-in border-l-4 border-primary">
-              <p className="text-lg font-medium">{currentWord.meaning}</p>
+            <div className="mb-8 p-4 bg-muted/50 rounded-lg animate-fade-in border-l-4 border-primary">
+              <p className="text-sm font-medium">{currentWord.meaning}</p>
             </div>
           )}
 
@@ -232,7 +232,7 @@ const LearnCards = () => {
             </Button>
             <Button 
               size="lg" 
-              className="flex-1 h-14 text-base gap-2"
+              className="flex-1 h-14 text-base gap-2 bg-green-600 hover:bg-green-700 text-white"
               onClick={handleKnown}
             >
               <ThumbsUp className="h-5 w-5" />
