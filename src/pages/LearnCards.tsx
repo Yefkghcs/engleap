@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Volume2, Eye, EyeOff, X, Check, ChevronLeft } from "lucide-react";
+import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Word {
@@ -48,6 +48,15 @@ const LearnCards = () => {
     utterance.rate = 0.8;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
+  };
+
+  const highlightWord = (text: string, word: string) => {
+    if (!text || !word) return text;
+    const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+    const parts = text.split(regex);
+    return parts.map((part, index) => 
+      regex.test(part) ? <strong key={index} className="font-bold text-primary">{part}</strong> : part
+    );
   };
 
   const handleKnown = () => {
@@ -160,65 +169,73 @@ const LearnCards = () => {
 
           {/* Translation */}
           {showTranslation && (
-            <div className="mb-8 p-4 bg-muted rounded-lg animate-fade-in">
-              <p className="text-lg font-medium text-center">{currentWord.meaning}</p>
+            <div className="mb-8 p-6 bg-muted/50 rounded-lg animate-fade-in border-l-4 border-primary">
+              <p className="text-lg font-medium">{currentWord.meaning}</p>
             </div>
           )}
 
-          {/* Example */}
-          <div className="mb-6 p-4 bg-card border rounded-lg">
-            <div className="flex items-start gap-2 mb-2">
-              <p className="text-base italic flex-1">{currentWord.example}</p>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 flex-shrink-0"
-                onClick={() => playAudio(currentWord.example)}
-              >
-                <Volume2 className="h-4 w-4" />
-              </Button>
+          {/* Examples and Collocations */}
+          <div className="mb-8 space-y-6">
+            {/* Example */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                <span>例句</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-7 w-7"
+                  onClick={() => playAudio(currentWord.example)}
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <p className="text-base leading-relaxed">
+                {highlightWord(currentWord.example, currentWord.word)}
+              </p>
+              {showTranslation && (
+                <p className="text-sm text-muted-foreground">{currentWord.exampleCn}</p>
+              )}
             </div>
-            {showTranslation && (
-              <p className="text-sm text-muted-foreground">{currentWord.exampleCn}</p>
-            )}
-          </div>
 
-          {/* Collocations */}
-          <div className="mb-8 p-4 bg-card border rounded-lg">
-            <div className="flex items-start gap-2 mb-2">
-              <p className="text-base italic flex-1">{currentWord.collocations}</p>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 flex-shrink-0"
-                onClick={() => playAudio(currentWord.collocations)}
-              >
-                <Volume2 className="h-4 w-4" />
-              </Button>
+            {/* Collocations */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                <span>常见搭配</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-7 w-7"
+                  onClick={() => playAudio(currentWord.collocations)}
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <p className="text-base leading-relaxed">
+                {highlightWord(currentWord.collocations, currentWord.word)}
+              </p>
+              {showTranslation && (
+                <p className="text-sm text-muted-foreground">{currentWord.collocationsCn}</p>
+              )}
             </div>
-            {showTranslation && (
-              <p className="text-sm text-muted-foreground">{currentWord.collocationsCn}</p>
-            )}
           </div>
 
           {/* Action Buttons */}
           <div className="flex gap-4">
             <Button 
-              variant="outline" 
+              variant="destructive" 
               size="lg" 
-              className="flex-1 h-16 text-lg border-red-200 hover:bg-red-50 hover:text-red-600 hover:border-red-300"
+              className="flex-1 h-14 text-base gap-2"
               onClick={handleUnknown}
             >
-              <X className="h-6 w-6 mr-2" />
+              <ThumbsDown className="h-5 w-5" />
               不认识
             </Button>
             <Button 
-              variant="outline" 
               size="lg" 
-              className="flex-1 h-16 text-lg border-green-200 hover:bg-green-50 hover:text-green-600 hover:border-green-300"
+              className="flex-1 h-14 text-base gap-2"
               onClick={handleKnown}
             >
-              <Check className="h-6 w-6 mr-2" />
+              <ThumbsUp className="h-5 w-5" />
               认识
             </Button>
           </div>
