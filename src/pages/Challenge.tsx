@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Volume2 } from "lucide-react";
+import { ChevronLeft, Volume2, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Word {
@@ -37,6 +37,7 @@ const Challenge = () => {
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(10);
 
   useEffect(() => {
     if (words.length === 0) {
@@ -53,6 +54,28 @@ const Challenge = () => {
     const generatedQuestions = generateQuestions(words);
     setQuestions(generatedQuestions);
   }, [words, navigate, bookId]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (showResult || showCompletion) return;
+    
+    if (timeLeft === 0) {
+      // Time's up, mark as wrong
+      handleTimeUp();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, showResult, showCompletion]);
+
+  // Reset timer when moving to next question
+  useEffect(() => {
+    setTimeLeft(10);
+  }, [currentIndex]);
 
   const generateQuestions = (words: Word[]): Question[] => {
     const questions: Question[] = [];
@@ -166,6 +189,12 @@ const Challenge = () => {
     }
   };
 
+  const handleTimeUp = () => {
+    setSelectedAnswer(null);
+    setShowResult(true);
+    // Don't increment correctCount - this counts as wrong
+  };
+
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -225,6 +254,12 @@ const Challenge = () => {
             <ChevronLeft className="h-6 w-6" />
           </Button>
           <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              <span className={`text-sm font-bold ${timeLeft <= 3 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                {timeLeft}s
+              </span>
+            </div>
             <span className="text-sm text-muted-foreground">
               {currentIndex + 1} / {questions.length}
             </span>
@@ -240,21 +275,23 @@ const Challenge = () => {
         <Card className="p-8">
           {/* Question Text */}
           <div className="text-center mb-8">
-            <p className="text-sm text-muted-foreground mb-4">
-              {currentQuestion.type === "en-to-cn" && "选择正确的中文释义"}
-              {currentQuestion.type === "cn-to-en" && "选择正确的英文单词"}
-              {currentQuestion.type === "spelling" && "选择正确的拼写"}
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              <h2 className="text-4xl font-bold">{currentQuestion.question}</h2>
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <h2 className="text-2xl font-bold text-muted-foreground">
+                {currentQuestion.type === "en-to-cn" && "选择正确的中文释义："}
+                {currentQuestion.type === "cn-to-en" && "选择正确的英文单词："}
+                {currentQuestion.type === "spelling" && currentQuestion.question}
+              </h2>
               {currentQuestion.type !== "spelling" && (
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => playAudio(currentQuestion.word.word)}
-                >
-                  <Volume2 className="h-6 w-6" />
-                </Button>
+                <>
+                  <span className="text-4xl font-bold text-primary">{currentQuestion.question}</span>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => playAudio(currentQuestion.word.word)}
+                  >
+                    <Volume2 className="h-6 w-6" />
+                  </Button>
+                </>
               )}
             </div>
           </div>
@@ -295,6 +332,12 @@ const Challenge = () => {
               {selectedAnswer === currentQuestion.correctAnswer ? (
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-green-700 font-medium text-center">✓ 回答正确！</p>
+                </div>
+              ) : selectedAnswer === null ? (
+                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <p className="text-orange-700 font-medium text-center">
+                    ⏱ 时间到！正确答案是：{currentQuestion.correctAnswer}
+                  </p>
                 </div>
               ) : (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
