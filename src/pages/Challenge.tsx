@@ -253,112 +253,136 @@ const Challenge = () => {
           <Button variant="ghost" size="icon" onClick={handleExit}>
             <ChevronLeft className="h-6 w-6" />
           </Button>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              <span className={`text-sm font-bold ${timeLeft <= 3 ? 'text-red-600' : 'text-muted-foreground'}`}>
-                {timeLeft}s
-              </span>
-            </div>
+          <div className="flex items-center gap-6">
             <span className="text-sm text-muted-foreground">
-              {currentIndex + 1} / {questions.length}
+              题目 {currentIndex + 1} / {questions.length}
             </span>
-            <span className="text-sm text-green-600">
-              正确: {correctCount}
+            <span className="text-sm font-medium text-green-600">
+              正确 {correctCount} 题
             </span>
           </div>
         </div>
       </div>
 
       {/* Question */}
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <Card className="p-8">
-          {/* Question Text */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <h2 className="text-2xl font-bold text-muted-foreground">
-                {currentQuestion.type === "en-to-cn" && "选择正确的中文释义："}
-                {currentQuestion.type === "cn-to-en" && "选择正确的英文单词："}
-                {currentQuestion.type === "spelling" && currentQuestion.question}
-              </h2>
-              {currentQuestion.type !== "spelling" && (
-                <>
-                  <span className="text-4xl font-bold text-primary">{currentQuestion.question}</span>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => playAudio(currentQuestion.word.word)}
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <Card className="overflow-hidden">
+          {/* Timer Bar */}
+          <div className="relative h-20 bg-gradient-to-br from-primary/10 to-primary/5 border-b flex items-center justify-center">
+            <div className="text-center">
+              <div className={`text-4xl font-bold mb-1 transition-colors ${timeLeft <= 3 ? 'text-red-600 animate-pulse' : 'text-primary'}`}>
+                {timeLeft}
+              </div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wide">秒</div>
+            </div>
+            {/* Progress bar */}
+            <div 
+              className="absolute bottom-0 left-0 h-1 bg-primary transition-all duration-1000 ease-linear"
+              style={{ width: `${(timeLeft / 10) * 100}%` }}
+            />
+          </div>
+
+          <div className="p-8">
+            {/* Question Text */}
+            <div className="mb-8">
+              <div className="text-center mb-6">
+                <p className="text-sm text-muted-foreground mb-3 uppercase tracking-wide">
+                  {currentQuestion.type === "en-to-cn" && "选择正确的中文释义"}
+                  {currentQuestion.type === "cn-to-en" && "选择正确的英文单词"}
+                  {currentQuestion.type === "spelling" && "选择正确的拼写"}
+                </p>
+                {currentQuestion.type !== "spelling" ? (
+                  <div className="flex items-center justify-center gap-3">
+                    <h2 className="text-5xl font-bold text-foreground">{currentQuestion.question}</h2>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="h-12 w-12"
+                      onClick={() => playAudio(currentQuestion.word.word)}
+                    >
+                      <Volume2 className="h-6 w-6" />
+                    </Button>
+                  </div>
+                ) : (
+                  <h2 className="text-2xl font-semibold text-foreground">{currentQuestion.question}</h2>
+                )}
+              </div>
+            </div>
+
+            {/* Options */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {currentQuestion.options.map((option, index) => {
+                const isSelected = selectedAnswer === option;
+                const isCorrect = option === currentQuestion.correctAnswer;
+                const showCorrect = showResult && isCorrect;
+                const showWrong = showResult && isSelected && !isCorrect;
+                
+                let buttonClass = "h-auto min-h-[72px] text-base justify-start px-5 py-4 relative group transition-all";
+                if (showCorrect) {
+                  buttonClass += " bg-green-50 border-2 border-green-500 text-green-700 hover:bg-green-50";
+                } else if (showWrong) {
+                  buttonClass += " bg-red-50 border-2 border-red-500 text-red-700 hover:bg-red-50";
+                } else if (isSelected) {
+                  buttonClass += " border-2 border-primary";
+                }
+                
+                return (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className={buttonClass}
+                    onClick={() => handleAnswer(option)}
+                    disabled={showResult}
                   >
-                    <Volume2 className="h-6 w-6" />
+                    <span className="flex items-center gap-3 w-full">
+                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                        {String.fromCharCode(65 + index)}
+                      </span>
+                      <span className="flex-1 text-left font-medium">{option}</span>
+                    </span>
                   </Button>
-                </>
-              )}
+                );
+              })}
             </div>
+
+            {/* Result Message */}
+            {showResult && (
+              <div className="mb-6 animate-fade-in">
+                {selectedAnswer === currentQuestion.correctAnswer ? (
+                  <div className="p-5 bg-green-50 border-2 border-green-200 rounded-xl">
+                    <p className="text-green-700 font-semibold text-center text-lg flex items-center justify-center gap-2">
+                      <span className="text-2xl">✓</span> 回答正确！
+                    </p>
+                  </div>
+                ) : selectedAnswer === null ? (
+                  <div className="p-5 bg-orange-50 border-2 border-orange-200 rounded-xl">
+                    <p className="text-orange-700 font-semibold text-center flex flex-col gap-1">
+                      <span className="text-lg">⏱ 时间到了！</span>
+                      <span className="text-sm">正确答案是：<span className="font-bold">{currentQuestion.correctAnswer}</span></span>
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-5 bg-red-50 border-2 border-red-200 rounded-xl">
+                    <p className="text-red-700 font-semibold text-center flex flex-col gap-1">
+                      <span className="text-lg">✗ 回答错误</span>
+                      <span className="text-sm">正确答案是：<span className="font-bold">{currentQuestion.correctAnswer}</span></span>
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Next Button */}
+            {showResult && (
+              <Button 
+                onClick={handleNext} 
+                className="w-full h-12 text-base font-semibold" 
+                size="lg"
+              >
+                {currentIndex < questions.length - 1 ? "下一题 →" : "完成挑战 🎉"}
+              </Button>
+            )}
           </div>
-
-          {/* Options */}
-          <div className="grid grid-cols-1 gap-3 mb-6">
-            {currentQuestion.options.map((option, index) => {
-              const isSelected = selectedAnswer === option;
-              const isCorrect = option === currentQuestion.correctAnswer;
-              const showCorrect = showResult && isCorrect;
-              const showWrong = showResult && isSelected && !isCorrect;
-              
-              let buttonClass = "h-auto min-h-16 text-lg justify-start px-6 py-4";
-              if (showCorrect) {
-                buttonClass += " bg-green-100 border-green-500 text-green-700 hover:bg-green-100";
-              } else if (showWrong) {
-                buttonClass += " bg-red-100 border-red-500 text-red-700 hover:bg-red-100";
-              }
-              
-              return (
-                <Button
-                  key={index}
-                  variant={isSelected && !showResult ? "default" : "outline"}
-                  className={buttonClass}
-                  onClick={() => handleAnswer(option)}
-                  disabled={showResult}
-                >
-                  <span className="font-semibold mr-3">{String.fromCharCode(65 + index)}.</span>
-                  {option}
-                </Button>
-              );
-            })}
-          </div>
-
-          {/* Result Message */}
-          {showResult && (
-            <div className="mb-6 animate-fade-in">
-              {selectedAnswer === currentQuestion.correctAnswer ? (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-green-700 font-medium text-center">✓ 回答正确！</p>
-                </div>
-              ) : selectedAnswer === null ? (
-                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                  <p className="text-orange-700 font-medium text-center">
-                    ⏱ 时间到！正确答案是：{currentQuestion.correctAnswer}
-                  </p>
-                </div>
-              ) : (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-700 font-medium text-center">
-                    ✗ 回答错误！正确答案是：{currentQuestion.correctAnswer}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Next Button */}
-          {showResult && (
-            <Button 
-              onClick={handleNext} 
-              className="w-full" 
-              size="lg"
-            >
-              {currentIndex < questions.length - 1 ? "下一题" : "完成挑战"}
-            </Button>
-          )}
         </Card>
       </div>
     </div>
