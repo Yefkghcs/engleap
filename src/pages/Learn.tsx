@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Play, Keyboard, Pencil } from "lucide-react";
+import { Play } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { addMistake } from "@/utils/mistakesStorage";
 import { addCheckIn } from "@/utils/checkInStorage";
-import { HandwritingInput } from "@/components/HandwritingInput";
 
 interface Word {
   id: number;
@@ -52,7 +51,6 @@ const Learn = () => {
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState<Word[]>([]);
   const [showExitDialog, setShowExitDialog] = useState(false);
-  const [inputMode, setInputMode] = useState<"keyboard" | "handwriting">("keyboard");
 
   const totalWords = words.length;
   const currentWord = words[currentIndex];
@@ -371,50 +369,20 @@ const Learn = () => {
           </div>
 
           <div className="space-y-4">
-            {/* Input Mode Toggle */}
-            <div className="flex justify-center gap-2 mb-4">
-              <Button
-                variant={inputMode === "keyboard" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setInputMode("keyboard")}
-                disabled={showResult}
-              >
-                <Keyboard className="w-4 h-4 mr-2" />
-                键盘输入
-              </Button>
-              <Button
-                variant={inputMode === "handwriting" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setInputMode("handwriting")}
-                disabled={showResult}
-              >
-                <Pencil className="w-4 h-4 mr-2" />
-                手写输入
-              </Button>
-            </div>
-
-            {inputMode === "keyboard" ? (
-              <Input
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                onFocus={handleInputFocus}
-                placeholder="输入单词"
-                className={`text-center text-3xl py-6 placeholder:text-muted-foreground/40 placeholder:text-base ${
-                  showResult 
-                    ? isCorrect 
-                      ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500 border-2 bg-green-50 dark:bg-green-950/20" 
-                      : "text-red-600 dark:text-red-400 border-red-500 dark:border-red-500 border-2 bg-red-50 dark:bg-red-950/20"
-                    : ""
-                }`}
-                disabled={showResult}
-              />
-            ) : (
-              <HandwritingInput
-                onRecognized={(text) => setUserInput(text)}
-                disabled={showResult}
-              />
-            )}
-            
+            <Input
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              onFocus={handleInputFocus}
+              placeholder="输入单词（iPad可使用随手写功能）"
+              className={`text-center text-3xl py-6 placeholder:text-muted-foreground/40 placeholder:text-base ${
+                showResult 
+                  ? isCorrect 
+                    ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500 border-2 bg-green-50 dark:bg-green-950/20" 
+                    : "text-red-600 dark:text-red-400 border-red-500 dark:border-red-500 border-2 bg-red-50 dark:bg-red-950/20"
+                  : ""
+              }`}
+              disabled={showResult}
+            />
             {showResult && (
               <div className={`text-center text-sm font-medium ${
                 isCorrect ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
