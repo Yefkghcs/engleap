@@ -308,7 +308,7 @@ const VocabularyBook = () => {
                           <div className="flex items-center gap-2 mb-1">
                             <span className={`font-bold ${wordColorClass}`}>{word.word}</span>
                             {word.tags.map((tag, i) => (
-                              <span key={i} className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
+                              <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
                                 {tag}
                               </span>
                             ))}
@@ -457,7 +457,7 @@ const VocabularyBook = () => {
                           <div className="flex items-center gap-2">
                             <span className={`text-xl font-bold ${wordColorClass}`}>{word.word}</span>
                             {word.tags.map((tag, i) => (
-                              <span key={i} className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
+                              <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
                                 {tag}
                               </span>
                             ))}
