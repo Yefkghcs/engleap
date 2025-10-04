@@ -374,6 +374,9 @@ const Learn = () => {
               onChange={(e) => setUserInput(e.target.value)}
               onFocus={handleInputFocus}
               placeholder="输入单词（iPad可使用随手写功能）"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
               className={`text-center text-3xl py-6 placeholder:text-muted-foreground/40 placeholder:text-base ${
                 showResult 
                   ? isCorrect 
