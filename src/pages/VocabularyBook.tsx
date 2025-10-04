@@ -87,14 +87,16 @@ const VocabularyBook = () => {
     kaoyan: "考研",
   };
 
-  let bookName = bookNames[bookId || "ielts"] || "雅思";
+  let bookName = "雅思";
   
   // Handle custom vocabulary names
-  if (bookId === "custom" && customId) {
+  if (customId) {
     const customVocab = getCustomVocabulary(customId);
     if (customVocab) {
       bookName = customVocab.name;
     }
+  } else {
+    bookName = bookNames[bookId || "ielts"] || "雅思";
   }
 
   // Calculate statistics based on actual data
@@ -203,7 +205,7 @@ const VocabularyBook = () => {
         
         <div className="relative max-w-7xl mx-auto text-center">
           <h1 className="text-4xl font-bold text-foreground mb-2">{bookName}</h1>
-          <p className="text-lg text-muted-foreground">IELTS Vocabulary</p>
+          <p className="text-lg text-muted-foreground">{customId ? "自定义单词库" : "IELTS Vocabulary"}</p>
         </div>
       </div>
 
