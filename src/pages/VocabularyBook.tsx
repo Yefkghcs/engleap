@@ -159,14 +159,14 @@ const VocabularyBook = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Navbar />
       
       {/* Hero Section */}
-      <div className="bg-muted/50 py-12 px-4">
+      <div className="bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 py-12 px-4 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-2">{bookName}</h1>
-          <p className="text-lg text-muted-foreground">IELTS Vocabulary</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">{bookName}</h1>
+          <p className="text-lg text-foreground/70">IELTS Vocabulary</p>
         </div>
       </div>
 
