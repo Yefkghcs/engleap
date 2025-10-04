@@ -189,10 +189,10 @@ const VocabularyHome = () => {
           </div>
           
           <Tabs defaultValue="exam" className="w-full">
-            <TabsList className="mb-8">
-              <TabsTrigger value="exam" className="px-8">考试必背</TabsTrigger>
-              <TabsTrigger value="life" className="px-8">生活实用</TabsTrigger>
-              <TabsTrigger value="custom" className="px-8">自定义单词库</TabsTrigger>
+            <TabsList className="mb-8 w-full justify-start overflow-x-auto">
+              <TabsTrigger value="exam" className="px-3 sm:px-8 whitespace-nowrap">考试必背</TabsTrigger>
+              <TabsTrigger value="life" className="px-3 sm:px-8 whitespace-nowrap">生活实用</TabsTrigger>
+              <TabsTrigger value="custom" className="px-3 sm:px-8 whitespace-nowrap">自定义单词库</TabsTrigger>
             </TabsList>
             
             <TabsContent value="exam">

@@ -241,10 +241,10 @@ const VocabularyBook = () => {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Book Info */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-bold">{bookName}单词库</h2>
-            <span className="text-sm text-muted-foreground">已学 {learnedCount} / {totalWords}</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+            <h2 className="text-lg sm:text-xl font-bold">{bookName}单词库</h2>
+            <span className="text-xs sm:text-sm text-muted-foreground">已学 {learnedCount} / {totalWords}</span>
             <Button 
               variant="ghost" 
               size="icon"
@@ -252,15 +252,16 @@ const VocabularyBook = () => {
               className={globalTranslationVisible ? "text-primary" : ""}
             >
               {globalTranslationVisible ? (
-                <EyeOff className="h-5 w-5" />
+                <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
               ) : (
-                <Eye className="h-5 w-5" />
+                <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
               )}
             </Button>
             <Button 
               variant="secondary" 
               size="sm"
               onClick={shuffleWords}
+              className="text-xs sm:text-sm"
             >
               打乱顺序
             </Button>
@@ -268,12 +269,13 @@ const VocabularyBook = () => {
         </div>
 
         {/* Filter and Actions */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex gap-2 bg-card rounded-lg p-1">
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex gap-1 sm:gap-2 bg-card rounded-lg p-1 overflow-x-auto">
             <Button
               variant={filter === "all" ? "default" : "ghost"}
               size="sm"
               onClick={() => handleFilterChange("all")}
+              className="text-xs sm:text-sm whitespace-nowrap"
             >
               全部
             </Button>
@@ -281,6 +283,7 @@ const VocabularyBook = () => {
               variant={filter === "unmarked" ? "default" : "ghost"}
               size="sm"
               onClick={() => handleFilterChange("unmarked")}
+              className="text-xs sm:text-sm whitespace-nowrap"
             >
               未标注
             </Button>
@@ -288,6 +291,7 @@ const VocabularyBook = () => {
               variant={filter === "known" ? "default" : "ghost"}
               size="sm"
               onClick={() => handleFilterChange("known")}
+              className="text-xs sm:text-sm whitespace-nowrap"
             >
               认识
             </Button>
@@ -295,49 +299,54 @@ const VocabularyBook = () => {
               variant={filter === "unknown" ? "default" : "ghost"}
               size="sm"
               onClick={() => handleFilterChange("unknown")}
+              className="text-xs sm:text-sm whitespace-nowrap"
             >
               不认识
             </Button>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4">
             <Link 
               to={`/vocabulary/${bookId}/learn-cards`}
               state={{ words: currentWords }}
+              className="flex-1"
             >
-              <Button className="px-12">学习</Button>
+              <Button className="w-full text-xs sm:text-sm">学习</Button>
             </Link>
             <Link 
               to={`/vocabulary/${bookId}/learn`}
               state={{ words: currentWords, mode: 'dictation' }}
+              className="flex-1"
             >
-              <Button className="px-12">听写</Button>
+              <Button className="w-full text-xs sm:text-sm">听写</Button>
             </Link>
             <Link 
               to={`/vocabulary/${bookId}/challenge`}
               state={{ words: currentWords }}
+              className="flex-1"
             >
-              <Button className="px-12">挑战</Button>
+              <Button className="w-full text-xs sm:text-sm">挑战</Button>
             </Link>
           </div>
         </div>
 
         {/* View Tabs */}
         <Tabs defaultValue="list" className="w-full">
-          <TabsList className="mb-4">
-            <TabsTrigger value="list" className="gap-2">
+          <TabsList className="mb-4 w-full sm:w-auto">
+            <TabsTrigger value="list" className="gap-2 flex-1 sm:flex-none">
               <List className="h-4 w-4" />
-              列表
+              <span className="hidden sm:inline">列表</span>
             </TabsTrigger>
-            <TabsTrigger value="cards" className="gap-2">
+            <TabsTrigger value="cards" className="gap-2 flex-1 sm:flex-none">
               <LayoutGrid className="h-4 w-4" />
-              卡片
+              <span className="hidden sm:inline">卡片</span>
             </TabsTrigger>
           </TabsList>
 
           {/* List View */}
           <TabsContent value="list">
-            <Card className="overflow-hidden">
+            {/* Desktop List View */}
+            <Card className="overflow-hidden hidden sm:block">
               <div className="bg-muted px-6 py-3 grid grid-cols-12 gap-4 font-medium text-sm">
                 <div className="col-span-2">单词</div>
                 <div className="col-span-4">例句</div>
@@ -487,6 +496,140 @@ const VocabularyBook = () => {
                 )}
               </div>
             </Card>
+
+            {/* Mobile List View */}
+            <div className="sm:hidden space-y-3">
+              {currentWords.length === 0 ? (
+                <Card className="p-8">
+                  <div className="text-center">
+                    <p className="text-muted-foreground">暂无单词</p>
+                    <p className="text-muted-foreground text-xs mt-2">
+                      {filter === "unmarked" && "还没有未标注的单词"}
+                      {filter === "known" && "还没有标记为认识的单词"}
+                      {filter === "unknown" && "还没有标记为不认识的单词"}
+                      {filter === "all" && "词库为空"}
+                    </p>
+                  </div>
+                </Card>
+              ) : (
+                currentWords.map((word) => {
+                  const isTranslationVisible = visibleTranslations.has(word.id);
+                  const wordColorClass = 
+                    word.status === "known" ? "text-green-600" : 
+                    word.status === "unknown" ? "text-red-600" : "";
+
+                  return (
+                    <Card key={word.id} className="p-4">
+                      {/* Word Header */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-lg font-bold ${wordColorClass}`}>{word.word}</span>
+                            {word.tags.map((tag, i) => (
+                              <span key={i} className="bg-foreground text-background text-xs px-1.5 py-0.5 rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{word.phonetic}</span>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-5 w-5"
+                              onClick={() => playAudio(word.word)}
+                            >
+                              <Volume2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          {isTranslationVisible && (
+                            <div className="text-sm mt-1">{word.meaning}</div>
+                          )}
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => toggleTranslation(word.id)}
+                          className={`flex-shrink-0 ${isTranslationVisible ? "text-primary" : ""}`}
+                        >
+                          {isTranslationVisible ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+
+                      {/* Example */}
+                      {word.example && (
+                        <div className="mb-2 pb-2 border-b">
+                          <div className="flex items-start gap-2">
+                            <p className="text-xs italic flex-1">{word.example}</p>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-5 w-5 flex-shrink-0"
+                              onClick={() => playAudio(word.example)}
+                            >
+                              <Volume2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          {isTranslationVisible && word.exampleCn && (
+                            <p className="text-xs text-muted-foreground mt-1">{word.exampleCn}</p>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2">
+                        {word.status === "unmarked" && (
+                          <>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="flex-1 text-xs"
+                              onClick={() => toggleWordStatus(word.id, "known")}
+                            >
+                              认识
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="flex-1 text-xs"
+                              onClick={() => toggleWordStatus(word.id, "unknown")}
+                            >
+                              不认识
+                            </Button>
+                          </>
+                        )}
+                        
+                        {word.status === "known" && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="flex-1 text-xs"
+                            onClick={() => toggleWordStatus(word.id, "unknown")}
+                          >
+                            不认识
+                          </Button>
+                        )}
+                        
+                        {word.status === "unknown" && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="flex-1 text-xs"
+                            onClick={() => toggleWordStatus(word.id, "known")}
+                          >
+                            认识
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                })
+              )}
+            </div>
           </TabsContent>
 
           {/* Cards View */}
