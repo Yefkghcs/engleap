@@ -293,18 +293,18 @@ const Challenge = () => {
                 </p>
                 {currentQuestion.type !== "spelling" ? (
                   <div className="flex items-center justify-center gap-3">
-                    <h2 className="text-5xl font-bold text-foreground">{currentQuestion.question}</h2>
+                    <h2 className="text-3xl font-semibold text-foreground">{currentQuestion.question}</h2>
                     <Button 
                       variant="ghost" 
                       size="icon"
-                      className="h-12 w-12"
+                      className="h-10 w-10"
                       onClick={() => playAudio(currentQuestion.word.word)}
                     >
-                      <Volume2 className="h-6 w-6" />
+                      <Volume2 className="h-5 w-5" />
                     </Button>
                   </div>
                 ) : (
-                  <h2 className="text-2xl font-semibold text-foreground">{currentQuestion.question}</h2>
+                  <h2 className="text-3xl font-semibold text-foreground">{currentQuestion.question}</h2>
                 )}
               </div>
             </div>
