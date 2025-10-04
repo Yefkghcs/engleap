@@ -162,11 +162,17 @@ const VocabularyBook = () => {
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 py-12 px-4 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">{bookName}</h1>
-          <p className="text-lg text-foreground/70">IELTS Vocabulary</p>
+      {/* Hero Section with Gradient */}
+      <div className="relative py-12 px-4 backdrop-blur-sm overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 w-[500px] h-full bg-gradient-to-br from-indigo-400/30 via-purple-400/20 to-transparent blur-3xl" />
+          <div className="absolute top-0 right-0 w-[450px] h-full bg-gradient-to-bl from-cyan-400/25 via-blue-300/15 to-transparent blur-3xl" />
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto text-center">
+          <h1 className="text-4xl font-bold text-foreground mb-2">{bookName}</h1>
+          <p className="text-lg text-muted-foreground">IELTS Vocabulary</p>
         </div>
       </div>
 

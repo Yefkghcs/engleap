@@ -5,16 +5,23 @@ import { ArrowRight } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Gradient Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/40 via-pink-300/30 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-300/40 via-cyan-300/30 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-gradient-to-tr from-orange-200/30 via-yellow-200/20 to-transparent rounded-full blur-3xl" />
+      </div>
+
       {/* Header */}
-      <header className="py-6 px-4 border-b bg-card/50">
+      <header className="relative py-6 px-4 border-b bg-card/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold text-primary">EngLeap</h1>
         </div>
       </header>
 
       {/* Hero Section */}
-      <div className="py-20 px-4">
+      <div className="relative py-20 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <p className="text-primary font-medium">AI-Powered Language Learning</p>
           <h2 className="text-5xl md:text-6xl font-bold text-foreground">Master Your English</h2>
@@ -26,7 +33,7 @@ const Index = () => {
       </div>
 
       {/* Feature Cards */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="relative max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Vocabulary Card */}
           <Card className="p-8 hover:shadow-md transition-all">

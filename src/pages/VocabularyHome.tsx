@@ -46,9 +46,15 @@ const VocabularyHome = () => {
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Hero Section */}
-      <div className="border-b bg-card/50 py-16 px-4">
-        <div className="max-w-7xl mx-auto text-center">
+      {/* Hero Section with Gradient */}
+      <div className="relative border-b bg-card/50 py-16 px-4 overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-[400px] h-[300px] bg-gradient-to-br from-blue-400/30 via-purple-400/20 to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-0 right-1/4 w-[350px] h-[250px] bg-gradient-to-bl from-pink-400/25 via-orange-300/15 to-transparent rounded-full blur-3xl" />
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
             单词，是你通往流利的钥匙
           </h1>
