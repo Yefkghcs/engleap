@@ -2,8 +2,8 @@ import { useRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Eraser, RotateCcw, Send, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { pipeline } from "@huggingface/transformers";
 
 interface HandwritingInputProps {
   onRecognized: (text: string) => void;
@@ -95,22 +95,27 @@ export const HandwritingInput = ({ onRecognized, disabled }: HandwritingInputPro
     setIsRecognizing(true);
 
     try {
-      // Convert canvas to base64
-      const imageData = canvas.toDataURL("image/png");
-      
-      // Call edge function to recognize handwriting
-      const { data, error } = await supabase.functions.invoke("recognize-handwriting", {
-        body: { image: imageData }
+      // Convert canvas to blob
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((b) => resolve(b!), "image/png");
       });
 
-      if (error) throw error;
+      // Use TrOCR model for handwriting recognition
+      const recognizer = await pipeline(
+        "image-to-text",
+        "Xenova/trocr-small-handwritten",
+        { device: "webgpu" }
+      );
 
-      if (data?.text) {
-        onRecognized(data.text);
+      const result: any = await recognizer(blob);
+      const recognizedText = (Array.isArray(result) ? result[0]?.generated_text : result?.generated_text)?.trim();
+
+      if (recognizedText) {
+        onRecognized(recognizedText);
         clearCanvas();
         toast({
           title: "识别成功",
-          description: `识别结果: ${data.text}`,
+          description: `识别结果: ${recognizedText}`,
         });
       } else {
         toast({
