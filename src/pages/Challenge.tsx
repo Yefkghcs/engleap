@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, Volume2, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { addMistake } from "@/utils/mistakesStorage";
 
 interface Word {
   id: number;
@@ -186,6 +187,9 @@ const Challenge = () => {
     
     if (answer === currentQuestion.correctAnswer) {
       setCorrectCount(prev => prev + 1);
+    } else {
+      // Record mistake when answer is wrong
+      addMistake(currentQuestion.word);
     }
   };
 
@@ -193,6 +197,8 @@ const Challenge = () => {
     setSelectedAnswer(null);
     setShowResult(true);
     // Don't increment correctCount - this counts as wrong
+    // Record mistake when time is up
+    addMistake(currentQuestion.word);
   };
 
   const handleNext = () => {
