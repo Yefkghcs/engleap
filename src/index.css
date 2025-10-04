@@ -8,83 +8,83 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 225 40% 96%;
-    --foreground: 228 40% 15%;
+    --background: 25 100% 97%;
+    --foreground: 10 30% 25%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 228 40% 15%;
+    --card: 30 100% 98%;
+    --card-foreground: 10 30% 25%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 228 40% 15%;
+    --popover: 30 100% 98%;
+    --popover-foreground: 10 30% 25%;
 
-    --primary: 220 90% 56%;
+    --primary: 8 75% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 235 30% 88%;
-    --secondary-foreground: 228 40% 15%;
+    --secondary: 350 100% 88%;
+    --secondary-foreground: 10 30% 25%;
 
-    --muted: 230 30% 92%;
-    --muted-foreground: 228 20% 50%;
+    --muted: 25 40% 92%;
+    --muted-foreground: 10 15% 45%;
 
-    --accent: 240 60% 92%;
-    --accent-foreground: 228 40% 15%;
+    --accent: 350 80% 85%;
+    --accent-foreground: 10 30% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 230 20% 88%;
-    --input: 230 20% 88%;
-    --ring: 220 90% 56%;
+    --border: 25 30% 90%;
+    --input: 25 30% 90%;
+    --ring: 8 75% 55%;
 
-    --radius: 1rem;
+    --radius: 1.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 30 100% 98%;
+    --sidebar-foreground: 10 30% 25%;
+    --sidebar-primary: 8 75% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 350 100% 95%;
+    --sidebar-accent-foreground: 10 30% 25%;
+    --sidebar-border: 25 30% 90%;
+    --sidebar-ring: 8 75% 55%;
   }
 
   .dark {
-    --background: 228 35% 12%;
-    --foreground: 225 15% 92%;
+    --background: 10 25% 12%;
+    --foreground: 25 15% 92%;
 
-    --card: 228 25% 16%;
-    --card-foreground: 225 15% 92%;
+    --card: 10 20% 16%;
+    --card-foreground: 25 15% 92%;
 
-    --popover: 228 25% 16%;
-    --popover-foreground: 225 15% 92%;
+    --popover: 10 20% 16%;
+    --popover-foreground: 25 15% 92%;
 
-    --primary: 220 90% 60%;
+    --primary: 8 70% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 228 20% 22%;
-    --secondary-foreground: 225 15% 92%;
+    --secondary: 10 15% 22%;
+    --secondary-foreground: 25 15% 92%;
 
-    --muted: 228 20% 20%;
-    --muted-foreground: 225 10% 65%;
+    --muted: 10 15% 20%;
+    --muted-foreground: 25 10% 65%;
 
-    --accent: 228 20% 22%;
-    --accent-foreground: 225 15% 92%;
+    --accent: 350 50% 25%;
+    --accent-foreground: 25 15% 92%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 228 20% 22%;
-    --input: 228 20% 22%;
-    --ring: 220 90% 60%;
+    --border: 10 15% 22%;
+    --input: 10 15% 22%;
+    --ring: 8 70% 60%;
     
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 10 25% 10%;
+    --sidebar-foreground: 25 15% 92%;
+    --sidebar-primary: 8 70% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 10 15% 18%;
+    --sidebar-accent-foreground: 25 15% 92%;
+    --sidebar-border: 10 15% 18%;
+    --sidebar-ring: 8 70% 60%;
   }
 }
 
@@ -94,11 +94,15 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-gradient-to-br from-[#E8EBF7] via-[#EEF0F9] to-[#F3E8F5] text-foreground;
+    @apply bg-gradient-to-br from-[#FFE8E8] via-[#FFF5E8] to-[#FFE8F0] text-foreground font-sans;
     min-height: 100vh;
   }
 
   .dark body {
-    @apply bg-gradient-to-br from-[#0F1419] via-[#151922] to-[#1A1625];
+    @apply bg-gradient-to-br from-[#1A1410] via-[#1A1715] to-[#1A1418];
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
   }
 }
