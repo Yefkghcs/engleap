@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Eye, EyeOff, Volume2, ChevronDown, LayoutGrid, List } from "lucide-react";
 import { ieltsWords } from "@/data/ieltsWords";
+import { getCustomVocabulary } from "@/utils/customVocabularyStorage";
 
 type WordStatus = "unmarked" | "known" | "unknown";
 
@@ -24,7 +25,27 @@ interface Word {
 }
 
 // Get words data based on book ID and restore statuses from localStorage
-const getWordsForBook = (bookId: string): Word[] => {
+const getWordsForBook = (bookId: string, customId?: string): Word[] => {
+  // Handle custom vocabularies
+  if (bookId === "custom" && customId) {
+    const customVocab = getCustomVocabulary(customId);
+    if (customVocab) {
+      return customVocab.words.map((w, index) => ({
+        id: parseInt(w.id.replace(/\D/g, '')) || index,
+        word: w.word,
+        tags: [],
+        phonetic: "",
+        meaning: w.meaning,
+        example: w.example || "",
+        exampleCn: w.exampleCn || "",
+        collocations: "",
+        collocationsCn: "",
+        status: "unmarked" as WordStatus,
+      }));
+    }
+    return [];
+  }
+
   // Only IELTS has data currently
   if (bookId === "ielts") {
     const words = ieltsWords.map(w => ({ ...w, status: "unmarked" as WordStatus }));
@@ -50,10 +71,10 @@ const getWordsForBook = (bookId: string): Word[] => {
 };
 
 const VocabularyBook = () => {
-  const { bookId } = useParams();
+  const { bookId, customId } = useParams();
   const [filter, setFilter] = useState<"all" | "unmarked" | "known" | "unknown">("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [words, setWords] = useState<Word[]>(getWordsForBook(bookId || "ielts"));
+  const [words, setWords] = useState<Word[]>(getWordsForBook(bookId || "ielts", customId));
   const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
   const [globalTranslationVisible, setGlobalTranslationVisible] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -65,7 +86,15 @@ const VocabularyBook = () => {
     kaoyan: "考研",
   };
 
-  const bookName = bookNames[bookId || "ielts"] || "雅思";
+  let bookName = bookNames[bookId || "ielts"] || "雅思";
+  
+  // Handle custom vocabulary names
+  if (bookId === "custom" && customId) {
+    const customVocab = getCustomVocabulary(customId);
+    if (customVocab) {
+      bookName = customVocab.name;
+    }
+  }
 
   // Calculate statistics based on actual data
   const totalWords = words.length;

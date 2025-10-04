@@ -96,7 +96,8 @@ const CreateVocabularyDialog = ({ onSuccess }: CreateVocabularyDialogProps) => {
           <DialogTitle>创建自定义单词库</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4" aria-describedby="dialog-description">
+          <p id="dialog-description" className="sr-only">填写单词库信息并批量添加单词</p>
           <div className="space-y-2">
             <Label htmlFor="name">单词库名称</Label>
             <Input

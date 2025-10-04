@@ -25,9 +25,13 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/vocabulary" element={<VocabularyHome />} />
           <Route path="/vocabulary/:bookId" element={<VocabularyBook />} />
+          <Route path="/vocabulary/custom/:customId" element={<VocabularyBook />} />
           <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
           <Route path="/vocabulary/:bookId/learn-cards" element={<LearnCards />} />
           <Route path="/vocabulary/:bookId/challenge" element={<Challenge />} />
+          <Route path="/vocabulary/custom/:customId/learn" element={<Learn />} />
+          <Route path="/vocabulary/custom/:customId/learn-cards" element={<LearnCards />} />
+          <Route path="/vocabulary/custom/:customId/challenge" element={<Challenge />} />
           <Route path="/vocabulary/mistakes/learn" element={<Learn />} />
           <Route path="/vocabulary/learned/learn" element={<Learn />} />
           <Route path="/mistakes" element={<Mistakes />} />
