@@ -47,12 +47,12 @@ const VocabularyHome = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 py-16 px-4 backdrop-blur-sm">
+      <div className="border-b bg-card/50 py-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
             单词，是你通往流利的钥匙
           </h1>
-          <p className="text-lg text-foreground/70">
+          <p className="text-lg text-muted-foreground">
             Every word unlocks your path to fluency.
           </p>
         </div>
@@ -62,8 +62,8 @@ const VocabularyHome = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
           {/* Check-in Card */}
-          <Card className="p-6 h-full flex flex-col hover:shadow-2xl hover:shadow-blue-500/10 transition-all">
-            <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">打卡记录</h2>
+          <Card className="p-6 h-full flex flex-col transition-all hover:shadow-md">
+            <h2 className="text-xl font-semibold mb-6 text-foreground">打卡记录</h2>
             
             <div className="space-y-6 flex-1 flex flex-col justify-between">
               <div className="flex items-center justify-between">
@@ -112,21 +112,21 @@ const VocabularyHome = () => {
           {/* Word Records */}
           <div className="grid grid-cols-2 gap-6 h-full">
             <Link to="/vocabulary/learned" className="h-full">
-              <Card className="p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer h-full flex flex-col overflow-hidden">
-                <div className="h-32 bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl mb-4 flex items-center justify-center">
+              <Card className="p-6 hover:shadow-md transition-all cursor-pointer h-full flex flex-col overflow-hidden group">
+                <div className="h-32 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-950/30 transition-colors">
                   <span className="text-5xl">📚</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">你学过的单词</h3>
+                <h3 className="text-lg font-semibold mb-2">你学过的单词</h3>
                 <p className="text-sm text-muted-foreground">{learnedCount}个单词</p>
               </Card>
             </Link>
             
             <Link to="/mistakes" className="h-full">
-              <Card className="p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer h-full flex flex-col overflow-hidden">
-                <div className="h-32 bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl mb-4 flex items-center justify-center">
+              <Card className="p-6 hover:shadow-md transition-all cursor-pointer h-full flex flex-col overflow-hidden group">
+                <div className="h-32 bg-rose-50 dark:bg-rose-950/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-rose-100 dark:group-hover:bg-rose-950/30 transition-colors">
                   <span className="text-5xl">📝</span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">错题本</h3>
+                <h3 className="text-lg font-semibold mb-2">错题本</h3>
                 <p className="text-sm text-muted-foreground">{mistakesCount}个单词</p>
               </Card>
             </Link>
@@ -135,7 +135,7 @@ const VocabularyHome = () => {
 
         {/* Vocabulary Books Section */}
         <div>
-          <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">选择单词库</h2>
+          <h2 className="text-xl font-semibold mb-6 text-foreground">选择单词库</h2>
           
           <Tabs defaultValue="exam" className="w-full">
             <TabsList className="mb-8">
@@ -147,11 +147,11 @@ const VocabularyHome = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {vocabularyBooks.map((book) => (
                   <Link key={book.id} to={`/vocabulary/${book.id}`}>
-                    <Card className="p-4 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer overflow-hidden">
-                      <div className="h-32 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl mb-4 flex items-center justify-center">
+                    <Card className="p-5 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                      <div className="h-32 bg-primary/5 dark:bg-primary/10 rounded-lg mb-4 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
                         <span className="text-5xl">{book.emoji}</span>
                       </div>
-                      <h3 className="text-xl font-bold mb-1">{book.name}</h3>
+                      <h3 className="text-lg font-semibold mb-1">{book.name}</h3>
                       <p className="text-sm text-muted-foreground">{book.count}个单词</p>
                     </Card>
                   </Link>
