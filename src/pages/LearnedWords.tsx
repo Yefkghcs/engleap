@@ -107,17 +107,18 @@ const LearnedWords = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-8">你学过的单词</h1>
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">你学过的单词</h1>
         
         {/* Controls */}
         <div className="flex flex-col gap-4 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2 bg-card rounded-lg p-1">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex gap-1 sm:gap-2 bg-card rounded-lg p-1 overflow-x-auto w-full sm:w-auto">
               <Button
                 variant={filter === "all" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setFilter("all")}
+                className="text-xs sm:text-sm whitespace-nowrap"
               >
                 全部
               </Button>
@@ -125,6 +126,7 @@ const LearnedWords = () => {
                 variant={filter === "known" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setFilter("known")}
+                className="text-xs sm:text-sm whitespace-nowrap"
               >
                 认识
               </Button>
@@ -132,16 +134,17 @@ const LearnedWords = () => {
                 variant={filter === "unknown" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setFilter("unknown")}
+                className="text-xs sm:text-sm whitespace-nowrap"
               >
                 不认识
               </Button>
             </div>
 
-            <div className="flex items-center gap-4">
-              <span className="text-sm">已经选择 {selectedWords.length} 个单词</span>
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+              <span className="text-xs sm:text-sm whitespace-nowrap">已选择 {selectedWords.length} 个</span>
               <Button 
                 onClick={handleListen}
-                className="bg-foreground text-background hover:bg-foreground/90"
+                className="bg-foreground text-background hover:bg-foreground/90 flex-1 sm:flex-none text-xs sm:text-sm"
               >
                 听写
               </Button>

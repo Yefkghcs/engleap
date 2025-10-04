@@ -110,24 +110,24 @@ const Mistakes = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-8">我的错题本</h1>
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">我的错题本</h1>
         
         {/* Controls */}
         <div className="flex flex-col gap-4 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-sm">日期</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+              <span className="text-xs sm:text-sm whitespace-nowrap">日期</span>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      "justify-start text-left font-normal",
+                      "justify-start text-left font-normal w-full sm:w-auto text-xs sm:text-sm",
                       !selectedDates.length && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    <CalendarIcon className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     {selectedDates.length > 0 
                       ? `已选择 ${selectedDates.length} 个日期` 
                       : "选择日期"}
@@ -146,17 +146,18 @@ const Mistakes = () => {
               </Popover>
             </div>
 
-            <div className="flex items-center gap-4">
-              <span className="text-sm">已经选择 {selectedWords.length} 个单词</span>
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+              <span className="text-xs sm:text-sm whitespace-nowrap">已选择 {selectedWords.length} 个</span>
               <Button 
                 onClick={handleListen}
-                className="bg-foreground text-background hover:bg-foreground/90"
+                className="bg-foreground text-background hover:bg-foreground/90 flex-1 sm:flex-none text-xs sm:text-sm"
               >
                 听写
               </Button>
               <Button 
                 onClick={handleDelete}
                 variant="outline"
+                className="flex-1 sm:flex-none text-xs sm:text-sm"
               >
                 删除
               </Button>
@@ -169,7 +170,7 @@ const Mistakes = () => {
               {selectedDates.map((date) => (
                 <div 
                   key={date.getTime()} 
-                  className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm"
+                  className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-primary/10 text-primary rounded-full text-xs sm:text-sm"
                 >
                   <span>{format(date, "yyyy-MM-dd")}</span>
                   <button
