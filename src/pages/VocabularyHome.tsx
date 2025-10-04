@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getTotalWords, getLearnedWordsCount, getMistakesCount } from "@/utils/vocabularyStats";
 import { getTotalCheckInDays, getThisWeekCheckInDays, getWeekCheckInStatus, hasCheckedInToday } from "@/utils/checkInStorage";
+import { getCustomVocabularies } from "@/utils/customVocabularyStorage";
+import CreateVocabularyDialog from "@/components/CreateVocabularyDialog";
+import { Trash2 } from "lucide-react";
+import { deleteCustomVocabulary } from "@/utils/customVocabularyStorage";
+import { useToast } from "@/hooks/use-toast";
 
 const VocabularyHome = () => {
   const [learnedCount, setLearnedCount] = useState(0);
@@ -14,6 +19,8 @@ const VocabularyHome = () => {
   const [weekCheckIns, setWeekCheckIns] = useState(0);
   const [weekStatus, setWeekStatus] = useState<boolean[]>([]);
   const [checkedInToday, setCheckedInToday] = useState(false);
+  const [customVocabularies, setCustomVocabularies] = useState(getCustomVocabularies());
+  const { toast } = useToast();
 
   useEffect(() => {
     // Update counts on mount
@@ -23,7 +30,19 @@ const VocabularyHome = () => {
     setWeekCheckIns(getThisWeekCheckInDays());
     setWeekStatus(getWeekCheckInStatus());
     setCheckedInToday(hasCheckedInToday());
+    setCustomVocabularies(getCustomVocabularies());
   }, []);
+
+  const handleDeleteCustomVocabulary = (id: string, name: string) => {
+    if (confirm(`确定要删除「${name}」词库吗？`)) {
+      deleteCustomVocabulary(id);
+      setCustomVocabularies(getCustomVocabularies());
+      toast({
+        title: "删除成功",
+        description: `已删除「${name}」词库`,
+      });
+    }
+  };
 
   const vocabularyBooks = [
     { id: "ielts", name: "雅思", count: getTotalWords("ielts"), emoji: "🎓" },
@@ -39,6 +58,29 @@ const VocabularyHome = () => {
     { id: "middleschool", name: "初中", count: getTotalWords("middleschool"), emoji: "📝" },
     { id: "elementary", name: "小学", count: getTotalWords("elementary"), emoji: "🌱" },
     { id: "nce", name: "新概念英语", count: getTotalWords("nce"), emoji: "💡" },
+  ];
+
+  const lifeVocabularyBooks = [
+    { id: "home", name: "家庭日用", count: 0, emoji: "🏠" },
+    { id: "food", name: "饮食烹饪", count: 0, emoji: "🍳" },
+    { id: "clothing", name: "服饰穿戴", count: 0, emoji: "👔" },
+    { id: "health", name: "个人健康", count: 0, emoji: "💊" },
+    { id: "campus", name: "校园学习", count: 0, emoji: "📚" },
+    { id: "transport", name: "交通出行", count: 0, emoji: "🚗" },
+    { id: "travel", name: "旅游住宿", count: 0, emoji: "🏨" },
+    { id: "shopping", name: "购物消费", count: 0, emoji: "🛒" },
+    { id: "entertainment", name: "娱乐休闲", count: 0, emoji: "🎮" },
+    { id: "digital", name: "数码网络", count: 0, emoji: "💻" },
+    { id: "workplace", name: "职场办公", count: 0, emoji: "💼" },
+    { id: "finance", name: "金融理财", count: 0, emoji: "💰" },
+    { id: "public", name: "公共服务", count: 0, emoji: "🏥" },
+    { id: "weather", name: "自然天气", count: 0, emoji: "🌤️" },
+    { id: "community", name: "社区城市", count: 0, emoji: "🏙️" },
+    { id: "restaurant", name: "餐馆点餐", count: 0, emoji: "🍽️" },
+    { id: "hospital", name: "医院就诊", count: 0, emoji: "🏥" },
+    { id: "supermarket", name: "超市购物", count: 0, emoji: "🛍️" },
+    { id: "airport", name: "机场海关", count: 0, emoji: "✈️" },
+    { id: "interview", name: "面试求职", count: 0, emoji: "📋" },
   ];
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -141,12 +183,16 @@ const VocabularyHome = () => {
 
         {/* Vocabulary Books Section */}
         <div>
-          <h2 className="text-xl font-semibold mb-6 text-foreground">选择单词库</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-foreground">选择单词库</h2>
+            <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())} />
+          </div>
           
           <Tabs defaultValue="exam" className="w-full">
             <TabsList className="mb-8">
               <TabsTrigger value="exam" className="px-8">考试必背</TabsTrigger>
               <TabsTrigger value="life" className="px-8">生活实用</TabsTrigger>
+              <TabsTrigger value="custom" className="px-8">自定义单词库</TabsTrigger>
             </TabsList>
             
             <TabsContent value="exam">
@@ -166,9 +212,51 @@ const VocabularyHome = () => {
             </TabsContent>
             
             <TabsContent value="life">
-              <div className="text-center py-12 text-muted-foreground">
-                生活实用词库即将推出
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {lifeVocabularyBooks.map((book) => (
+                  <Link key={book.id} to={`/vocabulary/${book.id}`}>
+                    <Card className="p-5 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                      <div className="h-32 bg-secondary/50 dark:bg-secondary/20 rounded-lg mb-4 flex items-center justify-center group-hover:bg-secondary/70 dark:group-hover:bg-secondary/30 transition-colors">
+                        <span className="text-5xl">{book.emoji}</span>
+                      </div>
+                      <h3 className="text-lg font-semibold mb-1">{book.name}</h3>
+                      <p className="text-sm text-muted-foreground">{book.count}个单词</p>
+                    </Card>
+                  </Link>
+                ))}
               </div>
+            </TabsContent>
+
+            <TabsContent value="custom">
+              {customVocabularies.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground mb-4">还没有自定义单词库</p>
+                  <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())} />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {customVocabularies.map((book) => (
+                    <div key={book.id} className="relative group">
+                      <Link to={`/vocabulary/custom/${book.id}`}>
+                        <Card className="p-5 hover:shadow-md transition-all cursor-pointer overflow-hidden">
+                          <div className="h-32 bg-accent/50 rounded-lg mb-4 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
+                            <span className="text-5xl">{book.emoji}</span>
+                          </div>
+                          <h3 className="text-lg font-semibold mb-1">{book.name}</h3>
+                          <p className="text-sm text-muted-foreground">{book.words.length}个单词</p>
+                        </Card>
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteCustomVocabulary(book.id, book.name)}
+                        className="absolute top-2 right-2 p-2 bg-destructive text-destructive-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
+                        title="删除词库"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>
