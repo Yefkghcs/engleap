@@ -150,7 +150,7 @@ const LearnCards = () => {
             <div className="flex items-center justify-center gap-2 text-lg text-muted-foreground mb-4">
               <span>{currentWord.phonetic}</span>
               {currentWord.tags.map((tag, i) => (
-                <span key={i} className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
+                <span key={i} className="bg-black dark:bg-black text-white text-xs px-2 py-1 rounded">
                   {tag}
                 </span>
               ))}

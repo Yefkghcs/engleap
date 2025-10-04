@@ -191,7 +191,7 @@ const LearnedWords = () => {
                       word.status === "known" ? "text-green-600" : "text-red-600"
                     }`}>{word.word}</span>
                     {word.tags.map((tag: string, i: number) => (
-                      <span key={i} className="text-xs bg-foreground text-background px-2 py-0.5 rounded">
+                      <span key={i} className="text-xs bg-black dark:bg-black text-white px-2 py-0.5 rounded">
                         {tag}
                       </span>
                     ))}

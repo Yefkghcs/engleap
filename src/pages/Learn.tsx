@@ -233,7 +233,7 @@ const Learn = () => {
                 </h2>
                 <div className="flex items-center justify-center gap-2">
                   {currentWord.tags.map((tag, i) => (
-                    <span key={i} className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
+                    <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
                       {tag}
                     </span>
                   ))}
@@ -354,7 +354,7 @@ const Learn = () => {
               <h2 className="text-4xl font-bold">{currentWord.meaning}</h2>
               <div className="flex items-center justify-center gap-2">
                 {currentWord.tags.map((tag, i) => (
-                  <span key={i} className="inline-block bg-foreground text-background px-3 py-1 rounded text-sm">
+                  <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
                     {tag}
                   </span>
                 ))}

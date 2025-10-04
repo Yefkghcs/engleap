@@ -225,7 +225,7 @@ const Mistakes = () => {
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{word.word}</span>
                     {word.tags.map((tag: string, i: number) => (
-                      <span key={i} className="text-xs bg-foreground text-background px-2 py-0.5 rounded">
+                      <span key={i} className="text-xs bg-black dark:bg-black text-white px-2 py-0.5 rounded">
                         {tag}
                       </span>
                     ))}

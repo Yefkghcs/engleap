@@ -1,6 +1,19 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import ieltsImg from "@/assets/vocab-ielts.png";
+import toeflImg from "@/assets/vocab-toefl.png";
+import kaoyanImg from "@/assets/vocab-kaoyan.png";
+import satImg from "@/assets/vocab-sat.png";
+import greImg from "@/assets/vocab-gre.png";
+import cet6Img from "@/assets/vocab-cet6.png";
+import cet4Img from "@/assets/vocab-cet4.png";
+import collegeImg from "@/assets/vocab-college.png";
+import specialImg from "@/assets/vocab-special.png";
+import highschoolImg from "@/assets/vocab-highschool.png";
+import middleschoolImg from "@/assets/vocab-middleschool.png";
+import elementaryImg from "@/assets/vocab-elementary.png";
+import nceImg from "@/assets/vocab-nce.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,19 +39,19 @@ const VocabularyHome = () => {
   }, []);
 
   const vocabularyBooks = [
-    { id: "ielts", name: "雅思", count: getTotalWords("ielts") },
-    { id: "toefl", name: "托福", count: getTotalWords("toefl") },
-    { id: "kaoyan", name: "考研", count: getTotalWords("kaoyan") },
-    { id: "sat", name: "SAT", count: getTotalWords("sat") },
-    { id: "gre", name: "GRE", count: getTotalWords("gre") },
-    { id: "cet6", name: "六级", count: getTotalWords("cet6") },
-    { id: "cet4", name: "四级", count: getTotalWords("cet4") },
-    { id: "college", name: "大学", count: getTotalWords("college") },
-    { id: "special", name: "专升本", count: getTotalWords("special") },
-    { id: "highschool", name: "高中", count: getTotalWords("highschool") },
-    { id: "middleschool", name: "初中", count: getTotalWords("middleschool") },
-    { id: "elementary", name: "小学", count: getTotalWords("elementary") },
-    { id: "nce", name: "新概念英语", count: getTotalWords("nce") },
+    { id: "ielts", name: "雅思", count: getTotalWords("ielts"), image: ieltsImg },
+    { id: "toefl", name: "托福", count: getTotalWords("toefl"), image: toeflImg },
+    { id: "kaoyan", name: "考研", count: getTotalWords("kaoyan"), image: kaoyanImg },
+    { id: "sat", name: "SAT", count: getTotalWords("sat"), image: satImg },
+    { id: "gre", name: "GRE", count: getTotalWords("gre"), image: greImg },
+    { id: "cet6", name: "六级", count: getTotalWords("cet6"), image: cet6Img },
+    { id: "cet4", name: "四级", count: getTotalWords("cet4"), image: cet4Img },
+    { id: "college", name: "大学", count: getTotalWords("college"), image: collegeImg },
+    { id: "special", name: "专升本", count: getTotalWords("special"), image: specialImg },
+    { id: "highschool", name: "高中", count: getTotalWords("highschool"), image: highschoolImg },
+    { id: "middleschool", name: "初中", count: getTotalWords("middleschool"), image: middleschoolImg },
+    { id: "elementary", name: "小学", count: getTotalWords("elementary"), image: elementaryImg },
+    { id: "nce", name: "新概念英语", count: getTotalWords("nce"), image: nceImg },
   ];
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -112,16 +125,20 @@ const VocabularyHome = () => {
           {/* Word Records */}
           <div className="grid grid-cols-2 gap-6 h-full">
             <Link to="/vocabulary/learned" className="h-full">
-              <Card className="p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer h-full flex flex-col">
-                <div className="h-32 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl mb-4"></div>
+              <Card className="p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer h-full flex flex-col overflow-hidden">
+                <div className="h-32 bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl mb-4 flex items-center justify-center">
+                  <span className="text-5xl">📚</span>
+                </div>
                 <h3 className="text-xl font-bold mb-2">你学过的单词</h3>
                 <p className="text-sm text-muted-foreground">{learnedCount}个单词</p>
               </Card>
             </Link>
             
             <Link to="/mistakes" className="h-full">
-              <Card className="p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer h-full flex flex-col">
-                <div className="h-32 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl mb-4"></div>
+              <Card className="p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer h-full flex flex-col overflow-hidden">
+                <div className="h-32 bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl mb-4 flex items-center justify-center">
+                  <span className="text-5xl">📝</span>
+                </div>
                 <h3 className="text-xl font-bold mb-2">错题本</h3>
                 <p className="text-sm text-muted-foreground">{mistakesCount}个单词</p>
               </Card>
@@ -143,8 +160,10 @@ const VocabularyHome = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {vocabularyBooks.map((book) => (
                   <Link key={book.id} to={`/vocabulary/${book.id}`}>
-                    <Card className="p-4 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer">
-                      <div className="h-32 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl mb-4"></div>
+                    <Card className="p-4 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all cursor-pointer overflow-hidden">
+                      <div className="h-32 rounded-xl mb-4 overflow-hidden">
+                        <img src={book.image} alt={book.name} className="w-full h-full object-cover" />
+                      </div>
                       <h3 className="text-xl font-bold mb-1">{book.name}</h3>
                       <p className="text-sm text-muted-foreground">{book.count}个单词</p>
                     </Card>
