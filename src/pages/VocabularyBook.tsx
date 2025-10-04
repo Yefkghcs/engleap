@@ -74,7 +74,8 @@ const VocabularyBook = () => {
   const { bookId, customId } = useParams();
   const [filter, setFilter] = useState<"all" | "unmarked" | "known" | "unknown">("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [words, setWords] = useState<Word[]>(getWordsForBook(bookId || "ielts", customId));
+  const actualBookId = customId ? "custom" : (bookId || "ielts");
+  const [words, setWords] = useState<Word[]>(getWordsForBook(actualBookId, customId));
   const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
   const [globalTranslationVisible, setGlobalTranslationVisible] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
