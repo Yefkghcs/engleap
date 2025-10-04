@@ -24,11 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/vocabulary" element={<VocabularyHome />} />
-          <Route path="/vocabulary/:bookId" element={<VocabularyBook />} />
           <Route path="/vocabulary/custom/:customId" element={<VocabularyBook />} />
-          <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
-          <Route path="/vocabulary/:bookId/learn-cards" element={<LearnCards />} />
-          <Route path="/vocabulary/:bookId/challenge" element={<Challenge />} />
           <Route path="/vocabulary/custom/:customId/learn" element={<Learn />} />
           <Route path="/vocabulary/custom/:customId/learn-cards" element={<LearnCards />} />
           <Route path="/vocabulary/custom/:customId/challenge" element={<Challenge />} />
@@ -36,6 +32,10 @@ const App = () => (
           <Route path="/vocabulary/learned/learn" element={<Learn />} />
           <Route path="/mistakes" element={<Mistakes />} />
           <Route path="/vocabulary/learned" element={<LearnedWords />} />
+          <Route path="/vocabulary/:bookId" element={<VocabularyBook />} />
+          <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
+          <Route path="/vocabulary/:bookId/learn-cards" element={<LearnCards />} />
+          <Route path="/vocabulary/:bookId/challenge" element={<Challenge />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
