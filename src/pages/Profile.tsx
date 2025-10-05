@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 import { User, Mail, LogOut, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -55,19 +54,7 @@ const Profile = () => {
               <CardDescription>查看和管理您的个人信息</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarFallback className="bg-primary/10 text-primary text-2xl">
-                    {user.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <h3 className="text-xl font-semibold">{user.name}</h3>
-                  <p className="text-sm text-muted-foreground">EngLeap 用户</p>
-                </div>
-              </div>
-
-              <div className="space-y-4 pt-4 border-t">
+              <div className="space-y-4">
                 <div className="flex items-center space-x-3 text-muted-foreground">
                   <User className="h-5 w-5" />
                   <div>

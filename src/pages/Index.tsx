@@ -1,9 +1,22 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, User } from "lucide-react";
 
 const Index = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      setIsLoggedIn(true);
+      setUserEmail(user.email);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background Gradient Orbs */}
@@ -17,9 +30,18 @@ const Index = () => {
       <header className="relative py-6 px-4 border-b bg-card/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-2xl font-bold text-primary">EngLeap</h1>
-          <Button asChild variant="outline">
-            <Link to="/auth">登录 / 注册</Link>
-          </Button>
+          {isLoggedIn ? (
+            <Button asChild variant="outline">
+              <Link to="/profile" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                {userEmail}
+              </Link>
+            </Button>
+          ) : (
+            <Button asChild variant="outline">
+              <Link to="/auth">登录</Link>
+            </Button>
+          )}
         </div>
       </header>
 
