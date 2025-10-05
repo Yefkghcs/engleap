@@ -13,6 +13,8 @@ import Mistakes from "./pages/Mistakes";
 import LearnedWords from "./pages/LearnedWords";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ChangePassword from "./pages/ChangePassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/vocabulary" element={<VocabularyHome />} />
           <Route path="/vocabulary/custom/:customId" element={<VocabularyBook />} />
           <Route path="/vocabulary/custom/:customId/learn" element={<Learn />} />

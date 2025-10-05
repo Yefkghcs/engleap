@@ -97,12 +97,7 @@ const Profile = () => {
               <Button
                 variant="outline"
                 className="w-full justify-start"
-                onClick={() => {
-                  toast({
-                    title: "功能开发中",
-                    description: "修改密码功能即将上线",
-                  });
-                }}
+                onClick={() => navigate("/change-password")}
               >
                 修改密码
               </Button>
