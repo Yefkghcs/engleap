@@ -89,11 +89,13 @@ const VocabularyHome = () => {
       <Navbar />
       
       {/* Hero Section with Gradient */}
-      <div className="relative border-b bg-card/50 py-16 px-4 overflow-hidden">
+      <div className="relative border-b bg-gradient-to-br from-background via-primary/5 to-background py-16 px-4 overflow-hidden">
         {/* Gradient Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-[400px] h-[300px] bg-gradient-to-br from-blue-400/30 via-purple-400/20 to-transparent rounded-full blur-3xl" />
-          <div className="absolute top-0 right-1/4 w-[350px] h-[250px] bg-gradient-to-bl from-pink-400/25 via-orange-300/15 to-transparent rounded-full blur-3xl" />
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-0 right-1/4 w-80 h-80 bg-accent/30 rounded-full blur-3xl" />
+          <div className="absolute -bottom-12 left-1/3 w-72 h-72 bg-secondary/25 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 -right-12 w-64 h-64 bg-primary/15 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
         
         <div className="relative max-w-7xl mx-auto text-center">
