@@ -18,12 +18,14 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background">
       {/* Background Gradient Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/40 via-pink-300/30 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-300/40 via-cyan-300/30 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] bg-gradient-to-tr from-orange-200/30 via-yellow-200/20 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-accent/25 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-[450px] h-[450px] bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 right-1/3 w-96 h-96 bg-primary/15 rounded-full blur-2xl" />
+        <div className="absolute -bottom-20 right-0 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
       {/* Header */}
