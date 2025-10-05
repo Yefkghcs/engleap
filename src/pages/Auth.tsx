@@ -8,7 +8,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 type AuthMode = "login" | "register";
-type AuthStep = "email" | "code" | "password";
+type AuthStep = "inviteCode" | "email" | "code" | "password";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -17,12 +17,14 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   
   // Form data
+  const [inviteCode, setInviteCode] = useState("");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   
   // Validation states
+  const [inviteCodeError, setInviteCodeError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [codeError, setCodeError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -46,6 +48,40 @@ const Auth = () => {
       setCanResend(true);
     }
   }, [countdown]);
+
+  // Handle invite code verification
+  const handleInviteCodeSubmit = async () => {
+    setInviteCodeError("");
+    
+    if (!inviteCode) {
+      setInviteCodeError("请输入邀请码");
+      return;
+    }
+    
+    if (inviteCode.length < 6) {
+      setInviteCodeError("邀请码格式不正确");
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate API call to verify invite code
+    setTimeout(() => {
+      setIsLoading(false);
+      // Simulate verification - you'll replace this with actual backend call
+      const isValid = Math.random() > 0.3; // 70% success rate for demo
+      
+      if (isValid) {
+        setStep("email");
+        toast({
+          title: "邀请码验证成功",
+          description: "请继续填写您的邮箱",
+        });
+      } else {
+        setInviteCodeError("邀请码无效或已被使用");
+      }
+    }, 1000);
+  };
 
   // Handle email submission
   const handleEmailSubmit = async () => {
@@ -172,11 +208,13 @@ const Auth = () => {
 
   // Reset form
   const resetForm = () => {
-    setStep("email");
+    setStep(mode === "register" ? "inviteCode" : "email");
+    setInviteCode("");
     setEmail("");
     setCode("");
     setPassword("");
     setConfirmPassword("");
+    setInviteCodeError("");
     setEmailError("");
     setCodeError("");
     setPasswordError("");
@@ -205,6 +243,47 @@ const Auth = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Invite Code Step (Register only) */}
+          {step === "inviteCode" && mode === "register" && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="inviteCode">邀请码</Label>
+                <p className="text-sm text-muted-foreground">
+                  请输入您的邀请码以继续注册
+                </p>
+                <Input
+                  id="inviteCode"
+                  type="text"
+                  placeholder="输入邀请码"
+                  value={inviteCode}
+                  onChange={(e) => {
+                    setInviteCode(e.target.value);
+                    setInviteCodeError("");
+                  }}
+                  disabled={isLoading}
+                  className={inviteCodeError ? "border-destructive" : ""}
+                />
+                {inviteCodeError && (
+                  <p className="text-sm text-destructive">{inviteCodeError}</p>
+                )}
+              </div>
+              <Button
+                onClick={handleInviteCodeSubmit}
+                disabled={isLoading || !inviteCode}
+                className="w-full"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    验证中...
+                  </>
+                ) : (
+                  "验证邀请码"
+                )}
+              </Button>
+            </div>
+          )}
+
           {/* Email Step */}
           {step === "email" && (
             <div className="space-y-4">
@@ -249,7 +328,7 @@ const Auth = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setStep("email")}
+                onClick={() => setStep(mode === "register" && inviteCode ? "email" : "email")}
                 className="mb-2"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />

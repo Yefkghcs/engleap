@@ -15,8 +15,11 @@ const Index = () => {
 
       {/* Header */}
       <header className="relative py-6 px-4 border-b bg-card/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-2xl font-bold text-primary">EngLeap</h1>
+          <Button asChild variant="outline">
+            <Link to="/auth">登录 / 注册</Link>
+          </Button>
         </div>
       </header>
 
