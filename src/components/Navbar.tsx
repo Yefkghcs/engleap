@@ -25,14 +25,15 @@ const Navbar = () => {
             EngLeap
           </Link>
           
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-3 sm:gap-6 md:gap-8">
             <Link
               to="/"
               className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
                 isActive("/") ? "text-primary font-semibold" : "text-muted-foreground"
               }`}
             >
-              首页
+              <span className="hidden sm:inline">首页</span>
+              <span className="sm:hidden">首页</span>
             </Link>
             <Link
               to="/vocabulary"
@@ -59,9 +60,10 @@ const Navbar = () => {
                 className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:text-primary ${
                   isActive("/profile") ? "text-primary font-semibold" : "text-muted-foreground"
                 }`}
+                title={user.email}
               >
                 <User className="h-4 w-4" />
-                <span>{user.email}</span>
+                <span className="hidden lg:inline max-w-[150px] xl:max-w-[200px] truncate">{user.email}</span>
               </Link>
             ) : (
               <Link
@@ -71,7 +73,7 @@ const Navbar = () => {
                 }`}
               >
                 <User className="h-4 w-4" />
-                <span>登录</span>
+                <span className="hidden sm:inline">登录</span>
               </Link>
             )}
           </div>
