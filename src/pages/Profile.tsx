@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { User, Mail, LogOut, ArrowLeft } from "lucide-react";
+import { Mail, LogOut, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
@@ -55,14 +55,6 @@ const Profile = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 text-muted-foreground">
-                  <User className="h-5 w-5" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">用户名</p>
-                    <p className="text-sm">{user.name}</p>
-                  </div>
-                </div>
-
                 <div className="flex items-center space-x-3 text-muted-foreground">
                   <Mail className="h-5 w-5" />
                   <div>

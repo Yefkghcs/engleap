@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { User } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const location = useLocation();
@@ -61,12 +60,8 @@ const Navbar = () => {
                   isActive("/profile") ? "text-primary font-semibold" : "text-muted-foreground"
                 }`}
               >
-                <Avatar className="h-7 w-7">
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                    {user.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span>{user.name}</span>
+                <User className="h-4 w-4" />
+                <span>{user.email}</span>
               </Link>
             ) : (
               <Link
