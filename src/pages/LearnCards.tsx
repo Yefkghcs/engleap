@@ -68,12 +68,34 @@ const LearnCards = () => {
     );
   };
 
+  const updateWordStatus = (wordId: number, status: "known" | "unknown") => {
+    // Get existing statuses from localStorage
+    const stored = localStorage.getItem('vocabulary_word_statuses');
+    let statuses: Record<number, "unmarked" | "known" | "unknown"> = {};
+    
+    if (stored) {
+      try {
+        statuses = JSON.parse(stored);
+      } catch (e) {
+        console.error('Failed to load word statuses:', e);
+      }
+    }
+    
+    // Update the status for this word
+    statuses[wordId] = status;
+    
+    // Save back to localStorage
+    localStorage.setItem('vocabulary_word_statuses', JSON.stringify(statuses));
+  };
+
   const handleKnown = () => {
+    updateWordStatus(currentWord.id, "known");
     setKnownCount(prev => prev + 1);
     nextWord();
   };
 
   const handleUnknown = () => {
+    updateWordStatus(currentWord.id, "unknown");
     setUnknownCount(prev => prev + 1);
     nextWord();
   };
