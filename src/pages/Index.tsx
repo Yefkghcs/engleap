@@ -50,7 +50,13 @@ const Index = () => {
       {/* Hero Section */}
       <div className="relative py-20 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-6">
-          <p className="text-primary font-medium">AI-Powered Language Learning</p>
+          <p className="text-primary font-medium relative inline-block">
+            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] animate-[shimmer_3s_ease-in-out_infinite] bg-clip-text text-transparent">
+              AI-Powered Language Learning
+            </span>
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full animate-ping" />
+            <span className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+          </p>
           <h2 className="text-5xl md:text-6xl font-bold text-foreground">Master Your English</h2>
           <div className="space-y-2">
             <p className="text-xl text-muted-foreground">EngLeap你的一站式英语学习网站</p>
