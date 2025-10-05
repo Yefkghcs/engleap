@@ -13,9 +13,10 @@ const EMOJI_LIST = ["📚", "✈️", "🏫", "🎯", "🌟", "⭐", "🏛️", 
 
 interface CreateVocabularyDialogProps {
   onSuccess?: () => void;
+  children?: React.ReactNode;
 }
 
-const CreateVocabularyDialog = ({ onSuccess }: CreateVocabularyDialogProps) => {
+const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogProps) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("📚");
@@ -86,10 +87,12 @@ const CreateVocabularyDialog = ({ onSuccess }: CreateVocabularyDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          创建单词库
-        </Button>
+        {children || (
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            创建单词库
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>

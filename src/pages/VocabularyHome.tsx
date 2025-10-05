@@ -227,38 +227,40 @@ const VocabularyHome = () => {
             </TabsContent>
 
             <TabsContent value="custom">
-              <div className="flex justify-end mb-6">
-                <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())} />
-              </div>
-              
-              {customVocabularies.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground">还没有自定义单词库，点击上方按钮创建</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {customVocabularies.map((book) => (
-                    <div key={book.id} className="relative group">
-                      <Link to={`/vocabulary/custom/${book.id}`}>
-                        <Card className="p-5 hover:shadow-md transition-all cursor-pointer overflow-hidden">
-                          <div className="h-32 bg-accent/50 rounded-lg mb-4 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
-                            <span className="text-5xl">{book.emoji}</span>
-                          </div>
-                          <h3 className="text-lg font-semibold mb-1">{book.name}</h3>
-                          <p className="text-sm text-muted-foreground">{book.words.length}个单词</p>
-                        </Card>
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteCustomVocabulary(book.id, book.name)}
-                        className="absolute top-2 right-2 p-2 bg-destructive text-destructive-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
-                        title="删除词库"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Create New Vocabulary Card */}
+                <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())}>
+                  <Card className="p-5 hover:shadow-md transition-all cursor-pointer overflow-hidden group border-dashed border-2 border-primary/30 hover:border-primary/50">
+                    <div className="h-32 bg-primary/5 dark:bg-primary/10 rounded-lg mb-4 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
+                      <span className="text-5xl">➕</span>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <h3 className="text-lg font-semibold mb-1 text-primary">创建单词库</h3>
+                    <p className="text-sm text-muted-foreground">添加自定义单词</p>
+                  </Card>
+                </CreateVocabularyDialog>
+
+                {/* Existing Custom Vocabularies */}
+                {customVocabularies.map((book) => (
+                  <div key={book.id} className="relative group">
+                    <Link to={`/vocabulary/custom/${book.id}`}>
+                      <Card className="p-5 hover:shadow-md transition-all cursor-pointer overflow-hidden">
+                        <div className="h-32 bg-accent/50 rounded-lg mb-4 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
+                          <span className="text-5xl">{book.emoji}</span>
+                        </div>
+                        <h3 className="text-lg font-semibold mb-1">{book.name}</h3>
+                        <p className="text-sm text-muted-foreground">{book.words.length}个单词</p>
+                      </Card>
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteCustomVocabulary(book.id, book.name)}
+                      className="absolute top-2 right-2 p-2 bg-destructive text-destructive-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
+                      title="删除词库"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </TabsContent>
           </Tabs>
         </div>
