@@ -1,9 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { User } from "lucide-react";
+import { User, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const location = useLocation();
+  const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<{ email: string; name: string } | null>(null);
 
   useEffect(() => {
@@ -53,6 +56,17 @@ const Navbar = () => {
             >
               错题本
             </Link>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="h-8 w-8"
+            >
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">切换主题</span>
+            </Button>
             
             {user ? (
               <Link
