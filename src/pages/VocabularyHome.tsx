@@ -110,31 +110,31 @@ const VocabularyHome = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
           {/* Check-in Card */}
-          <Card className="p-6 h-full flex flex-col transition-all hover:shadow-md">
-            <h2 className="text-xl font-semibold mb-6 text-foreground">打卡记录</h2>
+          <Card className="p-5 h-full flex flex-col transition-all hover:shadow-md">
+            <h2 className="text-lg font-semibold mb-4 text-foreground">打卡记录</h2>
             
-            <div className="space-y-6 flex-1 flex flex-col justify-between">
+            <div className="space-y-4 flex-1 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">本周已打卡</span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">{weekCheckIns}</span>
-                  <span className="text-lg text-muted-foreground">天</span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-3xl font-bold">{weekCheckIns}</span>
+                  <span className="text-base text-muted-foreground">天</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center">
                 {weekDays.map((day, index) => (
-                  <div key={day} className="flex flex-col items-center gap-2">
+                  <div key={day} className="flex flex-col items-center gap-1.5">
                     <span className="text-xs text-muted-foreground">{day}</span>
                     <div 
-                      className={`w-10 h-10 rounded flex items-center justify-center ${
+                      className={`w-8 h-8 rounded flex items-center justify-center ${
                         weekStatus[index]
                           ? "bg-primary text-primary-foreground" 
                           : "bg-muted"
                       }`}
                     >
                       {weekStatus[index] && (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                       )}
@@ -143,15 +143,15 @@ const VocabularyHome = () => {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <div className="flex items-baseline gap-2">
+              <div className="flex items-center justify-between pt-3 border-t border-border">
+                <div className="flex items-baseline gap-1.5">
                   <span className="text-sm text-muted-foreground">已累计打卡</span>
-                  <span className="text-3xl font-bold">{totalCheckIns}</span>
-                  <span className="text-lg text-muted-foreground">天</span>
+                  <span className="text-2xl font-bold">{totalCheckIns}</span>
+                  <span className="text-base text-muted-foreground">天</span>
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-muted-foreground text-right">
                   <div>{new Date().toLocaleDateString('zh-CN', { year: '2-digit', month: '2-digit', day: '2-digit' }).replace(/\//g, '年').replace(/年(\d+)年/, '年$1月') + '日'}</div>
-                  <div className="text-right">{checkedInToday ? '今日已打卡' : '今日还未打卡'}</div>
+                  <div className="mt-0.5">{checkedInToday ? '今日已打卡' : '今日还未打卡'}</div>
                 </div>
               </div>
             </div>
