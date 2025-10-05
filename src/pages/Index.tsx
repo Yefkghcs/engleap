@@ -1,61 +1,31 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const user = JSON.parse(userData);
-      setIsLoggedIn(true);
-      setUserEmail(user.email);
-    }
-  }, []);
-
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background">
-      {/* Background Gradient Orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-accent/25 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-[450px] h-[450px] bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/3 w-96 h-96 bg-primary/15 rounded-full blur-2xl" />
-        <div className="absolute -bottom-20 right-0 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      </div>
-
-      {/* Header */}
-      <header className="relative py-6 px-4 border-b bg-card/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-primary">EngLeap</h1>
-          {isLoggedIn ? (
-            <Button asChild variant="outline">
-              <Link to="/profile" className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                {userEmail}
-              </Link>
-            </Button>
-          ) : (
-            <Button asChild variant="outline">
-              <Link to="/auth">登录</Link>
-            </Button>
-          )}
+    <>
+      <Navbar />
+      
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background">
+        {/* Background Gradient Orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-primary/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-accent/25 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-[450px] h-[450px] bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 right-1/3 w-96 h-96 bg-primary/15 rounded-full blur-2xl" />
+          <div className="absolute -bottom-20 right-0 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
-      </header>
 
       {/* Hero Section */}
       <div className="relative py-20 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-6">
-          <p className="text-primary font-medium relative inline-block">
+          <p className="text-primary font-medium">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] animate-[shimmer_3s_ease-in-out_infinite] bg-clip-text text-transparent">
               AI-Powered Language Learning
             </span>
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full animate-ping" />
-            <span className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
           </p>
           <h2 className="text-5xl md:text-6xl font-bold text-foreground">Master Your English</h2>
           <div className="space-y-2">
@@ -127,6 +97,7 @@ const Index = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
