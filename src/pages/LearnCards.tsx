@@ -28,6 +28,7 @@ const LearnCards = () => {
   const [knownCount, setKnownCount] = useState(0);
   const [unknownCount, setUnknownCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
 
   useEffect(() => {
     if (words.length === 0) {
@@ -39,6 +40,14 @@ const LearnCards = () => {
       navigate(`/vocabulary/${bookId}`);
     }
   }, [words, navigate, bookId]);
+
+  // Auto-play when word changes
+  useEffect(() => {
+    if (currentWord && !hasPlayedAudio) {
+      playAudio(currentWord.word);
+      setHasPlayedAudio(true);
+    }
+  }, [currentIndex, hasPlayedAudio]);
 
   const currentWord = words[currentIndex];
 
@@ -73,6 +82,7 @@ const LearnCards = () => {
     if (currentIndex < words.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setShowTranslation(false);
+      setHasPlayedAudio(false);
     } else {
       setShowCompletion(true);
     }
