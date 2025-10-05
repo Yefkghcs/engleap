@@ -11,6 +11,8 @@ import LearnCards from "./pages/LearnCards";
 import Challenge from "./pages/Challenge";
 import Mistakes from "./pages/Mistakes";
 import LearnedWords from "./pages/LearnedWords";
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/vocabulary" element={<VocabularyHome />} />
           <Route path="/vocabulary/custom/:customId" element={<VocabularyBook />} />
           <Route path="/vocabulary/custom/:customId/learn" element={<Learn />} />

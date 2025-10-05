@@ -1,7 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { User } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const location = useLocation();
+  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -15,7 +26,7 @@ const Navbar = () => {
             EngLeap
           </Link>
           
-          <div className="flex gap-8">
+          <div className="flex items-center gap-8">
             <Link
               to="/"
               className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
@@ -42,6 +53,32 @@ const Navbar = () => {
             >
               错题本
             </Link>
+            
+            {user ? (
+              <Link
+                to="/profile"
+                className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:text-primary ${
+                  isActive("/profile") ? "text-primary font-semibold" : "text-muted-foreground"
+                }`}
+              >
+                <Avatar className="h-7 w-7">
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    {user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <span>{user.name}</span>
+              </Link>
+            ) : (
+              <Link
+                to="/auth"
+                className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:text-primary ${
+                  isActive("/auth") ? "text-primary font-semibold" : "text-muted-foreground"
+                }`}
+              >
+                <User className="h-4 w-4" />
+                <span>登录</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>
