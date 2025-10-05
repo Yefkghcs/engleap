@@ -185,7 +185,6 @@ const VocabularyHome = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-foreground">选择单词库</h2>
-            <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())} />
           </div>
           
           <Tabs defaultValue="exam" className="w-full">
@@ -228,10 +227,13 @@ const VocabularyHome = () => {
             </TabsContent>
 
             <TabsContent value="custom">
+              <div className="flex justify-end mb-6">
+                <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())} />
+              </div>
+              
               {customVocabularies.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground mb-4">还没有自定义单词库</p>
-                  <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())} />
+                  <p className="text-muted-foreground">还没有自定义单词库，点击上方按钮创建</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
