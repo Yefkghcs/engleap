@@ -226,11 +226,13 @@ const VocabularyBook = () => {
       <Navbar />
       
       {/* Hero Section with Gradient */}
-      <div className="relative py-12 px-4 backdrop-blur-sm overflow-hidden">
+      <div className="relative py-12 px-4 bg-gradient-to-br from-background via-primary/8 to-background overflow-hidden border-b">
         {/* Gradient Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-0 w-[500px] h-full bg-gradient-to-br from-indigo-400/30 via-purple-400/20 to-transparent blur-3xl" />
-          <div className="absolute top-0 right-0 w-[450px] h-full bg-gradient-to-bl from-cyan-400/25 via-blue-300/15 to-transparent blur-3xl" />
+          <div className="absolute -top-20 -left-20 w-96 h-96 bg-primary/25 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-0 right-1/4 w-80 h-80 bg-accent/35 rounded-full blur-3xl" />
+          <div className="absolute -bottom-20 right-0 w-72 h-72 bg-secondary/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-primary/20 rounded-full blur-2xl" />
         </div>
         
         <div className="relative max-w-7xl mx-auto text-center">
