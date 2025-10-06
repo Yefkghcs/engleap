@@ -14,7 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      vocabulary_categories: {
+        Row: {
+          created_at: string | null
+          emoji: string
+          id: string
+          name: string
+          updated_at: string | null
+          word_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          emoji: string
+          id?: string
+          name: string
+          updated_at?: string | null
+          word_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          emoji?: string
+          id?: string
+          name?: string
+          updated_at?: string | null
+          word_count?: number | null
+        }
+        Relationships: []
+      }
+      vocabulary_words: {
+        Row: {
+          ai_generated: boolean | null
+          category_id: string
+          collocations: string[] | null
+          created_at: string | null
+          example: string | null
+          example_cn: string | null
+          id: string
+          meaning: string
+          order_index: number | null
+          part_of_speech: string | null
+          phonetic: string | null
+          updated_at: string | null
+          word: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          category_id: string
+          collocations?: string[] | null
+          created_at?: string | null
+          example?: string | null
+          example_cn?: string | null
+          id?: string
+          meaning: string
+          order_index?: number | null
+          part_of_speech?: string | null
+          phonetic?: string | null
+          updated_at?: string | null
+          word: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          category_id?: string
+          collocations?: string[] | null
+          created_at?: string | null
+          example?: string | null
+          example_cn?: string | null
+          id?: string
+          meaning?: string
+          order_index?: number | null
+          part_of_speech?: string | null
+          phonetic?: string | null
+          updated_at?: string | null
+          word?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vocabulary_words_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "vocabulary_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
