@@ -177,13 +177,15 @@ const LearnCards = () => {
               </Button>
             </div>
             
-            <div className="flex items-center justify-center gap-2 text-lg text-muted-foreground mb-4">
-              <span>{currentWord.phonetic}</span>
-              {currentWord.tags.map((tag, i) => (
-                <span key={i} className="bg-black dark:bg-black text-white text-xs px-2 py-1 rounded">
-                  {tag}
-                </span>
-              ))}
+            <div className="flex flex-col items-center gap-2 mb-4">
+              <span className="text-lg text-muted-foreground">{currentWord.phonetic}</span>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {currentWord.tags.map((tag, i) => (
+                  <span key={i} className="bg-foreground text-background text-xs px-2 py-1 rounded">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <Button
@@ -199,7 +201,7 @@ const LearnCards = () => {
 
           {/* Translation */}
           {showTranslation && (
-            <div className="mb-8 p-4 bg-muted/50 rounded-lg animate-fade-in border-l-4 border-primary">
+            <div className="mb-8 p-4 bg-muted/50 rounded-lg animate-fade-in">
               <p className="text-sm font-medium">{currentWord.meaning}</p>
             </div>
           )}

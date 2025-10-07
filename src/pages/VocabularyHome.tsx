@@ -191,7 +191,7 @@ const VocabularyHome = () => {
           {/* 考试必背 */}
           <div className="mb-10">
             <h3 className="text-lg font-semibold text-foreground mb-4">考试必背</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {vocabularyBooks.map((book) => (
                 <Link key={book.id} to={`/vocabulary/${book.id}`}>
                   <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
@@ -209,7 +209,7 @@ const VocabularyHome = () => {
           {/* 生活实用 */}
           <div className="mb-10">
             <h3 className="text-lg font-semibold text-foreground mb-4">生活实用</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {lifeVocabularyBooks.map((book) => (
                 <Link key={book.id} to={`/vocabulary/${book.id}`}>
                   <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
@@ -227,7 +227,7 @@ const VocabularyHome = () => {
           {/* 自定义单词库 */}
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-4">自定义单词库</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {/* Create New Vocabulary Card */}
               <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())}>
                 <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group border-dashed border-2 border-primary/30 hover:border-primary/50">
