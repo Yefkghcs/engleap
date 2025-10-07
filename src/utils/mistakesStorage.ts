@@ -6,8 +6,6 @@ interface MistakeWord {
   meaning: string;
   example: string;
   exampleCn: string;
-  collocations: string;
-  collocationsCn: string;
   date: string; // YYYY-MM-DD format
   errorCount: number;
 }
@@ -32,8 +30,6 @@ export const addMistake = (word: {
   meaning: string;
   example: string;
   exampleCn: string;
-  collocations: string;
-  collocationsCn: string;
 }): void => {
   const mistakes = getMistakes();
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD

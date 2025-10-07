@@ -14,8 +14,6 @@ interface Word {
   meaning: string;
   example: string;
   exampleCn: string;
-  collocations: string;
-  collocationsCn: string;
 }
 
 interface Question {

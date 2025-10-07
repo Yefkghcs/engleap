@@ -13,8 +13,6 @@ interface Word {
   meaning: string;
   example: string;
   exampleCn: string;
-  collocations: string;
-  collocationsCn: string;
 }
 
 const LearnCards = () => {
@@ -206,49 +204,25 @@ const LearnCards = () => {
             </div>
           )}
 
-          {/* Examples and Collocations */}
-          <div className="mb-8 space-y-6">
-            {/* Example */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                <span>例句</span>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-7 w-7"
-                  onClick={() => playAudio(currentWord.example)}
-                >
-                  <Volume2 className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-              <p className="text-base leading-relaxed">
-                {highlightWord(currentWord.example, currentWord.word)}
-              </p>
-              {showTranslation && (
-                <p className="text-sm text-muted-foreground">{currentWord.exampleCn}</p>
-              )}
+          {/* Example */}
+          <div className="mb-8 space-y-2">
+            <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+              <span>例句</span>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-7 w-7"
+                onClick={() => playAudio(currentWord.example)}
+              >
+                <Volume2 className="h-3.5 w-3.5" />
+              </Button>
             </div>
-
-            {/* Collocations */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                <span>常见搭配</span>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-7 w-7"
-                  onClick={() => playAudio(currentWord.collocations)}
-                >
-                  <Volume2 className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-              <p className="text-base leading-relaxed">
-                {highlightWord(currentWord.collocations, currentWord.word)}
-              </p>
-              {showTranslation && (
-                <p className="text-sm text-muted-foreground">{currentWord.collocationsCn}</p>
-              )}
-            </div>
+            <p className="text-base leading-relaxed italic">
+              {highlightWord(currentWord.example, currentWord.word)}
+            </p>
+            {showTranslation && (
+              <p className="text-sm text-muted-foreground">{currentWord.exampleCn}</p>
+            )}
           </div>
 
           {/* Action Buttons */}

@@ -19,8 +19,6 @@ interface Word {
   meaning: string;
   example: string;
   exampleCn: string;
-  collocations: string;
-  collocationsCn: string;
   status: WordStatus;
 }
 
@@ -38,8 +36,6 @@ const getWordsForBook = (bookId: string, customId?: string): Word[] => {
         meaning: w.meaning,
         example: w.example || "",
         exampleCn: w.exampleCn || "",
-        collocations: "",
-        collocationsCn: "",
         status: "unmarked" as WordStatus,
       }));
     }
@@ -351,8 +347,7 @@ const VocabularyBook = () => {
             <Card className="overflow-hidden hidden sm:block">
               <div className="bg-muted px-6 py-3 grid grid-cols-12 gap-4 font-medium text-sm">
                 <div className="col-span-2">单词</div>
-                <div className="col-span-4">例句</div>
-                <div className="col-span-3">搭配</div>
+                <div className="col-span-7">例句</div>
                 <div className="col-span-3">操作</div>
               </div>
 
@@ -403,7 +398,7 @@ const VocabularyBook = () => {
                         </div>
 
                         {/* Example Column */}
-                        <div className="col-span-4 text-sm">
+                        <div className="col-span-7 text-sm">
                           <div className="flex items-center gap-2 mb-1">
                             <p className="italic flex-1">{word.example}</p>
                             <Button 
@@ -417,24 +412,6 @@ const VocabularyBook = () => {
                           </div>
                           {isTranslationVisible && word.exampleCn && (
                             <p className="text-muted-foreground">{word.exampleCn}</p>
-                          )}
-                        </div>
-
-                        {/* Collocations Column */}
-                        <div className="col-span-3 text-sm">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="italic flex-1">{word.collocations}</p>
-                            <Button 
-                              variant="ghost" 
-                              size="icon" 
-                              className="h-6 w-6 flex-shrink-0"
-                              onClick={() => playAudio(word.collocations)}
-                            >
-                              <Volume2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                          {isTranslationVisible && word.collocationsCn && (
-                            <p className="text-muted-foreground">{word.collocationsCn}</p>
                           )}
                         </div>
 
@@ -685,7 +662,7 @@ const VocabularyBook = () => {
                       </div>
 
                       {/* Example */}
-                      <div className="mb-3 pb-3 border-b">
+                      <div className="mb-4 pb-3 border-b">
                         <div className="flex items-start justify-between gap-2 mb-1">
                           <p className="text-sm italic flex-1">{word.example}</p>
                           <Button 
@@ -699,24 +676,6 @@ const VocabularyBook = () => {
                         </div>
                         {isTranslationVisible && word.exampleCn && (
                           <p className="text-xs text-muted-foreground">{word.exampleCn}</p>
-                        )}
-                      </div>
-
-                      {/* Collocations */}
-                      <div className="mb-4">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <p className="text-sm italic flex-1">{word.collocations}</p>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-6 w-6 flex-shrink-0"
-                            onClick={() => playAudio(word.collocations)}
-                          >
-                            <Volume2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                        {isTranslationVisible && word.collocationsCn && (
-                          <p className="text-xs text-muted-foreground">{word.collocationsCn}</p>
                         )}
                       </div>
 
