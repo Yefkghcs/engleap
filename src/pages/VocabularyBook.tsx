@@ -394,32 +394,32 @@ const VocabularyBook = () => {
                       word.status === "unknown" ? "text-red-600" : "";
 
                     return (
-                      <div key={word.id} className="px-6 py-4 grid grid-cols-12 gap-4 items-start">
+                      <div key={word.id} className="px-6 py-3 grid grid-cols-12 gap-4 items-start">
                         {/* Word Column */}
                         <div className="col-span-2">
-                          <div className="mb-1">
+                          <div className="mb-0.5">
                             <span className={`font-bold ${wordColorClass}`}>{word.word}</span>
                           </div>
-                          <div className="flex flex-wrap gap-1 mb-1">
+                          <div className="flex flex-wrap gap-1 mb-0.5">
                             {word.tags.map((tag, i) => (
                               <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
                                 {tag}
                               </span>
                             ))}
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <span>{word.phonetic}</span>
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-6 w-6"
+                              className="h-5 w-5"
                               onClick={() => playAudio(word.word)}
                             >
-                              <Volume2 className="h-4 w-4" />
+                              <Volume2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                           {isTranslationVisible && (
-                            <div className="text-sm">{word.meaning}</div>
+                            <div className="text-sm mt-1">{word.meaning}</div>
                           )}
                         </div>
 
@@ -437,7 +437,7 @@ const VocabularyBook = () => {
                             </Button>
                           </div>
                           {isTranslationVisible && word.exampleCn && (
-                            <p className="text-muted-foreground mt-1">{word.exampleCn}</p>
+                            <p className="text-muted-foreground mt-0.5">{word.exampleCn}</p>
                           )}
                         </div>
 
@@ -662,7 +662,7 @@ const VocabularyBook = () => {
                     word.status === "unknown" ? "text-red-600" : "";
 
                   return (
-                    <Card key={word.id} className="p-4 hover:shadow-md transition-shadow">
+                    <Card key={word.id} className="p-4 hover:shadow-md transition-shadow flex flex-col h-full">
                       {/* Word Header */}
                       <div className="mb-3">
                         <div className="flex items-center justify-between mb-2">
@@ -690,7 +690,7 @@ const VocabularyBook = () => {
                       </div>
 
                       {/* Example */}
-                      <div className="mb-3">
+                      <div className="mb-3 flex-1">
                         <div className="flex items-start gap-1 mb-1">
                           <p className="text-sm italic flex-1">{word.example}</p>
                           <Button 
@@ -708,7 +708,7 @@ const VocabularyBook = () => {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-2 pt-2 border-t">
+                      <div className="flex items-center gap-2 pt-2 border-t mt-auto">
                         <Button 
                           variant="ghost" 
                           size="icon"
