@@ -195,10 +195,10 @@ const VocabularyHome = () => {
               {vocabularyBooks.map((book) => (
                 <Link key={book.id} to={`/vocabulary/${book.id}`}>
                   <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
-                    <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-2 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
-                      <span className="text-3xl">{book.emoji}</span>
+                    <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
+                      <span className="text-4xl">{book.emoji}</span>
                     </div>
-                    <h3 className="text-sm font-semibold mb-0.5 truncate">{book.name}</h3>
+                    <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
                     <p className="text-xs text-muted-foreground">{book.count}个单词</p>
                   </Card>
                 </Link>
@@ -213,10 +213,10 @@ const VocabularyHome = () => {
               {lifeVocabularyBooks.map((book) => (
                 <Link key={book.id} to={`/vocabulary/${book.id}`}>
                   <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
-                    <div className="h-20 bg-secondary/50 dark:bg-secondary/20 rounded-lg mb-2 flex items-center justify-center group-hover:bg-secondary/70 dark:group-hover:bg-secondary/30 transition-colors">
-                      <span className="text-3xl">{book.emoji}</span>
+                    <div className="h-20 bg-secondary/50 dark:bg-secondary/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-secondary/70 dark:group-hover:bg-secondary/30 transition-colors">
+                      <span className="text-4xl">{book.emoji}</span>
                     </div>
-                    <h3 className="text-sm font-semibold mb-0.5 truncate">{book.name}</h3>
+                    <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
                     <p className="text-xs text-muted-foreground">{book.count}个单词</p>
                   </Card>
                 </Link>
@@ -231,10 +231,10 @@ const VocabularyHome = () => {
               {/* Create New Vocabulary Card */}
               <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())}>
                 <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group border-dashed border-2 border-primary/30 hover:border-primary/50">
-                  <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-2 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
-                    <span className="text-3xl">➕</span>
+                  <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
+                    <span className="text-4xl">➕</span>
                   </div>
-                  <h3 className="text-sm font-semibold mb-0.5 text-primary truncate">创建单词库</h3>
+                  <h3 className="text-base font-bold mb-1 text-primary truncate">创建单词库</h3>
                   <p className="text-xs text-muted-foreground">添加自定义单词</p>
                 </Card>
               </CreateVocabularyDialog>
@@ -244,10 +244,10 @@ const VocabularyHome = () => {
                 <div key={book.id} className="relative group">
                   <Link to={`/vocabulary/custom/${book.id}`}>
                     <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden">
-                      <div className="h-20 bg-accent/50 rounded-lg mb-2 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
-                        <span className="text-3xl">{book.emoji}</span>
+                      <div className="h-20 bg-accent/50 rounded-lg mb-3 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
+                        <span className="text-4xl">{book.emoji}</span>
                       </div>
-                      <h3 className="text-sm font-semibold mb-0.5 truncate">{book.name}</h3>
+                      <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
                       <p className="text-xs text-muted-foreground">{book.words.length}个单词</p>
                     </Card>
                   </Link>

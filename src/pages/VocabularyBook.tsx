@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -74,8 +74,19 @@ const VocabularyBook = () => {
   const [words, setWords] = useState<Word[]>(getWordsForBook(actualBookId, customId));
   const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
   const [globalTranslationVisible, setGlobalTranslationVisible] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const [isPageSizeOpen, setIsPageSizeOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "cards">("cards");
+
+  // Update itemsPerPage when viewMode changes
+  useEffect(() => {
+    if (viewMode === "cards") {
+      setItemsPerPage(20);
+    } else {
+      setItemsPerPage(10);
+    }
+    setCurrentPage(1);
+  }, [viewMode]);
   
   const bookNames: Record<string, string> = {
     ielts: "雅思",
@@ -266,8 +277,8 @@ const VocabularyBook = () => {
           </div>
         </div>
 
-        {/* Filter and Actions */}
-        <div className="flex flex-col gap-4 mb-6">
+        {/* Filter and View Toggle */}
+        <div className="flex flex-col lg:flex-row gap-3 mb-6 items-start lg:items-center justify-between">
           <div className="flex gap-1 sm:gap-2 bg-card rounded-lg p-1 overflow-x-auto">
             <Button
               variant={filter === "all" ? "default" : "ghost"}
@@ -303,6 +314,31 @@ const VocabularyBook = () => {
             </Button>
           </div>
 
+          <div className="flex gap-2 bg-card rounded-lg p-1">
+            <Button
+              variant={viewMode === "list" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+              className="gap-2"
+            >
+              <List className="h-4 w-4" />
+              <span className="hidden sm:inline">列表</span>
+            </Button>
+            <Button
+              variant={viewMode === "cards" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("cards")}
+              className="gap-2"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              <span className="hidden sm:inline">卡片</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-4 mb-6">
+
           <div className="flex gap-2 sm:gap-4">
             <Link 
               to={`/vocabulary/${bookId}/learn-cards`}
@@ -328,21 +364,9 @@ const VocabularyBook = () => {
           </div>
         </div>
 
-        {/* View Tabs */}
-        <Tabs defaultValue="list" className="w-full">
-          <TabsList className="mb-4 w-full sm:w-auto">
-            <TabsTrigger value="list" className="gap-2 flex-1 sm:flex-none">
-              <List className="h-4 w-4" />
-              <span className="hidden sm:inline">列表</span>
-            </TabsTrigger>
-            <TabsTrigger value="cards" className="gap-2 flex-1 sm:flex-none">
-              <LayoutGrid className="h-4 w-4" />
-              <span className="hidden sm:inline">卡片</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {/* List View */}
-          <TabsContent value="list">
+        {/* List View */}
+        {viewMode === "list" && (
+          <div>
             {/* Desktop List View */}
             <Card className="overflow-hidden hidden sm:block">
               <div className="bg-muted px-6 py-3 grid grid-cols-12 gap-4 font-medium text-sm">
@@ -401,19 +425,19 @@ const VocabularyBook = () => {
 
                         {/* Example Column */}
                         <div className="col-span-7 text-sm">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-start gap-1">
                             <p className="italic flex-1">{word.example}</p>
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-6 w-6 flex-shrink-0"
+                              className="h-5 w-5 flex-shrink-0 -mt-0.5"
                               onClick={() => playAudio(word.example)}
                             >
-                              <Volume2 className="h-4 w-4" />
+                              <Volume2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                           {isTranslationVisible && word.exampleCn && (
-                            <p className="text-muted-foreground">{word.exampleCn}</p>
+                            <p className="text-muted-foreground mt-1">{word.exampleCn}</p>
                           )}
                         </div>
 
@@ -544,12 +568,12 @@ const VocabularyBook = () => {
                       {/* Example */}
                       {word.example && (
                         <div className="mb-2 pb-2 border-b">
-                          <div className="flex items-start gap-2">
+                          <div className="flex items-start gap-1">
                             <p className="text-xs italic flex-1">{word.example}</p>
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-5 w-5 flex-shrink-0"
+                              className="h-4 w-4 flex-shrink-0 -mt-0.5"
                               onClick={() => playAudio(word.example)}
                             >
                               <Volume2 className="h-3 w-3" />
@@ -611,10 +635,12 @@ const VocabularyBook = () => {
                 })
               )}
             </div>
-          </TabsContent>
+          </div>
+        )}
 
-          {/* Cards View */}
-          <TabsContent value="cards">
+        {/* Cards View */}
+        {viewMode === "cards" && (
+          <div>
             {currentWords.length === 0 ? (
               <Card className="p-16">
                 <div className="text-center">
@@ -664,16 +690,16 @@ const VocabularyBook = () => {
                       </div>
 
                       {/* Example */}
-                      <div className="mb-4 pb-3">
-                        <div className="flex items-start justify-between gap-2 mb-1">
+                      <div className="mb-3">
+                        <div className="flex items-start gap-1 mb-1">
                           <p className="text-sm italic flex-1">{word.example}</p>
                           <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="h-6 w-6 flex-shrink-0"
+                            className="h-5 w-5 flex-shrink-0 -mt-0.5"
                             onClick={() => playAudio(word.example)}
                           >
-                            <Volume2 className="h-3 w-3" />
+                            <Volume2 className="h-3.5 w-3.5" />
                           </Button>
                         </div>
                         {isTranslationVisible && word.exampleCn && (
@@ -682,7 +708,7 @@ const VocabularyBook = () => {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-2 pt-3">
+                      <div className="flex items-center gap-2 pt-2 border-t">
                         <Button 
                           variant="ghost" 
                           size="icon"
@@ -737,17 +763,17 @@ const VocabularyBook = () => {
                           >
                             认识
                           </Button>
-                        )}
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+                         )}
+                       </div>
+                     </Card>
+                   );
+                 })}
+               </div>
+             )}
+           </div>
+         )}
 
-        {/* Pagination */}
+         {/* Pagination */}
         <div className="flex items-center justify-center gap-4 mt-8">
           <span className="text-sm text-muted-foreground">每一页展示</span>
           
@@ -760,7 +786,7 @@ const VocabularyBook = () => {
             </PopoverTrigger>
             <PopoverContent className="w-32 p-2">
               <div className="flex flex-col gap-1">
-                {[10, 20, 50, 100].map((size) => (
+                {(viewMode === "cards" ? [20, 40, 80, 100] : [10, 20, 50, 100]).map((size) => (
                   <Button
                     key={size}
                     variant={itemsPerPage === size ? "default" : "ghost"}
