@@ -397,18 +397,8 @@ const VocabularyBook = () => {
                       <div key={word.id} className="px-6 py-3 grid grid-cols-12 gap-4 items-start">
                         {/* Word Column */}
                         <div className="col-span-2">
-                          <div className="mb-0.5">
+                          <div className="flex items-center gap-1 mb-0.5">
                             <span className={`font-bold ${wordColorClass}`}>{word.word}</span>
-                          </div>
-                          <div className="flex flex-wrap gap-1 mb-0.5">
-                            {word.tags.map((tag, i) => (
-                              <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <span>{word.phonetic}</span>
                             <Button 
                               variant="ghost" 
                               size="icon" 
@@ -418,6 +408,16 @@ const VocabularyBook = () => {
                               <Volume2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
+                          <div className="flex flex-wrap gap-1 mb-0.5">
+                            {word.tags.map((tag, i) => (
+                              <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            <span>{word.phonetic}</span>
+                          </div>
                           {isTranslationVisible && (
                             <div className="text-sm mt-1">{word.meaning}</div>
                           )}
@@ -425,12 +425,12 @@ const VocabularyBook = () => {
 
                         {/* Example Column */}
                         <div className="col-span-7 text-sm">
-                          <div className="flex items-start gap-1">
+                          <div className="flex items-start gap-0.5">
                             <p className="italic flex-1">{word.example}</p>
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-5 w-5 flex-shrink-0 -mt-0.5"
+                              className="h-5 w-5 flex-shrink-0"
                               onClick={() => playAudio(word.example)}
                             >
                               <Volume2 className="h-3.5 w-3.5" />
@@ -528,16 +528,8 @@ const VocabularyBook = () => {
                       {/* Word Header */}
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-1 mb-1">
                             <span className={`text-lg font-bold ${wordColorClass}`}>{word.word}</span>
-                            {word.tags.map((tag, i) => (
-                              <span key={i} className="bg-foreground text-background text-xs px-1.5 py-0.5 rounded">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{word.phonetic}</span>
                             <Button 
                               variant="ghost" 
                               size="icon" 
@@ -546,6 +538,14 @@ const VocabularyBook = () => {
                             >
                               <Volume2 className="h-3 w-3" />
                             </Button>
+                            {word.tags.map((tag, i) => (
+                              <span key={i} className="bg-foreground text-background text-xs px-1.5 py-0.5 rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            <span>{word.phonetic}</span>
                           </div>
                           {isTranslationVisible && (
                             <div className="text-sm mt-1">{word.meaning}</div>
@@ -568,12 +568,12 @@ const VocabularyBook = () => {
                       {/* Example */}
                       {word.example && (
                         <div className="mb-2 pb-2 border-b">
-                          <div className="flex items-start gap-1">
+                          <div className="flex items-start gap-0.5">
                             <p className="text-xs italic flex-1">{word.example}</p>
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-4 w-4 flex-shrink-0 -mt-0.5"
+                              className="h-4 w-4 flex-shrink-0"
                               onClick={() => playAudio(word.example)}
                             >
                               <Volume2 className="h-3 w-3" />
@@ -666,15 +666,17 @@ const VocabularyBook = () => {
                       {/* Word Header */}
                       <div className="mb-3">
                         <div className="flex items-center justify-between mb-2">
-                          <span className={`text-xl font-bold ${wordColorClass}`}>{word.word}</span>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={() => playAudio(word.word)}
-                          >
-                            <Volume2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            <span className={`text-xl font-bold ${wordColorClass}`}>{word.word}</span>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-6 w-6"
+                              onClick={() => playAudio(word.word)}
+                            >
+                              <Volume2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                         <div className="flex flex-wrap gap-1 mb-2">
                           {word.tags.map((tag, i) => (
@@ -691,12 +693,12 @@ const VocabularyBook = () => {
 
                       {/* Example */}
                       <div className="mb-3 flex-1">
-                        <div className="flex items-start gap-1 mb-1">
+                        <div className="flex items-start gap-0.5 mb-1">
                           <p className="text-sm italic flex-1">{word.example}</p>
                           <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="h-5 w-5 flex-shrink-0 -mt-0.5"
+                            className="h-5 w-5 flex-shrink-0"
                             onClick={() => playAudio(word.example)}
                           >
                             <Volume2 className="h-3.5 w-3.5" />
