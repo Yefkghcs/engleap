@@ -204,16 +204,16 @@ const LearnCards = () => {
       </div>
 
       {/* Card */}
-      <div className="max-w-4xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)] gap-4">
+      <div className="max-w-4xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)] gap-6">
         {/* Previous Button */}
         <Button
           variant="ghost"
           size="icon"
           onClick={goToPreviousWord}
           disabled={currentIndex === 0}
-          className="h-12 w-12 rounded-full"
+          className="h-9 w-9 rounded-full hover:bg-accent/50 transition-all disabled:opacity-30"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
 
         <Card className="w-full max-w-2xl p-8 shadow-lg">
@@ -281,30 +281,30 @@ const LearnCards = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <Button 
-              variant={wordStatuses[currentWord.id] === "unknown" ? "default" : "destructive"}
-              size="lg" 
-              className={`flex-1 h-14 text-base gap-2 ${
+              variant="outline"
+              size="default"
+              className={`flex-1 h-10 text-sm gap-2 transition-all ${
                 wordStatuses[currentWord.id] === "unknown" 
-                  ? "bg-red-600 hover:bg-red-700 text-white ring-2 ring-red-400 ring-offset-2" 
-                  : ""
+                  ? "border-red-500 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 shadow-sm" 
+                  : "hover:border-red-300 hover:text-red-600"
               }`}
               onClick={handleUnknown}
             >
-              <ThumbsDown className="h-5 w-5" />
+              <ThumbsDown className="h-4 w-4" />
               不认识
             </Button>
             <Button 
-              size="lg" 
-              className={`flex-1 h-14 text-base gap-2 bg-green-600 hover:bg-green-700 text-white ${
+              size="default"
+              className={`flex-1 h-10 text-sm gap-2 transition-all ${
                 wordStatuses[currentWord.id] === "known" 
-                  ? "ring-2 ring-green-400 ring-offset-2" 
-                  : ""
+                  ? "bg-green-600 hover:bg-green-700 text-white shadow-md" 
+                  : "bg-green-600 hover:bg-green-700 text-white"
               }`}
               onClick={handleKnown}
             >
-              <ThumbsUp className="h-5 w-5" />
+              <ThumbsUp className="h-4 w-4" />
               认识
             </Button>
           </div>
@@ -336,9 +336,9 @@ const LearnCards = () => {
           size="icon"
           onClick={goToNextWord}
           disabled={currentIndex === words.length - 1}
-          className="h-12 w-12 rounded-full"
+          className="h-9 w-9 rounded-full hover:bg-accent/50 transition-all disabled:opacity-30"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
     </div>
