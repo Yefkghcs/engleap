@@ -371,7 +371,8 @@ const VocabularyBook = () => {
             <Card className="overflow-hidden hidden sm:block">
               <div className="bg-muted px-6 py-3 grid grid-cols-12 gap-4 font-medium text-sm">
                 <div className="col-span-2">单词</div>
-                <div className="col-span-7">例句</div>
+                <div className="col-span-1">词性</div>
+                <div className="col-span-6">例句</div>
                 <div className="col-span-3">操作</div>
               </div>
 
@@ -397,7 +398,7 @@ const VocabularyBook = () => {
                       <div key={word.id} className="px-6 py-3 grid grid-cols-12 gap-4 items-start">
                         {/* Word Column */}
                         <div className="col-span-2">
-                          <div className="flex items-center gap-1 mb-0.5">
+                          <div className="flex items-center gap-1">
                             <span className={`font-bold ${wordColorClass}`}>{word.word}</span>
                             <Button 
                               variant="ghost" 
@@ -408,14 +409,7 @@ const VocabularyBook = () => {
                               <Volume2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
-                          <div className="flex flex-wrap gap-1 mb-0.5">
-                            {word.tags.map((tag, i) => (
-                              <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-sm text-muted-foreground mt-0.5">
                             <span>{word.phonetic}</span>
                           </div>
                           {isTranslationVisible && (
@@ -423,9 +417,20 @@ const VocabularyBook = () => {
                           )}
                         </div>
 
+                        {/* Tags Column */}
+                        <div className="col-span-1">
+                          <div className="flex flex-wrap gap-1">
+                            {word.tags.map((tag, i) => (
+                              <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
                         {/* Example Column */}
-                        <div className="col-span-7 text-sm">
-                          <div className="flex items-start gap-0.5">
+                        <div className="col-span-6 text-sm">
+                          <div className="flex items-start gap-1">
                             <p className="italic flex-1">{word.example}</p>
                             <Button 
                               variant="ghost" 
