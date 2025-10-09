@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft } from "lucide-react";
+import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Word {
@@ -14,6 +14,8 @@ interface Word {
   example: string;
   exampleCn: string;
 }
+
+type WordStatus = "unmarked" | "known" | "unknown";
 
 const LearnCards = () => {
   const location = useLocation();
@@ -27,6 +29,30 @@ const LearnCards = () => {
   const [unknownCount, setUnknownCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
+  const [wordStatuses, setWordStatuses] = useState<Record<number, WordStatus>>({});
+
+  // Load word statuses from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('vocabulary_word_statuses');
+    if (stored) {
+      try {
+        const statuses: Record<number, WordStatus> = JSON.parse(stored);
+        setWordStatuses(statuses);
+        
+        // Count known and unknown from stored statuses for current words
+        let known = 0;
+        let unknown = 0;
+        words.forEach(word => {
+          if (statuses[word.id] === "known") known++;
+          if (statuses[word.id] === "unknown") unknown++;
+        });
+        setKnownCount(known);
+        setUnknownCount(unknown);
+      } catch (e) {
+        console.error('Failed to load word statuses:', e);
+      }
+    }
+  }, [words]);
 
   useEffect(() => {
     if (words.length === 0) {
@@ -67,45 +93,61 @@ const LearnCards = () => {
   };
 
   const updateWordStatus = (wordId: number, status: "known" | "unknown") => {
-    // Get existing statuses from localStorage
-    const stored = localStorage.getItem('vocabulary_word_statuses');
-    let statuses: Record<number, "unmarked" | "known" | "unknown"> = {};
-    
-    if (stored) {
-      try {
-        statuses = JSON.parse(stored);
-      } catch (e) {
-        console.error('Failed to load word statuses:', e);
-      }
-    }
-    
-    // Update the status for this word
-    statuses[wordId] = status;
-    
-    // Save back to localStorage
-    localStorage.setItem('vocabulary_word_statuses', JSON.stringify(statuses));
+    // Update local state
+    setWordStatuses(prev => {
+      const updated = { ...prev, [wordId]: status };
+      // Save to localStorage
+      localStorage.setItem('vocabulary_word_statuses', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleKnown = () => {
+    const previousStatus = wordStatuses[currentWord.id];
+    
+    // Only increment if this word wasn't already marked as known
+    if (previousStatus !== "known") {
+      if (previousStatus === "unknown") {
+        setUnknownCount(prev => prev - 1);
+      }
+      setKnownCount(prev => prev + 1);
+    }
+    
     updateWordStatus(currentWord.id, "known");
-    setKnownCount(prev => prev + 1);
-    nextWord();
   };
 
   const handleUnknown = () => {
+    const previousStatus = wordStatuses[currentWord.id];
+    
+    // Only increment if this word wasn't already marked as unknown
+    if (previousStatus !== "unknown") {
+      if (previousStatus === "known") {
+        setKnownCount(prev => prev - 1);
+      }
+      setUnknownCount(prev => prev + 1);
+    }
+    
     updateWordStatus(currentWord.id, "unknown");
-    setUnknownCount(prev => prev + 1);
-    nextWord();
   };
 
-  const nextWord = () => {
+  const goToNextWord = () => {
     if (currentIndex < words.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setShowTranslation(false);
       setHasPlayedAudio(false);
-    } else {
-      setShowCompletion(true);
     }
+  };
+
+  const goToPreviousWord = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+      setShowTranslation(false);
+      setHasPlayedAudio(false);
+    }
+  };
+
+  const handleComplete = () => {
+    setShowCompletion(true);
   };
 
   const handleExit = () => {
@@ -162,8 +204,19 @@ const LearnCards = () => {
       </div>
 
       {/* Card */}
-      <div className="max-w-2xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)]">
-        <Card className="w-full p-8 shadow-lg">
+      <div className="max-w-4xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)] gap-4">
+        {/* Previous Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={goToPreviousWord}
+          disabled={currentIndex === 0}
+          className="h-12 w-12 rounded-full"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+
+        <Card className="w-full max-w-2xl p-8 shadow-lg">
           {/* Word Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -230,9 +283,13 @@ const LearnCards = () => {
           {/* Action Buttons */}
           <div className="flex gap-4">
             <Button 
-              variant="destructive" 
+              variant={wordStatuses[currentWord.id] === "unknown" ? "default" : "destructive"}
               size="lg" 
-              className="flex-1 h-14 text-base gap-2"
+              className={`flex-1 h-14 text-base gap-2 ${
+                wordStatuses[currentWord.id] === "unknown" 
+                  ? "bg-red-600 hover:bg-red-700 text-white ring-2 ring-red-400 ring-offset-2" 
+                  : ""
+              }`}
               onClick={handleUnknown}
             >
               <ThumbsDown className="h-5 w-5" />
@@ -240,14 +297,49 @@ const LearnCards = () => {
             </Button>
             <Button 
               size="lg" 
-              className="flex-1 h-14 text-base gap-2 bg-green-600 hover:bg-green-700 text-white"
+              className={`flex-1 h-14 text-base gap-2 bg-green-600 hover:bg-green-700 text-white ${
+                wordStatuses[currentWord.id] === "known" 
+                  ? "ring-2 ring-green-400 ring-offset-2" 
+                  : ""
+              }`}
               onClick={handleKnown}
             >
               <ThumbsUp className="h-5 w-5" />
               认识
             </Button>
           </div>
+
+          {/* Navigation Helper */}
+          {wordStatuses[currentWord.id] && (
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">
+                已标记为{wordStatuses[currentWord.id] === "known" ? "认识" : "不认识"}
+              </p>
+              <div className="flex gap-2 justify-center">
+                {currentIndex < words.length - 1 ? (
+                  <Button variant="outline" size="sm" onClick={goToNextWord}>
+                    下一个单词
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" onClick={handleComplete}>
+                    完成学习
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </Card>
+
+        {/* Next Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={goToNextWord}
+          disabled={currentIndex === words.length - 1}
+          className="h-12 w-12 rounded-full"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </Button>
       </div>
     </div>
   );
