@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, Volume2, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { addMistake } from "@/utils/mistakesStorage";
+import CelebrationEffect from "@/components/CelebrationEffect";
 
 interface Word {
   id: number;
@@ -37,6 +38,7 @@ const Challenge = () => {
   const [correctCount, setCorrectCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     if (words.length === 0) {
@@ -205,7 +207,8 @@ const Challenge = () => {
       setSelectedAnswer(null);
       setShowResult(false);
     } else {
-      setShowCompletion(true);
+      setShowCelebration(true);
+      setTimeout(() => setShowCompletion(true), 2000);
     }
   };
 
@@ -389,6 +392,9 @@ const Challenge = () => {
           </div>
         </Card>
       </div>
+
+      {/* Celebration Effect */}
+      {showCelebration && <CelebrationEffect />}
     </div>
   );
 };

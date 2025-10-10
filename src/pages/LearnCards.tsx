@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import CelebrationEffect from "@/components/CelebrationEffect";
 
 interface Word {
   id: number;
@@ -30,6 +31,7 @@ const LearnCards = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [wordStatuses, setWordStatuses] = useState<Record<number, WordStatus>>({});
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // Load word statuses from localStorage on mount
   useEffect(() => {
@@ -147,7 +149,8 @@ const LearnCards = () => {
   };
 
   const handleComplete = () => {
-    setShowCompletion(true);
+    setShowCelebration(true);
+    setTimeout(() => setShowCompletion(true), 2000);
   };
 
   const handleExit = () => {
@@ -334,6 +337,9 @@ const LearnCards = () => {
           <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
+
+      {/* Celebration Effect */}
+      {showCelebration && <CelebrationEffect />}
     </div>
   );
 };

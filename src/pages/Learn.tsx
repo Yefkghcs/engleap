@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { addMistake } from "@/utils/mistakesStorage";
 import { addCheckIn } from "@/utils/checkInStorage";
+import CelebrationEffect from "@/components/CelebrationEffect";
 
 interface Word {
   id: number;
@@ -53,6 +54,7 @@ const Learn = () => {
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [incorrectWords, setIncorrectWords] = useState<Word[]>([]);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const totalWords = words.length;
   const currentWord = words[currentIndex];
@@ -110,7 +112,8 @@ const Learn = () => {
     } else {
       // Move to next word
       if (currentIndex + 1 >= totalWords) {
-        setShowCompletion(true);
+        setShowCelebration(true);
+        setTimeout(() => setShowCompletion(true), 2000);
       } else {
         setCurrentIndex(prev => prev + 1);
         setUserInput("");
@@ -123,7 +126,8 @@ const Learn = () => {
 
   const handleSkip = () => {
     if (currentIndex + 1 >= totalWords) {
-      setShowCompletion(true);
+      setShowCelebration(true);
+      setTimeout(() => setShowCompletion(true), 2000);
     } else {
       setCurrentIndex(prev => prev + 1);
       setUserInput("");
@@ -261,16 +265,18 @@ const Learn = () => {
                 <h3 className="text-3xl font-bold mb-2">{currentWord.word}</h3>
               </div>
             )}
-            <div className="space-y-2">
-              <h2 className="text-4xl font-bold">{currentWord.meaning}</h2>
-              <div className="flex items-center justify-center gap-2">
-                {currentWord.tags.map((tag, i) => (
-                  <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
-                    {tag}
-                  </span>
-                ))}
+            {showTranslation && (
+              <div className="space-y-2">
+                <h2 className="text-4xl font-bold">{currentWord.meaning}</h2>
+                <div className="flex items-center justify-center gap-2">
+                  {currentWord.tags.map((tag, i) => (
+                    <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             <button 
               onClick={handlePlayClick}
               className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors"
@@ -382,6 +388,9 @@ const Learn = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Celebration Effect */}
+      {showCelebration && <CelebrationEffect />}
     </div>
   );
 };
