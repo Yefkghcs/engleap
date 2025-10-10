@@ -296,11 +296,12 @@ const LearnCards = () => {
               不认识
             </Button>
             <Button 
+              variant="outline"
               size="default"
               className={`flex-1 h-10 text-sm gap-2 transition-all ${
                 wordStatuses[currentWord.id] === "known" 
-                  ? "bg-green-600 hover:bg-green-700 text-white shadow-md" 
-                  : "bg-green-600 hover:bg-green-700 text-white"
+                  ? "border-green-500 bg-green-50 dark:bg-green-950/20 text-green-600 dark:text-green-400 shadow-sm" 
+                  : "hover:border-green-300 hover:text-green-600"
               }`}
               onClick={handleKnown}
             >
@@ -310,22 +311,14 @@ const LearnCards = () => {
           </div>
 
           {/* Navigation Helper */}
-          {wordStatuses[currentWord.id] && (
+          {wordStatuses[currentWord.id] && currentIndex === words.length - 1 && (
             <div className="mt-4 text-center">
               <p className="text-sm text-muted-foreground mb-2">
                 已标记为{wordStatuses[currentWord.id] === "known" ? "认识" : "不认识"}
               </p>
-              <div className="flex gap-2 justify-center">
-                {currentIndex < words.length - 1 ? (
-                  <Button variant="outline" size="sm" onClick={goToNextWord}>
-                    下一个单词
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={handleComplete}>
-                    完成学习
-                  </Button>
-                )}
-              </div>
+              <Button variant="outline" size="sm" onClick={handleComplete}>
+                完成学习
+              </Button>
             </div>
           )}
         </Card>
