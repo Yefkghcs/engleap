@@ -144,6 +144,16 @@ const Learn = () => {
     navigate("/mistakes");
   };
 
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+      setUserInput("");
+      setShowResult(false);
+      setIsCorrect(null);
+      setHasPlayedAudio(false);
+    }
+  };
+
   const handleExitClick = () => {
     setShowExitDialog(true);
   };
@@ -375,12 +385,12 @@ const Learn = () => {
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck={false}
-              className={`text-center text-3xl py-6 placeholder:text-muted-foreground/40 placeholder:text-base ${
+              className={`text-center text-3xl py-4 placeholder:text-muted-foreground/40 placeholder:text-base bg-transparent border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 ${
                 showResult 
                   ? isCorrect 
-                    ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500 border-2 bg-green-50 dark:bg-green-950/20" 
-                    : "text-red-600 dark:text-red-400 border-red-500 dark:border-red-500 border-2 bg-red-50 dark:bg-red-950/20"
-                  : ""
+                    ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500" 
+                    : "text-red-600 dark:text-red-400 border-red-500 dark:border-red-500"
+                  : "border-border focus-visible:border-primary"
               }`}
               disabled={showResult}
             />
@@ -406,12 +416,21 @@ const Learn = () => {
 
       <div className="p-4 border-t border-border">
         <div className="max-w-4xl mx-auto flex justify-between">
-          <Button 
-            variant="ghost" 
-            onClick={() => setShowSettings(true)}
-          >
-            设置
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              onClick={() => setShowSettings(true)}
+            >
+              设置
+            </Button>
+            <Button 
+              variant="ghost" 
+              onClick={handlePrevious}
+              disabled={currentIndex === 0}
+            >
+              上一题
+            </Button>
+          </div>
           <Button 
             variant="ghost" 
             onClick={handleExitClick}
