@@ -8,6 +8,11 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -41,7 +46,6 @@ const Learn = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
   const [showTranslation, setShowTranslation] = useState(true);
   const [playSound, setPlaySound] = useState(true);
   const [showCompletion, setShowCompletion] = useState(false);
@@ -217,107 +221,6 @@ const Learn = () => {
     );
   }
 
-  // Settings Panel
-  if (showSettings) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <div className="p-4 border-b border-border">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-xl font-bold mb-2">{bookId === "ielts" ? "雅思" : bookId}</h1>
-            <p className="text-sm text-muted-foreground mb-4">全部单词</p>
-            <div className="flex items-center gap-4">
-              <Progress value={(currentIndex / totalWords) * 100} className="flex-1 h-2" />
-              <span className="text-sm">{currentIndex}/{totalWords}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full space-y-8">
-            <div className="text-center space-y-4">
-              <div className="space-y-2">
-                <h2 className={`text-4xl font-bold ${!showTranslation ? 'blur-md select-none' : ''}`}>
-                  {currentWord.meaning}
-                </h2>
-                <div className="flex items-center justify-center gap-2">
-                  {currentWord.tags.map((tag, i) => (
-                    <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <button 
-                onClick={handlePlayClick}
-                className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors"
-              >
-                <Play className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <Input
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                onFocus={handleInputFocus}
-                placeholder="可以使用手写输入单词，iPad请打开随手写，并且选择该语言"
-                className="text-center text-lg py-6 placeholder:text-muted-foreground/40"
-              />
-              <div className="flex justify-center">
-                <Button 
-                  onClick={handleSubmit}
-                  disabled={!userInput.trim()}
-                  className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16 disabled:opacity-50"
-                >
-                  确认
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-4 border-t border-border">
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-6 mb-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="translation" className="text-base">单词声音</Label>
-                <Switch 
-                  id="translation" 
-                  checked={playSound}
-                  onCheckedChange={setPlaySound}
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="sound" className="text-base">单词翻译</Label>
-                <Switch 
-                  id="sound" 
-                  checked={showTranslation}
-                  onCheckedChange={setShowTranslation}
-                />
-              </div>
-            </Card>
-            
-            <div className="flex gap-4">
-              <Button 
-                onClick={() => setShowSettings(false)}
-                variant="secondary"
-                className="flex-1"
-              >
-                设置
-              </Button>
-              <Button 
-                onClick={handleExitClick}
-                variant="outline"
-                className="flex-1"
-              >
-                退出
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Main Learning Screen
   return (
@@ -417,12 +320,36 @@ const Learn = () => {
       <div className="p-4 border-t border-border">
         <div className="max-w-4xl mx-auto flex justify-between">
           <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              onClick={() => setShowSettings(true)}
-            >
-              设置
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost">
+                  设置
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="start">
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-sm">学习设置</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="sound" className="text-sm">单词声音</Label>
+                      <Switch 
+                        id="sound" 
+                        checked={playSound}
+                        onCheckedChange={setPlaySound}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="translation" className="text-sm">单词翻译</Label>
+                      <Switch 
+                        id="translation" 
+                        checked={showTranslation}
+                        onCheckedChange={setShowTranslation}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             <Button 
               variant="ghost" 
               onClick={handlePrevious}
