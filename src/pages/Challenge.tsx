@@ -2,8 +2,19 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Volume2, Settings } from "lucide-react";
+import { Volume2, Settings } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { addMistake } from "@/utils/mistakesStorage";
 import CelebrationEffect from "@/components/CelebrationEffect";
@@ -44,6 +55,7 @@ const Challenge = () => {
   });
   const [timeLeft, setTimeLeft] = useState(timerDuration);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   useEffect(() => {
     if (words.length === 0) {
@@ -217,7 +229,11 @@ const Challenge = () => {
     }
   };
 
-  const handleExit = () => {
+  const handleExitClick = () => {
+    setShowExitDialog(true);
+  };
+
+  const handleConfirmExit = () => {
     navigate(`/vocabulary/${bookId}`);
   };
 
@@ -255,7 +271,7 @@ const Challenge = () => {
               </div>
             </div>
           </div>
-          <Button onClick={handleExit} className="w-full" size="lg">
+          <Button onClick={handleConfirmExit} className="w-full" size="lg">
             返回词汇书
           </Button>
         </Card>
@@ -264,13 +280,11 @@ const Challenge = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="bg-card border-b px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Button variant="ghost" size="icon" onClick={handleExit}>
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-xl font-bold mb-2">挑战模式</h1>
           <div className="flex items-center gap-6">
             <span className="text-sm text-muted-foreground">
               题目 {currentIndex + 1} / {questions.length}
@@ -279,39 +293,11 @@ const Challenge = () => {
               正确 {correctCount} 题
             </span>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-64">
-              <div className="space-y-4">
-                <h4 className="font-medium text-sm">设置</h4>
-                <div className="space-y-2">
-                  <label className="text-sm text-muted-foreground">读秒时间</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[10, 15, 20, 25, 30].map((duration) => (
-                      <Button
-                        key={duration}
-                        variant={timerDuration === duration ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleTimerDurationChange(duration)}
-                        className="text-xs"
-                      >
-                        {duration}秒
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
         </div>
       </div>
 
       {/* Question */}
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="flex-1 max-w-3xl mx-auto px-4 py-8 w-full">
         <Card className="overflow-hidden">
           {/* Timer Bar */}
           <div className="relative h-20 bg-gradient-to-br from-primary/10 to-primary/5 border-b flex items-center justify-center">
@@ -431,6 +417,64 @@ const Challenge = () => {
           </div>
         </Card>
       </div>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-border">
+        <div className="max-w-4xl mx-auto flex justify-between">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost">
+                设置
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm">挑战设置</h3>
+                <div className="space-y-3">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="timer" className="text-sm">读秒时间</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[10, 15, 20, 25, 30].map((duration) => (
+                        <Button
+                          key={duration}
+                          variant={timerDuration === duration ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleTimerDurationChange(duration)}
+                          className="text-xs"
+                        >
+                          {duration}秒
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Button 
+            variant="ghost" 
+            onClick={handleExitClick}
+          >
+            退出
+          </Button>
+        </div>
+      </div>
+
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认退出？</AlertDialogTitle>
+            <AlertDialogDescription>
+              退出后当前进度将不会保存，确定要退出吗？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmExit}>退出</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Celebration Effect */}
       {showCelebration && <CelebrationEffect />}
