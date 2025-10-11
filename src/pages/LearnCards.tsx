@@ -116,6 +116,13 @@ const LearnCards = () => {
     }
     
     updateWordStatus(currentWord.id, "known");
+    
+    // Auto advance to next word or complete
+    if (currentIndex < words.length - 1) {
+      setTimeout(() => goToNextWord(), 300);
+    } else {
+      setTimeout(() => handleComplete(), 300);
+    }
   };
 
   const handleUnknown = () => {
@@ -130,6 +137,13 @@ const LearnCards = () => {
     }
     
     updateWordStatus(currentWord.id, "unknown");
+    
+    // Auto advance to next word or complete
+    if (currentIndex < words.length - 1) {
+      setTimeout(() => goToNextWord(), 300);
+    } else {
+      setTimeout(() => handleComplete(), 300);
+    }
   };
 
   const goToNextWord = () => {
@@ -313,17 +327,6 @@ const LearnCards = () => {
             </Button>
           </div>
 
-          {/* Navigation Helper */}
-          {wordStatuses[currentWord.id] && currentIndex === words.length - 1 && (
-            <div className="mt-4 text-center">
-              <p className="text-sm text-muted-foreground mb-2">
-                已标记为{wordStatuses[currentWord.id] === "known" ? "认识" : "不认识"}
-              </p>
-              <Button variant="outline" size="sm" onClick={handleComplete}>
-                完成学习
-              </Button>
-            </div>
-          )}
         </Card>
 
         {/* Next Button */}
