@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Volume2, Clock } from "lucide-react";
+import { ChevronLeft, Volume2, Settings } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
 import { addMistake } from "@/utils/mistakesStorage";
 import CelebrationEffect from "@/components/CelebrationEffect";
@@ -37,7 +38,11 @@ const Challenge = () => {
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timerDuration, setTimerDuration] = useState(() => {
+    const stored = localStorage.getItem('challenge_timer_duration');
+    return stored ? parseInt(stored) : 10;
+  });
+  const [timeLeft, setTimeLeft] = useState(timerDuration);
   const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
@@ -75,8 +80,8 @@ const Challenge = () => {
 
   // Reset timer when moving to next question
   useEffect(() => {
-    setTimeLeft(10);
-  }, [currentIndex]);
+    setTimeLeft(timerDuration);
+  }, [currentIndex, timerDuration]);
 
   const generateQuestions = (words: Word[]): Question[] => {
     const questions: Question[] = [];
@@ -216,6 +221,12 @@ const Challenge = () => {
     navigate(`/vocabulary/${bookId}`);
   };
 
+  const handleTimerDurationChange = (duration: number) => {
+    setTimerDuration(duration);
+    localStorage.setItem('challenge_timer_duration', duration.toString());
+    setTimeLeft(duration);
+  };
+
   if (questions.length === 0) return null;
 
   const currentQuestion = questions[currentIndex];
@@ -268,6 +279,34 @@ const Challenge = () => {
               正确 {correctCount} 题
             </span>
           </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-64">
+              <div className="space-y-4">
+                <h4 className="font-medium text-sm">设置</h4>
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground">读秒时间</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[10, 15, 20, 25, 30].map((duration) => (
+                      <Button
+                        key={duration}
+                        variant={timerDuration === duration ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleTimerDurationChange(duration)}
+                        className="text-xs"
+                      >
+                        {duration}秒
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
@@ -285,7 +324,7 @@ const Challenge = () => {
             {/* Progress bar */}
             <div 
               className="absolute bottom-0 left-0 h-1 bg-primary transition-all duration-1000 ease-linear"
-              style={{ width: `${(timeLeft / 10) * 100}%` }}
+              style={{ width: `${(timeLeft / timerDuration) * 100}%` }}
             />
           </div>
 
