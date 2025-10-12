@@ -25,7 +25,7 @@ const Index = () => {
       <div className="relative py-20 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <p className="text-primary font-medium">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] animate-[shimmer_3s_ease-in-out_infinite] bg-clip-text text-transparent">AI-Powered Language Learning AI-Powered English Learning, Made Simple and Effective</span>
+            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] animate-[shimmer_3s_ease-in-out_infinite] bg-clip-text text-transparent">AI-Powered English Learning, Made Simple and Effective</span>
           </p>
           <h2 className="text-5xl md:text-6xl font-bold text-foreground">更聪明的英语学习网站</h2>
           <div className="space-y-2">
