@@ -49,7 +49,7 @@ const Index = () => {
               </div>
               <Button asChild size="lg" className="w-full">
                 <Link to="/vocabulary" className="flex items-center justify-center gap-2">
-                  Start <ArrowRight className="w-5 h-5" />
+                  开始学习 <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
             </div>
