@@ -29,8 +29,8 @@ const Index = () => {
           </p>
           <h2 className="text-5xl md:text-6xl font-bold text-foreground">更聪明的英语学习网站</h2>
           <div className="space-y-2">
-            <p className="text-xl text-muted-foreground">EngLeap你的一站式英语学习网站，为你打造高效、系统的外语学习体验</p>
-            <p className="text-xl text-muted-foreground">从词汇到表达，让学习更有方法、更见成效</p>
+            
+            <p className="text-xl text-muted-foreground">你的一站式英语学习网站，为你打造高效、系统的学习体验</p>
           </div>
         </div>
       </div>
