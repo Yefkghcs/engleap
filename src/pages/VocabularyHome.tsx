@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getTotalWords, getLearnedWordsCount, getMistakesCount } from "@/utils/vocabularyStats";
 import { getTotalCheckInDays, getThisWeekCheckInDays, getWeekCheckInStatus, hasCheckedInToday } from "@/utils/checkInStorage";
 import { getCustomVocabularies } from "@/utils/customVocabularyStorage";
@@ -188,80 +189,88 @@ const VocabularyHome = () => {
             <h2 className="text-xl font-semibold text-foreground">选择单词库</h2>
           </div>
           
-          {/* 考试必背 */}
-          <div className="mb-10">
-            <h3 className="text-lg font-semibold text-foreground mb-4">考试必背</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {vocabularyBooks.map((book) => (
-                <Link key={book.id} to={`/vocabulary/${book.id}`}>
-                  <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
-                    <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
-                      <span className="text-4xl">{book.emoji}</span>
-                    </div>
-                    <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
-                    <p className="text-xs text-muted-foreground">{book.count}个单词</p>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <Tabs defaultValue="exam" className="w-full">
+            <TabsList className="w-full justify-start mb-6">
+              <TabsTrigger value="exam" className="flex-1 sm:flex-none">
+                考试必背 ({vocabularyBooks.length})
+              </TabsTrigger>
+              <TabsTrigger value="life" className="flex-1 sm:flex-none">
+                生活实用 ({lifeVocabularyBooks.length})
+              </TabsTrigger>
+              <TabsTrigger value="custom" className="flex-1 sm:flex-none">
+                自定义单词库 ({customVocabularies.length})
+              </TabsTrigger>
+            </TabsList>
 
-          {/* 生活实用 */}
-          <div className="mb-10">
-            <h3 className="text-lg font-semibold text-foreground mb-4">生活实用</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {lifeVocabularyBooks.map((book) => (
-                <Link key={book.id} to={`/vocabulary/${book.id}`}>
-                  <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
-                    <div className="h-20 bg-secondary/50 dark:bg-secondary/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-secondary/70 dark:group-hover:bg-secondary/30 transition-colors">
-                      <span className="text-4xl">{book.emoji}</span>
-                    </div>
-                    <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
-                    <p className="text-xs text-muted-foreground">{book.count}个单词</p>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* 自定义单词库 */}
-          <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">自定义单词库</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {/* Create New Vocabulary Card */}
-              <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())}>
-                <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group border-dashed border-2 border-primary/30 hover:border-primary/50">
-                  <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
-                    <span className="text-4xl">➕</span>
-                  </div>
-                  <h3 className="text-base font-bold mb-1 text-primary truncate">创建单词库</h3>
-                  <p className="text-xs text-muted-foreground">添加自定义单词</p>
-                </Card>
-              </CreateVocabularyDialog>
-
-              {/* Existing Custom Vocabularies */}
-              {customVocabularies.map((book) => (
-                <div key={book.id} className="relative group">
-                  <Link to={`/vocabulary/custom/${book.id}`}>
-                    <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden">
-                      <div className="h-20 bg-accent/50 rounded-lg mb-3 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
+            <TabsContent value="exam">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {vocabularyBooks.map((book) => (
+                  <Link key={book.id} to={`/vocabulary/${book.id}`}>
+                    <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                      <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
                         <span className="text-4xl">{book.emoji}</span>
                       </div>
                       <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
-                      <p className="text-xs text-muted-foreground">{book.words.length}个单词</p>
+                      <p className="text-xs text-muted-foreground">{book.count}个单词</p>
                     </Card>
                   </Link>
-                  <button
-                    onClick={() => handleDeleteCustomVocabulary(book.id, book.name)}
-                    className="absolute top-1 right-1 p-1.5 bg-destructive text-destructive-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
-                    title="删除词库"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="life">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {lifeVocabularyBooks.map((book) => (
+                  <Link key={book.id} to={`/vocabulary/${book.id}`}>
+                    <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                      <div className="h-20 bg-secondary/50 dark:bg-secondary/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-secondary/70 dark:group-hover:bg-secondary/30 transition-colors">
+                        <span className="text-4xl">{book.emoji}</span>
+                      </div>
+                      <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
+                      <p className="text-xs text-muted-foreground">{book.count}个单词</p>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="custom">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {/* Create New Vocabulary Card */}
+                <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())}>
+                  <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group border-dashed border-2 border-primary/30 hover:border-primary/50">
+                    <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
+                      <span className="text-4xl">➕</span>
+                    </div>
+                    <h3 className="text-base font-bold mb-1 text-primary truncate">创建单词库</h3>
+                    <p className="text-xs text-muted-foreground">添加自定义单词</p>
+                  </Card>
+                </CreateVocabularyDialog>
+
+                {/* Existing Custom Vocabularies */}
+                {customVocabularies.map((book) => (
+                  <div key={book.id} className="relative group">
+                    <Link to={`/vocabulary/custom/${book.id}`}>
+                      <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden">
+                        <div className="h-20 bg-accent/50 rounded-lg mb-3 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
+                          <span className="text-4xl">{book.emoji}</span>
+                        </div>
+                        <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
+                        <p className="text-xs text-muted-foreground">{book.words.length}个单词</p>
+                      </Card>
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteCustomVocabulary(book.id, book.name)}
+                      className="absolute top-1 right-1 p-1.5 bg-destructive text-destructive-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
+                      title="删除词库"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
