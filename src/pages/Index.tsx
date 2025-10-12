@@ -75,9 +75,9 @@ const Index = () => {
             <div className="space-y-6">
               <h3 className="text-3xl font-bold text-center text-foreground">读文章</h3>
               <div className="space-y-2 text-center text-muted-foreground">
-                <p>精读国外论坛文章，提升表达</p>
-                <p>精选原版英文内容，学习写作技巧与思维方式</p>
-                <p>学习写作技巧与思维方式</p>
+                <p>每周更新</p>
+                <p>精读国外论坛文章，提升写作</p>
+                <p>学习语言技巧与思维方式</p>
               </div>
               <Button disabled size="lg" className="w-full cursor-not-allowed" variant="secondary">
                 敬请期待
