@@ -277,6 +277,33 @@ const VocabularyBook = () => {
           </div>
         </div>
 
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex gap-2 sm:gap-4">
+            <Link 
+              to={`/vocabulary/${bookId}/learn-cards`}
+              state={{ words: currentWords }}
+              className="flex-1"
+            >
+              <Button className="w-full text-xs sm:text-sm">学习</Button>
+            </Link>
+            <Link 
+              to={`/vocabulary/${bookId}/learn`}
+              state={{ words: currentWords, mode: 'dictation' }}
+              className="flex-1"
+            >
+              <Button className="w-full text-xs sm:text-sm">听写</Button>
+            </Link>
+            <Link 
+              to={`/vocabulary/${bookId}/challenge`}
+              state={{ words: currentWords }}
+              className="flex-1"
+            >
+              <Button className="w-full text-xs sm:text-sm">挑战</Button>
+            </Link>
+          </div>
+        </div>
+
         {/* Filter and View Toggle */}
         <div className="flex flex-col lg:flex-row gap-3 mb-6 items-start lg:items-center justify-between">
           <div className="flex gap-1 sm:gap-2 bg-card rounded-lg p-1 overflow-x-auto">
@@ -333,34 +360,6 @@ const VocabularyBook = () => {
               <LayoutGrid className="h-4 w-4" />
               <span className="hidden sm:inline">卡片</span>
             </Button>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col gap-4 mb-6">
-
-          <div className="flex gap-2 sm:gap-4">
-            <Link 
-              to={`/vocabulary/${bookId}/learn-cards`}
-              state={{ words: currentWords }}
-              className="flex-1"
-            >
-              <Button className="w-full text-xs sm:text-sm">学习</Button>
-            </Link>
-            <Link 
-              to={`/vocabulary/${bookId}/learn`}
-              state={{ words: currentWords, mode: 'dictation' }}
-              className="flex-1"
-            >
-              <Button className="w-full text-xs sm:text-sm">听写</Button>
-            </Link>
-            <Link 
-              to={`/vocabulary/${bookId}/challenge`}
-              state={{ words: currentWords }}
-              className="flex-1"
-            >
-              <Button className="w-full text-xs sm:text-sm">挑战</Button>
-            </Link>
           </div>
         </div>
 
