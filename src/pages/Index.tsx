@@ -43,13 +43,13 @@ const Index = () => {
             <div className="space-y-6">
               <h3 className="text-3xl font-bold text-center text-foreground">背单词</h3>
               <div className="space-y-2 text-center text-muted-foreground">
-                <p>覆盖雅思、托福、四六级及日常实用词汇</p>
-                <p>搭配发音、例句与测试</p>
-                <p>让你真正能够记得住、用得出</p>
+                <p>覆盖雅思、托福、四六级</p>
+                <p>工作、日常实用词汇</p>
+                <p>让你真正记得住、用得出</p>
               </div>
               <Button asChild size="lg" className="w-full">
                 <Link to="/vocabulary" className="flex items-center justify-center gap-2">
-                  开始学习 <ArrowRight className="w-5 h-5" />
+                  Start <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
             </div>
@@ -60,9 +60,9 @@ const Index = () => {
             <div className="space-y-6">
               <h3 className="text-3xl font-bold text-center text-foreground">看视频</h3>
               <div className="space-y-2 text-center text-muted-foreground">
-                <p>日常英文Vlog精讲，真实语境，沉浸学习</p>
-                <p>帮助你听懂、模仿、自然表达。</p>
-                <p>每周更新</p>
+                <p>英文Vlog精讲</p>
+                <p>真实语境沉浸学习</p>
+                <p>帮助你听懂、模仿、自然表达</p>
               </div>
               <Button disabled size="lg" className="w-full cursor-not-allowed" variant="secondary">
                 敬请期待
