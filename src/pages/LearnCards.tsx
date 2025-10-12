@@ -226,7 +226,7 @@ const LearnCards = () => {
   if (!currentWord) return null;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-20">
       {/* Header */}
       <div className="bg-card border-b px-4 py-4">
         <div className="max-w-4xl mx-auto">
@@ -365,7 +365,7 @@ const LearnCards = () => {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
+      <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-border bg-background z-50">
         <div className="max-w-4xl mx-auto flex justify-between">
           <Popover>
             <PopoverTrigger asChild>

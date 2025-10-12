@@ -228,7 +228,7 @@ const Learn = () => {
 
   // Main Learning Screen
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-20">
       <div className="p-4 border-b border-border">
         <div className="max-w-4xl mx-auto flex items-start justify-between">
           <div className="flex-1">
@@ -323,7 +323,7 @@ const Learn = () => {
         </div>
       </div>
 
-      <div className="p-4 border-t border-border">
+      <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-border bg-background z-50">
         <div className="max-w-4xl mx-auto flex justify-between">
           <div className="flex gap-2">
             <Popover>
