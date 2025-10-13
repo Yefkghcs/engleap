@@ -45,7 +45,7 @@ const Index = () => {
               <div className="space-y-2 text-center text-muted-foreground">
                 <p>覆盖雅思、托福、四六级</p>
                 <p>工作、日常实用词汇</p>
-                <p>让你真正记得住、用得出</p>
+                <p>让你真正记得住, 用得出</p>
               </div>
               <Button asChild size="lg" className="w-full">
                 <Link to="/vocabulary" className="flex items-center justify-center gap-2">
