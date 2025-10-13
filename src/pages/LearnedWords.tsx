@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ieltsWords } from "@/data/ieltsWords";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface Word {
   id: number;
@@ -30,6 +31,8 @@ const LearnedWords = () => {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [displayedWords, setDisplayedWords] = useState<Word[]>([]);
   const [filter, setFilter] = useState<"all" | "known" | "unknown">("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const wordsPerPage = 30;
 
   // Load learned words from localStorage
   useEffect(() => {
@@ -100,6 +103,17 @@ const LearnedWords = () => {
     if (filter === "unknown") return word.status === "unknown";
     return true;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredWords.length / wordsPerPage);
+  const startIndex = (currentPage - 1) * wordsPerPage;
+  const endIndex = startIndex + wordsPerPage;
+  const currentWords = filteredWords.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -175,8 +189,9 @@ const LearnedWords = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredWords.map((word) => (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {currentWords.map((word) => (
               <Card
                 key={word.id}
                 className={`p-4 cursor-pointer transition-all ${
@@ -220,6 +235,59 @@ const LearnedWords = () => {
               </Card>
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  
+                  {[...Array(totalPages)].map((_, i) => {
+                    const pageNum = i + 1;
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      pageNum === 1 ||
+                      pageNum === totalPages ||
+                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(pageNum)}
+                            isActive={currentPage === pageNum}
+                            className="cursor-pointer"
+                          >
+                            {pageNum}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+        </>
         )}
       </div>
     </div>
