@@ -272,6 +272,75 @@ const VocabularyHome = () => {
             </TabsContent>
           </Tabs>
         </div>
+
+        {/* Scene Learning Section */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-foreground">选择场景</h2>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <Link to="/vocabulary/scene/supermarket-herbs">
+              <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                <div className="h-20 bg-green-50 dark:bg-green-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-950/30 transition-colors">
+                  <span className="text-4xl">🌿</span>
+                </div>
+                <h3 className="text-base font-bold mb-1 truncate">超市香草区</h3>
+                <p className="text-xs text-muted-foreground">9个单词</p>
+              </Card>
+            </Link>
+
+            <Link to="/vocabulary/scene/coffee-shop">
+              <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                <div className="h-20 bg-amber-50 dark:bg-amber-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-amber-100 dark:group-hover:bg-amber-950/30 transition-colors">
+                  <span className="text-4xl">☕</span>
+                </div>
+                <h3 className="text-base font-bold mb-1 truncate">咖啡店</h3>
+                <p className="text-xs text-muted-foreground">8个单词</p>
+              </Card>
+            </Link>
+
+            <Link to="/vocabulary/scene/gym">
+              <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                <div className="h-20 bg-red-50 dark:bg-red-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-red-100 dark:group-hover:bg-red-950/30 transition-colors">
+                  <span className="text-4xl">💪</span>
+                </div>
+                <h3 className="text-base font-bold mb-1 truncate">健身房</h3>
+                <p className="text-xs text-muted-foreground">10个单词</p>
+              </Card>
+            </Link>
+
+            <Link to="/vocabulary/scene/airport">
+              <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                <div className="h-20 bg-blue-50 dark:bg-blue-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-950/30 transition-colors">
+                  <span className="text-4xl">✈️</span>
+                </div>
+                <h3 className="text-base font-bold mb-1 truncate">机场候机厅</h3>
+                <p className="text-xs text-muted-foreground">12个单词</p>
+              </Card>
+            </Link>
+
+            <Link to="/vocabulary/scene/restaurant">
+              <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                <div className="h-20 bg-orange-50 dark:bg-orange-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-orange-100 dark:group-hover:bg-orange-950/30 transition-colors">
+                  <span className="text-4xl">🍽️</span>
+                </div>
+                <h3 className="text-base font-bold mb-1 truncate">西餐厅</h3>
+                <p className="text-xs text-muted-foreground">11个单词</p>
+              </Card>
+            </Link>
+
+            <Link to="/vocabulary/scene/library">
+              <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
+                <div className="h-20 bg-purple-50 dark:bg-purple-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-950/30 transition-colors">
+                  <span className="text-4xl">📚</span>
+                </div>
+                <h3 className="text-base font-bold mb-1 truncate">图书馆</h3>
+                <p className="text-xs text-muted-foreground">9个单词</p>
+              </Card>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

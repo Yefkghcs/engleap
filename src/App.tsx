@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChangePassword from "./pages/ChangePassword";
 import NotFound from "./pages/NotFound";
+import SceneLearning from "./pages/SceneLearning";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/vocabulary/:bookId/learn" element={<Learn />} />
           <Route path="/vocabulary/:bookId/learn-cards" element={<LearnCards />} />
           <Route path="/vocabulary/:bookId/challenge" element={<Challenge />} />
+          <Route path="/vocabulary/scene/:sceneId" element={<SceneLearning />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
