@@ -64,14 +64,18 @@ const Challenge = () => {
         description: "请返回词汇书选择要挑战的单词",
         variant: "destructive",
       });
-      navigate(`/vocabulary/${bookId}`);
+      if (location.pathname.includes('scene/challenge')) {
+        navigate('/vocabulary');
+      } else {
+        navigate(`/vocabulary/${bookId}`);
+      }
       return;
     }
 
     // Generate questions
     const generatedQuestions = generateQuestions(words);
     setQuestions(generatedQuestions);
-  }, [words, navigate, bookId]);
+  }, [words, navigate, bookId, location.pathname]);
 
   // Timer countdown
   useEffect(() => {
@@ -234,7 +238,12 @@ const Challenge = () => {
   };
 
   const handleConfirmExit = () => {
-    navigate(`/vocabulary/${bookId}`);
+    if (location.pathname.includes('scene/challenge')) {
+      const sceneId = location.pathname.split('/').pop();
+      navigate(`/vocabulary/scene/${sceneId}`);
+    } else {
+      navigate(`/vocabulary/${bookId}`);
+    }
   };
 
   const handleTimerDurationChange = (duration: number) => {

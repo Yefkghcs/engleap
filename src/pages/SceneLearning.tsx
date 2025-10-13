@@ -43,6 +43,29 @@ const SceneLearning = () => {
     }));
   };
 
+  const convertToLearnFormat = () => {
+    return scene!.words.map((word) => ({
+      id: word.id,
+      word: word.word,
+      tags: ["场景单词"],
+      phonetic: word.phonetic,
+      meaning: word.translation,
+      example: "",
+      exampleCn: "",
+      status: "unmarked" as const,
+    }));
+  };
+
+  const handleDictation = () => {
+    const words = convertToLearnFormat();
+    navigate(`/vocabulary/scene/dictation/${sceneId}`, { state: { words } });
+  };
+
+  const handleChallenge = () => {
+    const words = convertToLearnFormat();
+    navigate(`/vocabulary/scene/challenge/${sceneId}`, { state: { words } });
+  };
+
   if (!scene) {
     return null;
   }
@@ -62,14 +85,14 @@ const SceneLearning = () => {
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => navigate("/vocabulary/scene/dictation/" + sceneId)}
+              onClick={handleDictation}
               variant="outline"
               className="text-sm sm:text-base"
             >
               听写
             </Button>
             <Button
-              onClick={() => navigate("/vocabulary/scene/challenge/" + sceneId)}
+              onClick={handleChallenge}
               className="text-sm sm:text-base"
             >
               挑战

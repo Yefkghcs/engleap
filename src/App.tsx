@@ -48,6 +48,8 @@ const App = () => (
           <Route path="/vocabulary/:bookId/learn-cards" element={<LearnCards />} />
           <Route path="/vocabulary/:bookId/challenge" element={<Challenge />} />
           <Route path="/vocabulary/scene/:sceneId" element={<SceneLearning />} />
+          <Route path="/vocabulary/scene/dictation/:sceneId" element={<Learn />} />
+          <Route path="/vocabulary/scene/challenge/:sceneId" element={<Challenge />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

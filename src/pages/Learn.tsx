@@ -85,6 +85,8 @@ const Learn = () => {
         navigate('/mistakes');
       } else if (location.pathname.includes('learned')) {
         navigate('/vocabulary/learned');
+      } else if (location.pathname.includes('scene/dictation')) {
+        navigate('/vocabulary');
       } else {
         navigate(`/vocabulary/${bookId}`);
       }
@@ -172,6 +174,9 @@ const Learn = () => {
       navigate('/mistakes');
     } else if (location.pathname.includes('learned')) {
       navigate('/vocabulary/learned');
+    } else if (location.pathname.includes('scene/dictation')) {
+      const sceneId = location.pathname.split('/').pop();
+      navigate(`/vocabulary/scene/${sceneId}`);
     } else {
       navigate(`/vocabulary/${bookId}`);
     }
@@ -192,6 +197,8 @@ const Learn = () => {
               ? '错题本听写' 
               : location.pathname.includes('learned')
               ? '学过的单词听写'
+              : location.pathname.includes('scene/dictation')
+              ? '场景单词听写'
               : (bookId === "ielts" ? "雅思" : bookId)}
           </h1>
           <p className="text-sm text-muted-foreground">全部单词</p>
@@ -237,6 +244,8 @@ const Learn = () => {
                 ? '错题本听写' 
                 : location.pathname.includes('learned')
                 ? '学过的单词听写'
+                : location.pathname.includes('scene/dictation')
+                ? '场景单词听写'
                 : (bookId === "ielts" ? "雅思" : bookId)}
             </h1>
             <p className="text-sm text-muted-foreground mb-4">全部单词</p>
