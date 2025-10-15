@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 const STORAGE_KEY = 'vocabulary_check_in';
 
 interface CheckInRecord {
@@ -32,8 +34,7 @@ export const getTotalCheckInDays = (): number => {
   return records.length;
 };
 
-export const getThisWeekCheckInDays = (): number => {
-  const records = getCheckInRecords();
+export const getThisWeekCheckInDays = (records: string[]): number => {
   const today = new Date();
   
   // Get Monday of this week (ISO week starts on Monday)
@@ -44,14 +45,13 @@ export const getThisWeekCheckInDays = (): number => {
   monday.setHours(0, 0, 0, 0);
   
   // Count check-ins from Monday to today
-  return records.filter(r => {
-    const recordDate = new Date(r.date);
+  return records.filter(date => {
+    const recordDate = new Date(date);
     return recordDate >= monday && recordDate <= today;
   }).length;
 };
 
-export const getWeekCheckInStatus = (): boolean[] => {
-  const records = getCheckInRecords();
+export const getWeekCheckInStatus = (records: string[]): boolean[] => {
   const today = new Date();
   
   // Get Monday of this week
@@ -67,14 +67,13 @@ export const getWeekCheckInStatus = (): boolean[] => {
     checkDate.setDate(monday.getDate() + i);
     const dateStr = checkDate.toISOString().split('T')[0];
     
-    weekStatus.push(records.some(r => r.date === dateStr));
+    weekStatus.push(records.some(date => date === dateStr));
   }
   
   return weekStatus;
 };
 
-export const hasCheckedInToday = (): boolean => {
-  const records = getCheckInRecords();
-  const today = new Date().toISOString().split('T')[0];
-  return records.some(r => r.date === today);
+export const hasCheckedInToday = (records: string[]): boolean => {
+  const today = format(new Date(), "yyyy-MM-dd");
+  return records.some(date => date === today);
 };

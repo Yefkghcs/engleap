@@ -2,33 +2,24 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Volume2, Clock } from "lucide-react";
+import { ChevronLeft, Volume2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { addMistake } from "@/utils/mistakesStorage";
-
-interface Word {
-  id: number;
-  word: string;
-  tags: string[];
-  phonetic: string;
-  meaning: string;
-  example: string;
-  exampleCn: string;
-}
+import useWordStore, { WordsMapItem } from "@/models/word";
+import useUserInfo from "@/models/user";
 
 interface Question {
   type: "en-to-cn" | "cn-to-en" | "spelling";
   question: string;
   correctAnswer: string;
   options: string[];
-  word: Word;
+  word: WordsMapItem;
 }
 
 const Challenge = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { bookId } = useParams();
-  const words = (location.state?.words as Word[]) || [];
+  const words = (location.state?.words as WordsMapItem[]) || [];
   
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -37,6 +28,10 @@ const Challenge = () => {
   const [correctCount, setCorrectCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
+
+  const addMistake = useWordStore((state) => state.addMistake);
+
+  const addCheckStatus = useUserInfo((state) => state.addCheckStatus);
 
   useEffect(() => {
     if (words.length === 0) {
@@ -76,7 +71,7 @@ const Challenge = () => {
     setTimeLeft(10);
   }, [currentIndex]);
 
-  const generateQuestions = (words: Word[]): Question[] => {
+  const generateQuestions = (words: WordsMapItem[]): Question[] => {
     const questions: Question[] = [];
     
     words.forEach(word => {
@@ -179,6 +174,8 @@ const Challenge = () => {
 
   const handleAnswer = (answer: string) => {
     if (showResult) return;
+
+    addCheckStatus();
     
     setSelectedAnswer(answer);
     setShowResult(true);

@@ -8,6 +8,8 @@ import { Plus } from "lucide-react";
 import { saveCustomVocabulary, CustomWord } from "@/utils/customVocabularyStorage";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import useUserInfo from "@/models/user";
+import LoginBtn from "./loginBtn";
 
 const EMOJI_LIST = ["📚", "✈️", "🏫", "🎯", "🌟", "⭐", "🏛️", "🎒", "📝", "🌱", "💡", "🎓", "🍔", "🏠", "👔", "💊", "🚗", "🏨", "🛒", "🎮", "💻", "💼", "💰", "🏥", "🌤️", "🏙️"];
 
@@ -22,6 +24,7 @@ const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogP
   const [emoji, setEmoji] = useState("📚");
   const [wordsText, setWordsText] = useState("");
   const { toast } = useToast();
+  const email = useUserInfo((state) => state.email);
 
   const handleCreate = () => {
     if (!name.trim()) {
@@ -99,6 +102,7 @@ const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogP
           <DialogTitle>创建自定义单词库</DialogTitle>
         </DialogHeader>
         
+        {email ? (
         <div className="space-y-6 py-4" aria-describedby="dialog-description">
           <p id="dialog-description" className="sr-only">填写单词库信息并批量添加单词</p>
           <div className="space-y-2">
@@ -158,6 +162,10 @@ const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogP
             </Button>
           </div>
         </div>
+        ) : (
+          <LoginBtn />
+        )}
+        
       </DialogContent>
     </Dialog>
   );

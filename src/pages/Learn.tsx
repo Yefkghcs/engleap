@@ -17,25 +17,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { addMistake } from "@/utils/mistakesStorage";
-import { addCheckIn } from "@/utils/checkInStorage";
-
-interface Word {
-  id: number;
-  word: string;
-  tags: string[];
-  phonetic: string;
-  meaning: string;
-  example: string;
-  exampleCn: string;
-  status: "unmarked" | "known" | "unknown";
-}
+import useWordStore, { WordsMapItem } from "@/models/word";
+import useUserInfo from "@/models/user";
 
 const Learn = () => {
   const navigate = useNavigate();
   const { bookId } = useParams();
   const location = useLocation();
-  const words = (location.state?.words as Word[]) || [];
+  const words = (location.state?.words as WordsMapItem[]) || [];
   
   const [userInput, setUserInput] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -47,11 +36,13 @@ const Learn = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
-  const [incorrectWords, setIncorrectWords] = useState<Word[]>([]);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
+  const addMistake = useWordStore((state) => state.addMistake);
   const totalWords = words.length;
   const currentWord = words[currentIndex];
+
+  const addCheckStatus = useUserInfo((state) => state.addCheckStatus);
 
   // Play audio function
   const playAudio = (text: string) => {
@@ -87,10 +78,7 @@ const Learn = () => {
 
   const handleSubmit = () => {
     if (!showResult) {
-      // Mark check-in on first answer submission
-      if (currentIndex === 0) {
-        addCheckIn();
-      }
+      addCheckStatus();
       
       const correct = userInput.toLowerCase().trim() === currentWord.word.toLowerCase();
       setIsCorrect(correct);
@@ -101,7 +89,6 @@ const Learn = () => {
       } else {
         // Add to mistakes and track incorrect words
         addMistake(currentWord);
-        setIncorrectWords(prev => [...prev, currentWord]);
       }
     } else {
       // Move to next word
@@ -230,7 +217,7 @@ const Learn = () => {
                   {currentWord.meaning}
                 </h2>
                 <div className="flex items-center justify-center gap-2">
-                  {currentWord.tags.map((tag, i) => (
+                  {currentWord?.partOfSpeech?.map((tag, i) => (
                     <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
                       {tag}
                     </span>
@@ -351,7 +338,7 @@ const Learn = () => {
             <div className="space-y-2">
               <h2 className="text-4xl font-bold">{currentWord.meaning}</h2>
               <div className="flex items-center justify-center gap-2">
-                {currentWord.tags.map((tag, i) => (
+                {currentWord?.partOfSpeech?.map((tag, i) => (
                   <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
                     {tag}
                   </span>

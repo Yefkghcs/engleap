@@ -1,57 +1,36 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
-interface Word {
-  id: number;
-  word: string;
-  tags: string[];
-  phonetic: string;
-  meaning: string;
-  example: string;
-  exampleCn: string;
-}
-
-type WordStatus = "unmarked" | "known" | "unknown";
+import useWordStore, { WordStatus } from "@/models/word";
+import useUserInfo from "@/models/user";
 
 const LearnCards = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { bookId } = useParams();
-  const words = (location.state?.words as Word[]) || [];
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
-  const [knownCount, setKnownCount] = useState(0);
-  const [unknownCount, setUnknownCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [wordStatuses, setWordStatuses] = useState<Record<number, WordStatus>>({});
 
-  // Load word statuses from localStorage on mount
+  const wordsMap = useWordStore((state) => state.wordsMap);
+  const updateWordStatus = useWordStore((state) => state.updateWordStatus);
+  const words = wordsMap?.data || [];
+  const knownCount = words?.filter?.((item) => item.status === WordStatus.KNOWN)?.length || 0;
+  const unknownCount = words?.filter?.((item) => item.status === WordStatus.UNKNOWN)?.length || 0;
+
+  const addCheckStatus = useUserInfo((state) => state.addCheckStatus);
+
   useEffect(() => {
-    const stored = localStorage.getItem('vocabulary_word_statuses');
-    if (stored) {
-      try {
-        const statuses: Record<number, WordStatus> = JSON.parse(stored);
-        setWordStatuses(statuses);
-        
-        // Count known and unknown from stored statuses for current words
-        let known = 0;
-        let unknown = 0;
-        words.forEach(word => {
-          if (statuses[word.id] === "known") known++;
-          if (statuses[word.id] === "unknown") unknown++;
-        });
-        setKnownCount(known);
-        setUnknownCount(unknown);
-      } catch (e) {
-        console.error('Failed to load word statuses:', e);
-      }
-    }
+    const statuses = {};
+    words?.forEach((item) => {
+      statuses[item.id] = item.status;
+    });
+    setWordStatuses(statuses);
   }, [words]);
 
   useEffect(() => {
@@ -92,42 +71,38 @@ const LearnCards = () => {
     );
   };
 
-  const updateWordStatus = (wordId: number, status: "known" | "unknown") => {
-    // Update local state
-    setWordStatuses(prev => {
-      const updated = { ...prev, [wordId]: status };
-      // Save to localStorage
-      localStorage.setItem('vocabulary_word_statuses', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
   const handleKnown = () => {
-    const previousStatus = wordStatuses[currentWord.id];
-    
-    // Only increment if this word wasn't already marked as known
-    if (previousStatus !== "known") {
-      if (previousStatus === "unknown") {
-        setUnknownCount(prev => prev - 1);
-      }
-      setKnownCount(prev => prev + 1);
-    }
-    
-    updateWordStatus(currentWord.id, "known");
+    addCheckStatus();
+
+    updateWordStatus({
+      category: currentWord.category,
+      subcategory: currentWord.subcategory,
+      id: currentWord.id,
+      status: WordStatus.KNOWN,
+    });
+
+    setWordStatuses((prev) => ({
+      ...prev,
+      [currentWord.id]: WordStatus.KNOWN,
+    }))
+    setCurrentIndex(prev => Math.min(words?.length - 1, prev + 1));
   };
 
-  const handleUnknown = () => {
-    const previousStatus = wordStatuses[currentWord.id];
+  const handleUnknown = () => {    
+    addCheckStatus();
     
-    // Only increment if this word wasn't already marked as unknown
-    if (previousStatus !== "unknown") {
-      if (previousStatus === "known") {
-        setKnownCount(prev => prev - 1);
-      }
-      setUnknownCount(prev => prev + 1);
-    }
-    
-    updateWordStatus(currentWord.id, "unknown");
+    updateWordStatus({
+      category: currentWord.category,
+      subcategory: currentWord.subcategory,
+      id: currentWord.id,
+      status: WordStatus.UNKNOWN,
+    });
+
+    setWordStatuses((prev) => ({
+      ...prev,
+      [currentWord.id]: WordStatus.UNKNOWN,
+    }))
+    setCurrentIndex(prev => Math.min(words?.length - 1, prev + 1));
   };
 
   const goToNextWord = () => {
@@ -233,7 +208,7 @@ const LearnCards = () => {
             <div className="flex flex-col items-center gap-2 mb-4">
               <span className="text-lg text-muted-foreground">{currentWord.phonetic}</span>
               <div className="flex flex-wrap items-center justify-center gap-2">
-                {currentWord.tags.map((tag, i) => (
+                {currentWord?.partOfSpeech?.map((tag, i) => (
                   <span key={i} className="bg-foreground text-background text-xs px-2 py-1 rounded">
                     {tag}
                   </span>

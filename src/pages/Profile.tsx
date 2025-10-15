@@ -5,31 +5,41 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Mail, LogOut, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import useUserInfo from "@/models/user";
+import fetch from "@/utils/fetch";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+  const email = useUserInfo((state) => state.email);
+  const clearUser = useUserInfo((state) => state.clearUser);
 
   useEffect(() => {
-    // Check if user is logged in
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    } else {
+    if (!email) {
       navigate("/auth");
     }
-  }, [navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    toast({
-      title: "已退出登录",
-      description: "您已成功退出账号",
+  const handleLogout = async () => {
+    const res = await fetch('/api/user/logout', {
+      method: 'POST',
     });
-    navigate("/");
+    if (res.code === 200) {
+      clearUser();
+      toast({
+        title: "已退出登录",
+        description: "您已成功退出账号",
+      });
+      navigate("/");
+    } else {
+      toast({
+        title: "操作异常",
+        description: "请稍后重试",
+      });
+    }
   };
 
-  if (!user) {
+  if (!email) {
     return null;
   }
 
@@ -59,7 +69,7 @@ const Profile = () => {
                   <Mail className="h-5 w-5" />
                   <div>
                     <p className="text-sm font-medium text-foreground">邮箱地址</p>
-                    <p className="text-sm">{user.email}</p>
+                    <p className="text-sm">{email}</p>
                   </div>
                 </div>
               </div>
@@ -81,7 +91,7 @@ const Profile = () => {
                 修改密码
               </Button>
               
-              <Button
+              {/* <Button
                 variant="outline"
                 className="w-full justify-start"
                 onClick={() => {
@@ -92,7 +102,7 @@ const Profile = () => {
                 }}
               >
                 编辑个人信息
-              </Button>
+              </Button> */}
 
               <Button
                 variant="destructive"

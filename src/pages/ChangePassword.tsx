@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import fetch from "@/utils/fetch";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -41,15 +42,26 @@ const ChangePassword = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    const res = await fetch('/api/user/changePwd', {
+      method: 'POST',
+      data: {
+        currentPassword,
+        newPassword,
+        confirmNewPassword: confirmPassword,
+      },
+    })
+    setIsLoading(false);
+    if (res?.code === 200) {
       toast({
         title: "密码修改成功",
-        description: "您的密码已成功修改"
       });
       navigate("/profile");
-    }, 1000);
+    } else {
+      toast({
+        title: "密码修改异常",
+        description: res.error || "请稍后重试"
+      });
+    }
   };
 
   return (

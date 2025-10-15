@@ -1,21 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { User, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import useUserInfo from "@/models/user";
 
 const Navbar = () => {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
-  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+  const email = useUserInfo((state) => state.email);
+  const getUserInfo = useUserInfo((state) => state.getUserInfo);
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    getUserInfo();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -68,16 +68,16 @@ const Navbar = () => {
               <span className="sr-only">切换主题</span>
             </Button>
             
-            {user ? (
+            {email ? (
               <Link
                 to="/profile"
                 className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:text-primary ${
                   isActive("/profile") ? "text-primary font-semibold" : "text-muted-foreground"
                 }`}
-                title={user.email}
+                title={email}
               >
                 <User className="h-4 w-4" />
-                <span className="hidden lg:inline max-w-[150px] xl:max-w-[200px] truncate">{user.email}</span>
+                <span className="hidden lg:inline max-w-[150px] xl:max-w-[200px] truncate">{email}</span>
               </Link>
             ) : (
               <Link

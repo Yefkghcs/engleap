@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import fetch from "@/utils/fetch";
+import useUserInfo from "@/models/user";
 
 type AuthMode = "login" | "register";
 
@@ -24,6 +26,8 @@ const Auth = () => {
   const [inviteCodeError, setInviteCodeError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const updateUser = useUserInfo((state) => state.updateUser);
 
   // Email validation
   const validateEmail = (email: string) => {
@@ -51,19 +55,29 @@ const Auth = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      localStorage.setItem("user", JSON.stringify({
+    const res = await fetch('api/user/login', {
+      method: 'POST',
+      data: {
         email,
-        name: "用户"
-      }));
+        password
+      },
+    });
+    setIsLoading(false);
+
+    if (res?.code === 200) {
+      updateUser(res?.user?.email);
+      // 登录成功
       toast({
         title: "登录成功",
-        description: "欢迎回来！"
+        description: "欢迎使用 EngLeap！"
       });
       navigate("/");
-    }, 1000);
+    } else {
+      toast({
+        title: "操作异常",
+        description: res?.message ||"请稍后重试",
+      });
+    }
   };
 
   // Handle register
@@ -74,10 +88,6 @@ const Auth = () => {
 
     if (!inviteCode) {
       setInviteCodeError("请输入验证码");
-      return;
-    }
-    if (inviteCode.toUpperCase() !== "AKSADA") {
-      setInviteCodeError("验证码错误");
       return;
     }
     if (!email) {
@@ -103,19 +113,31 @@ const Auth = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      localStorage.setItem("user", JSON.stringify({
+    const res = await fetch('api/user/register', {
+      method: 'POST',
+      data: {
         email,
-        name: "用户"
-      }));
+        password,
+        confirmPassword,
+        verificationCode: inviteCode,
+      },
+    });
+    setIsLoading(false);
+
+    if (res?.code === 200) {
+      updateUser(res?.user?.email);
+      // 注册成功
       toast({
         title: "注册成功",
         description: "欢迎加入 EngLeap！"
       });
       navigate("/");
-    }, 1000);
+    } else {
+      toast({
+        title: "操作异常",
+        description: res?.message || "请稍后重试"
+      });
+    }
   };
 
   // Reset form
@@ -138,9 +160,9 @@ const Auth = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <Link to="/" className="text-muted-foreground hover:text-primary">
+            <div onClick={() => navigate(-1)} className="text-muted-foreground hover:text-primary">
               <ArrowLeft className="h-5 w-5" />
-            </Link>
+            </div>
             <CardTitle>{mode === "login" ? "登录" : "注册"}</CardTitle>
             <div className="w-5" />
           </div>
@@ -214,7 +236,7 @@ const Auth = () => {
                   placeholder="输入6位验证码"
                   value={inviteCode}
                   onChange={(e) => {
-                    setInviteCode(e.target.value.toUpperCase());
+                    setInviteCode(e.target.value);
                     setInviteCodeError("");
                   }}
                   disabled={isLoading}
