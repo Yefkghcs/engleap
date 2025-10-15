@@ -249,12 +249,25 @@ const SceneLearning = () => {
         <div>
           <h3 className="text-xl font-semibold mb-4">场景单词</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {scene.words.map((word) => (
-              <Card key={word.id} className="p-4 hover:shadow-md transition-all">
-                {/* Word Header */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="text-xl font-bold">{word.word}</h4>
+            {scene.words.map((word) => {
+              const wordStatus = wordStatuses[word.id];
+              const cardClassName = wordStatus === "known" 
+                ? "p-4 hover:shadow-md transition-all border-2 border-green-500 bg-green-50 dark:bg-green-950/20" 
+                : wordStatus === "unknown"
+                ? "p-4 hover:shadow-md transition-all border-2 border-red-500 bg-red-50 dark:bg-red-950/20"
+                : "p-4 hover:shadow-md transition-all";
+              const wordColorClass = wordStatus === "known" 
+                ? "text-green-600 dark:text-green-400" 
+                : wordStatus === "unknown" 
+                ? "text-red-600 dark:text-red-400" 
+                : "";
+
+              return (
+                <Card key={word.id} className={cardClassName}>
+                  {/* Word Header */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className={`text-xl font-bold ${wordColorClass}`}>{word.word}</h4>
                     <button
                       onClick={() => playAudio(word.word)}
                       className="text-muted-foreground hover:text-foreground transition-colors"
@@ -289,7 +302,7 @@ const SceneLearning = () => {
                       onClick={() => playAudio(word.example)}
                       className="text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      <Volume2 className="w-3 h-3" />
+                      <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
                   <p className="text-sm leading-relaxed italic">{word.example}</p>
@@ -328,7 +341,8 @@ const SceneLearning = () => {
                   </Button>
                 </div>
               </Card>
-            ))}
+            );
+            })}
           </div>
         </div>
       </div>
