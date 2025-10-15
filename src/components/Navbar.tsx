@@ -19,50 +19,24 @@ const Navbar = () => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-
-  return (
-    <nav className="border-b bg-white/60 backdrop-blur-lg dark:bg-card/60 dark:border-border relative z-10">
+  return <nav className="border-b bg-white/60 backdrop-blur-lg dark:bg-card/60 dark:border-border relative z-10">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="text-xl font-bold text-primary">
-            EngLeap
-          </Link>
+          <Link to="/" className="text-xl font-bold text-primary">EngLeap 英语学习</Link>
           
           <div className="flex items-center gap-3 sm:gap-6 md:gap-8">
-            <Link
-              to="/"
-              className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
-                isActive("/") ? "text-primary font-semibold" : "text-muted-foreground"
-              }`}
-            >
+            <Link to="/" className={`text-sm font-medium transition-all duration-200 hover:text-primary ${isActive("/") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
               <span className="hidden sm:inline">首页</span>
               <span className="sm:hidden">首页</span>
             </Link>
-            <Link
-              to="/vocabulary"
-              className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
-                isActive("/vocabulary") || location.pathname.startsWith("/vocabulary")
-                  ? "text-primary font-semibold"
-                  : "text-muted-foreground"
-              }`}
-            >
+            <Link to="/vocabulary" className={`text-sm font-medium transition-all duration-200 hover:text-primary ${isActive("/vocabulary") || location.pathname.startsWith("/vocabulary") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
               背单词
             </Link>
-            <Link
-              to="/mistakes"
-              className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
-                isActive("/mistakes") ? "text-primary font-semibold" : "text-muted-foreground"
-              }`}
-            >
+            <Link to="/mistakes" className={`text-sm font-medium transition-all duration-200 hover:text-primary ${isActive("/mistakes") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
               错题本
             </Link>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="h-8 w-8"
-            >
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="h-8 w-8">
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">切换主题</span>
@@ -88,13 +62,10 @@ const Navbar = () => {
               >
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">登录</span>
-              </Link>
-            )}
+              </Link>}
           </div>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
-
 export default Navbar;

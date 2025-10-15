@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,8 @@ const MistakesDetail = () => {
   const [selectedWords, setSelectedWords] = useState<WordsMapItem[]>([]);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const wordsPerPage = 30;
 
   const getWordDataByMistakes = useWordStore((state) => state.getWordDataByMistakes);
   const mistakesMap = useWordStore((state) => state.mistakesMap);
@@ -99,6 +102,17 @@ const MistakesDetail = () => {
     await deleteMistake(selectedWords);
     updateMistakeData();
   };
+
+  // Pagination logic
+  const totalPages = Math.ceil(displayedWords.length / wordsPerPage);
+  const startIndex = (currentPage - 1) * wordsPerPage;
+  const endIndex = startIndex + wordsPerPage;
+  const currentWords = displayedWords.slice(startIndex, endIndex);
+
+  // Reset to page 1 when displayed words change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [displayedWords.length]);
 
   return (
     <>      
@@ -184,61 +198,114 @@ const MistakesDetail = () => {
         </Alert>
       )}
 
-      {/* Word Grid or Empty State */}
-      {displayedWords.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="w-32 h-32 bg-muted rounded-full mb-6 flex items-center justify-center">
-            <svg className="w-16 h-16 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+        {/* Word Grid or Empty State */}
+        {displayedWords.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-32 h-32 bg-muted rounded-full mb-6 flex items-center justify-center">
+              <svg className="w-16 h-16 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">暂无错题</h3>
+            <p className="text-muted-foreground">
+              {selectedDates.length > 0 
+                ? "所选日期没有错题记录" 
+                : "继续学习，保持完美记录！"}
+            </p>
           </div>
-          <h3 className="text-xl font-semibold mb-2">暂无错题</h3>
-          <p className="text-muted-foreground">
-            {selectedDates.length > 0 
-              ? "所选日期没有错题记录" 
-              : "继续学习，保持完美记录！"}
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {displayedWords.map((word) => (
-            <Card
-              key={`${word.subcategory}-${word.id}`}
-              className={`p-4 cursor-pointer transition-all ${
-                selectedIds.includes(`${word.subcategory}-${word.id}`) 
-                  ? "ring-2 ring-primary bg-primary/5" 
-                  : "hover:shadow-lg"
-              }`}
-              onClick={() => handleWordSelect(word)}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{word.word}</span>
-                  {word?.partOfSpeech?.map((tag: string, i: number) => (
-                    <span key={i} className="text-xs bg-black dark:bg-black text-white px-2 py-0.5 rounded">
-                      {tag}
-                    </span>
-                  ))}
-                  <button 
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      playAudio(word.word);
-                    }}
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+        ) : (
+          <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {currentWords.map((word) => (
+              <Card
+                key={`${word.subcategory}-${word.id}`}
+                className={`p-4 cursor-pointer transition-all ${
+                  selectedIds.includes(`${word.subcategory}-${word.id}`) 
+                    ? "ring-2 ring-primary bg-primary/5" 
+                    : "hover:shadow-lg"
+                }`}
+                onClick={() => handleWordSelect(word)}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{word.word}</span>
+                    {word?.partOfSpeech?.map((tag: string, i: number) => (
+                      <span key={i} className="text-xs bg-black dark:bg-black text-white px-2 py-0.5 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                    <button 
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playAudio(word.word);
+                      }}
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <p className="text-sm text-foreground mb-2">{word.meaning}</p>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{word.mistakes?.[word.mistakes?.length - 1]}</span>
-                <span className="text-destructive">错误 {word.mistakes?.length || 0} 次</span>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+                <p className="text-sm text-foreground mb-2">{word.meaning}</p>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{word.mistakes?.[word.mistakes?.length - 1]}</span>
+                  <span className="text-destructive">错误 {word.mistakes?.length || 0} 次</span>
+                </div>
+              </Card>
+            ))}
+          </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  
+                  {[...Array(totalPages)].map((_, i) => {
+                    const pageNum = i + 1;
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      pageNum === 1 ||
+                      pageNum === totalPages ||
+                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(pageNum)}
+                            isActive={currentPage === pageNum}
+                            className="cursor-pointer"
+                          >
+                            {pageNum}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+          </>
+        )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import useUserInfo from "@/models/user";
@@ -25,6 +26,9 @@ const LearnedWordsDetail = () => {
   const navigate = useNavigate();
   const [selectedWords, setSelectedWords] = useState<WordsMapItem[]>([]);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const wordsPerPage = 30;
+
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.ALL);
 
   const learnedMap = useWordStore((state) => state.learnedMap);
@@ -77,6 +81,17 @@ const LearnedWordsDetail = () => {
 
   // Filter words based on status
   const filteredWords = displayedWords;
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredWords.length / wordsPerPage);
+  const startIndex = (currentPage - 1) * wordsPerPage;
+  const endIndex = startIndex + wordsPerPage;
+  const currentWords = filteredWords.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
 
   return (
     <>        
@@ -131,68 +146,122 @@ const LearnedWordsDetail = () => {
         </Alert>
       )}
 
-      {/* Word Grid or Empty State */}
-      {filteredWords.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="w-32 h-32 bg-muted rounded-full mb-6 flex items-center justify-center">
-            <svg className="w-16 h-16 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+        {/* Word Grid or Empty State */}
+        {filteredWords.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-32 h-32 bg-muted rounded-full mb-6 flex items-center justify-center">
+              <svg className="w-16 h-16 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">还没有学过的单词</h3>
+            <p className="text-muted-foreground">
+              {filter === "known" && "还没有标记为认识的单词"}
+              {filter === "unknown" && "还没有标记为不认识的单词"}
+              {filter === "all" && "开始学习并标记单词吧！"}
+            </p>
           </div>
-          <h3 className="text-xl font-semibold mb-2">还没有学过的单词</h3>
-          <p className="text-muted-foreground">
-            {filter === "known" && "还没有标记为认识的单词"}
-            {filter === "unknown" && "还没有标记为不认识的单词"}
-            {filter === "all" && "开始学习并标记单词吧！"}
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {filteredWords.map((word) => (
-            <Card
-              key={`${word.subcategory}-${word.id}`}
-              className={`p-4 cursor-pointer transition-all ${
-                selectedIds.includes(`${word.subcategory}-${word.id}`) 
-                  ? "ring-2 ring-primary bg-primary/5" 
-                  : "hover:shadow-lg"
-              }`}
-              onClick={() => handleWordSelect(word)}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium ${
-                    word.status === "known" ? "text-green-600" : "text-red-600"
-                  }`}>{word.word}</span>
-                  {word?.partOfSpeech?.map((tag: string, i: number) => (
-                    <span key={i} className="text-xs bg-black dark:bg-black text-white px-2 py-0.5 rounded">
-                      {tag}
-                    </span>
-                  ))}
-                  <button 
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      playAudio(word.word);
-                    }}
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+        ) : (
+          <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {currentWords.map((word) => (
+              <Card
+                key={`${word.subcategory}-${word.id}`}
+                className={`p-4 cursor-pointer transition-all ${
+                  selectedIds.includes(`${word.subcategory}-${word.id}`) 
+                    ? "ring-2 ring-primary bg-primary/5" 
+                    : "hover:shadow-lg"
+                }`}
+                onClick={() => handleWordSelect(word)}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`font-medium ${
+                      word.status === "known" ? "text-green-600" : "text-red-600"
+                    }`}>{word.word}</span>
+                    {word?.partOfSpeech?.map((tag: string, i: number) => (
+                      <span key={i} className="text-xs bg-black dark:bg-black text-white px-2 py-0.5 rounded">
+                        {tag}
+                      </span>
+                    ))}
+                    <button 
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playAudio(word.word);
+                      }}
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <p className="text-sm text-foreground mb-2">{word.meaning}</p>
-              <div className="flex items-center justify-between text-xs">
-                <span className={
-                  word.status === "known" 
-                    ? "text-green-600" 
-                    : "text-red-600"
-                }>
-                  {word.status === "known" ? "认识" : "不认识"}
-                </span>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+                <p className="text-sm text-foreground mb-2">{word.meaning}</p>
+                <div className="flex items-center justify-between text-xs">
+                  <span className={
+                    word.status === "known" 
+                      ? "text-green-600" 
+                      : "text-red-600"
+                  }>
+                    {word.status === "known" ? "认识" : "不认识"}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  
+                  {[...Array(totalPages)].map((_, i) => {
+                    const pageNum = i + 1;
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      pageNum === 1 ||
+                      pageNum === totalPages ||
+                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(pageNum)}
+                            isActive={currentPage === pageNum}
+                            className="cursor-pointer"
+                          >
+                            {pageNum}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+          </>
+        )}
     </>
   );
 };
@@ -216,4 +285,5 @@ const LearnedWords = () => {
     </div>
   );
 };
+
 export default LearnedWords;

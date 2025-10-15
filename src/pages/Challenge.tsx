@@ -2,7 +2,20 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, Volume2 } from "lucide-react";
+import { Volume2, Settings } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
+import CelebrationEffect from "@/components/CelebrationEffect";
 import { toast } from "@/hooks/use-toast";
 import useWordStore, { WordsMapItem } from "@/models/word";
 import useUserInfo from "@/models/user";
@@ -27,7 +40,13 @@ const Challenge = () => {
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timerDuration, setTimerDuration] = useState(() => {
+    const stored = localStorage.getItem('challenge_timer_duration');
+    return stored ? parseInt(stored) : 10;
+  });
+  const [timeLeft, setTimeLeft] = useState(timerDuration);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   const addMistake = useWordStore((state) => state.addMistake);
 
@@ -40,14 +59,18 @@ const Challenge = () => {
         description: "请返回词汇书选择要挑战的单词",
         variant: "destructive",
       });
-      navigate(`/vocabulary/${bookId}`);
+      if (location.pathname.includes('scene/challenge')) {
+        navigate('/vocabulary');
+      } else {
+        navigate(`/vocabulary/${bookId}`);
+      }
       return;
     }
 
     // Generate questions
     const generatedQuestions = generateQuestions(words);
     setQuestions(generatedQuestions);
-  }, [words, navigate, bookId]);
+  }, [words, navigate, bookId, location.pathname]);
 
   // Timer countdown
   useEffect(() => {
@@ -68,8 +91,8 @@ const Challenge = () => {
 
   // Reset timer when moving to next question
   useEffect(() => {
-    setTimeLeft(10);
-  }, [currentIndex]);
+    setTimeLeft(timerDuration);
+  }, [currentIndex, timerDuration]);
 
   const generateQuestions = (words: WordsMapItem[]): Question[] => {
     const questions: Question[] = [];
@@ -202,12 +225,28 @@ const Challenge = () => {
       setSelectedAnswer(null);
       setShowResult(false);
     } else {
-      setShowCompletion(true);
+      setShowCelebration(true);
+      setTimeout(() => setShowCompletion(true), 2000);
     }
   };
 
-  const handleExit = () => {
-    navigate(`/vocabulary/${bookId}`);
+  const handleExitClick = () => {
+    setShowExitDialog(true);
+  };
+
+  const handleConfirmExit = () => {
+    if (location.pathname.includes('scene/challenge')) {
+      const sceneId = location.pathname.split('/').pop();
+      navigate(`/vocabulary/scene/${sceneId}`);
+    } else {
+      navigate(`/vocabulary/${bookId}`);
+    }
+  };
+
+  const handleTimerDurationChange = (duration: number) => {
+    setTimerDuration(duration);
+    localStorage.setItem('challenge_timer_duration', duration.toString());
+    setTimeLeft(duration);
   };
 
   if (questions.length === 0) return null;
@@ -238,7 +277,7 @@ const Challenge = () => {
               </div>
             </div>
           </div>
-          <Button onClick={handleExit} className="w-full" size="lg">
+          <Button onClick={handleConfirmExit} className="w-full" size="lg">
             返回词汇书
           </Button>
         </Card>
@@ -247,13 +286,11 @@ const Challenge = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col pb-20">
       {/* Header */}
       <div className="bg-card border-b px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Button variant="ghost" size="icon" onClick={handleExit}>
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-xl font-bold mb-2">挑战模式</h1>
           <div className="flex items-center gap-6">
             <span className="text-sm text-muted-foreground">
               题目 {currentIndex + 1} / {questions.length}
@@ -266,7 +303,7 @@ const Challenge = () => {
       </div>
 
       {/* Question */}
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="flex-1 max-w-3xl mx-auto px-4 py-8 w-full">
         <Card className="overflow-hidden">
           {/* Timer Bar */}
           <div className="relative h-20 bg-gradient-to-br from-primary/10 to-primary/5 border-b flex items-center justify-center">
@@ -279,7 +316,7 @@ const Challenge = () => {
             {/* Progress bar */}
             <div 
               className="absolute bottom-0 left-0 h-1 bg-primary transition-all duration-1000 ease-linear"
-              style={{ width: `${(timeLeft / 10) * 100}%` }}
+              style={{ width: `${(timeLeft / timerDuration) * 100}%` }}
             />
           </div>
 
@@ -386,6 +423,67 @@ const Challenge = () => {
           </div>
         </Card>
       </div>
+
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-border bg-background z-50">
+        <div className="max-w-4xl mx-auto flex justify-between">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost">
+                设置
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm">挑战设置</h3>
+                <div className="space-y-3">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="timer" className="text-sm">读秒时间</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[10, 15, 20, 25, 30].map((duration) => (
+                        <Button
+                          key={duration}
+                          variant={timerDuration === duration ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleTimerDurationChange(duration)}
+                          className="text-xs"
+                        >
+                          {duration}秒
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Button 
+            variant="ghost" 
+            onClick={handleExitClick}
+          >
+            退出
+          </Button>
+        </div>
+      </div>
+
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认退出？</AlertDialogTitle>
+            <AlertDialogDescription>
+              退出后当前进度将不会保存，确定要退出吗？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmExit}>退出</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Celebration Effect */}
+      {showCelebration && <CelebrationEffect />}
     </div>
   );
 };

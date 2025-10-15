@@ -2,8 +2,26 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { Volume2, Eye, EyeOff, ThumbsDown, ThumbsUp, ChevronLeft, ChevronRight, Settings } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
+import CelebrationEffect from "@/components/CelebrationEffect";
 import useWordStore, { WordStatus } from "@/models/word";
 import useUserInfo from "@/models/user";
 
@@ -16,6 +34,9 @@ const LearnCards = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [wordStatuses, setWordStatuses] = useState<Record<number, WordStatus>>({});
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [playSound, setPlaySound] = useState(true);
+  const [showExitDialog, setShowExitDialog] = useState(false);
 
   const wordsMap = useWordStore((state) => state.wordsMap);
   const updateWordStatus = useWordStore((state) => state.updateWordStatus);
@@ -46,20 +67,22 @@ const LearnCards = () => {
 
   // Auto-play when word changes
   useEffect(() => {
-    if (currentWord && !hasPlayedAudio) {
+    if (currentWord && !hasPlayedAudio && playSound) {
       playAudio(currentWord.word);
       setHasPlayedAudio(true);
     }
-  }, [currentIndex, hasPlayedAudio]);
+  }, [currentIndex, hasPlayedAudio, playSound]);
 
   const currentWord = words[currentIndex];
 
   const playAudio = (text: string) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = 0.8;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    if (playSound) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.8;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const highlightWord = (text: string, word: string) => {
@@ -86,6 +109,13 @@ const LearnCards = () => {
       [currentWord.id]: WordStatus.KNOWN,
     }))
     setCurrentIndex(prev => Math.min(words?.length - 1, prev + 1));
+    
+    // Auto advance to next word or complete
+    if (currentIndex < words.length - 1) {
+      setTimeout(() => goToNextWord(), 300);
+    } else {
+      setTimeout(() => handleComplete(), 300);
+    }
   };
 
   const handleUnknown = () => {    
@@ -103,6 +133,13 @@ const LearnCards = () => {
       [currentWord.id]: WordStatus.UNKNOWN,
     }))
     setCurrentIndex(prev => Math.min(words?.length - 1, prev + 1));
+    
+    // Auto advance to next word or complete
+    if (currentIndex < words.length - 1) {
+      setTimeout(() => goToNextWord(), 300);
+    } else {
+      setTimeout(() => handleComplete(), 300);
+    }
   };
 
   const goToNextWord = () => {
@@ -122,10 +159,15 @@ const LearnCards = () => {
   };
 
   const handleComplete = () => {
-    setShowCompletion(true);
+    setShowCelebration(true);
+    setTimeout(() => setShowCompletion(true), 2000);
   };
 
-  const handleExit = () => {
+  const handleExitClick = () => {
+    setShowExitDialog(true);
+  };
+
+  const handleConfirmExit = () => {
     navigate(`/vocabulary/${bookId}`);
   };
 
@@ -148,7 +190,7 @@ const LearnCards = () => {
               <span className="font-bold">{words.length}</span>
             </div>
           </div>
-          <Button onClick={handleExit} className="w-full" size="lg">
+          <Button onClick={handleConfirmExit} className="w-full" size="lg">
             返回词汇书
           </Button>
         </Card>
@@ -159,13 +201,11 @@ const LearnCards = () => {
   if (!currentWord) return null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col pb-20">
       {/* Header */}
       <div className="bg-card border-b px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Button variant="ghost" size="icon" onClick={handleExit}>
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-xl font-bold mb-2">学习模式</h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
               {currentIndex + 1} / {words.length}
@@ -179,7 +219,7 @@ const LearnCards = () => {
       </div>
 
       {/* Card */}
-      <div className="max-w-4xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)] gap-6">
+      <div className="flex-1 max-w-4xl mx-auto px-4 py-12 flex items-center justify-center gap-6 w-full">
         {/* Previous Button */}
         <Button
           variant="ghost"
@@ -271,11 +311,12 @@ const LearnCards = () => {
               不认识
             </Button>
             <Button 
+              variant="outline"
               size="default"
               className={`flex-1 h-10 text-sm gap-2 transition-all ${
                 wordStatuses[currentWord.id] === "known" 
-                  ? "bg-green-600 hover:bg-green-700 text-white shadow-md" 
-                  : "bg-green-600 hover:bg-green-700 text-white"
+                  ? "border-green-500 bg-green-50 dark:bg-green-950/20 text-green-600 dark:text-green-400 shadow-sm" 
+                  : "hover:border-green-300 hover:text-green-600"
               }`}
               onClick={handleKnown}
             >
@@ -284,25 +325,6 @@ const LearnCards = () => {
             </Button>
           </div>
 
-          {/* Navigation Helper */}
-          {wordStatuses[currentWord.id] && (
-            <div className="mt-4 text-center">
-              <p className="text-sm text-muted-foreground mb-2">
-                已标记为{wordStatuses[currentWord.id] === "known" ? "认识" : "不认识"}
-              </p>
-              <div className="flex gap-2 justify-center">
-                {currentIndex < words.length - 1 ? (
-                  <Button variant="outline" size="sm" onClick={goToNextWord}>
-                    下一个单词
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={handleComplete}>
-                    完成学习
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
         </Card>
 
         {/* Next Button */}
@@ -316,6 +338,59 @@ const LearnCards = () => {
           <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
+
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-border bg-background z-50">
+        <div className="max-w-4xl mx-auto flex justify-between">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost">
+                设置
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="start">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm">学习设置</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="sound" className="text-sm">单词声音</Label>
+                    <Switch 
+                      id="sound" 
+                      checked={playSound}
+                      onCheckedChange={setPlaySound}
+                    />
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+          <Button 
+            variant="ghost" 
+            onClick={handleExitClick}
+          >
+            退出
+          </Button>
+        </div>
+      </div>
+
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认退出？</AlertDialogTitle>
+            <AlertDialogDescription>
+              退出后当前进度将不会保存，确定要退出吗？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmExit}>退出</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Celebration Effect */}
+      {showCelebration && <CelebrationEffect />}
     </div>
   );
 };
