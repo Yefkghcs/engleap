@@ -251,11 +251,6 @@ const SceneLearning = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {scene.words.map((word) => {
               const wordStatus = wordStatuses[word.id];
-              const cardClassName = wordStatus === "known" 
-                ? "p-4 hover:shadow-md transition-all border-2 border-green-500 bg-green-50 dark:bg-green-950/20" 
-                : wordStatus === "unknown"
-                ? "p-4 hover:shadow-md transition-all border-2 border-red-500 bg-red-50 dark:bg-red-950/20"
-                : "p-4 hover:shadow-md transition-all";
               const wordColorClass = wordStatus === "known" 
                 ? "text-green-600 dark:text-green-400" 
                 : wordStatus === "unknown" 
@@ -263,7 +258,7 @@ const SceneLearning = () => {
                 : "";
 
               return (
-                <Card key={word.id} className={cardClassName}>
+                <Card key={word.id} className="p-4 hover:shadow-md transition-all">
                   {/* Word Header */}
                   <div className="mb-4">
                     <div className="flex items-center gap-2 mb-2">
