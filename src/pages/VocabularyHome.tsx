@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
@@ -18,12 +18,14 @@ import useCustomWordStore from "@/models/custom";
 
 const VocabularyHome = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const getWordCategories = useWordCategoryStore((state) => state.getWordCategories);
   const categoryList = useWordCategoryStore((state) => state.categoryList);
   const getTotalData = useWordStore((state) => state.getTotalData);
   const totalData = useWordStore((state) => state.totalData);
 
+  const email = useUserInfo((state) => state.email);
   const checkStatus = useUserInfo((state) => state.checkStatus);
   const getCheckStatus = useUserInfo((state) => state.getCheckStatus);
   const totalCheckIns = checkStatus?.length || 0;
@@ -50,6 +52,13 @@ const VocabularyHome = () => {
         title: "删除成功",
         description: `已删除「${name || ''}」词库`,
       });
+    }
+  };
+
+  const handleVocabularyClick = (e: React.MouseEvent, path: string) => {
+    if (!email) {
+      e.preventDefault();
+      navigate('/auth');
     }
   };
 
@@ -173,7 +182,11 @@ const VocabularyHome = () => {
               <TabsContent key={`tabContent_${item?.category}`} value={item.category}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   {item?.subcategories.map((book) => (
-                    <Link key={book?.id} to={`/vocabulary/${book?.id || ''}`}>
+                    <Link 
+                      key={book?.id} 
+                      to={`/vocabulary/${book?.id || ''}`}
+                      onClick={(e) => handleVocabularyClick(e, `/vocabulary/${book?.id || ''}`)}
+                    >
                       <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                         <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
                           <span className="text-4xl">{VOCABULARY_HOME_UI_MAP?.[book?.id]?.emoji || '📑'}</span>
@@ -203,7 +216,10 @@ const VocabularyHome = () => {
                 {/* Existing Custom Vocabularies */}
                 {customCategories?.map((book) => (
                   <div key={book?.subcategory} className="relative group">
-                    <Link to={`/vocabulary/custom/${book?.subcategory}`}>
+                    <Link 
+                      to={`/vocabulary/custom/${book?.subcategory}`}
+                      onClick={(e) => handleVocabularyClick(e, `/vocabulary/custom/${book?.subcategory}`)}
+                    >
                       <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden">
                         <div className="h-20 bg-accent/50 rounded-lg mb-3 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
                           <span className="text-4xl">{book?.emoji || '📚'}</span>
@@ -233,7 +249,7 @@ const VocabularyHome = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            <Link to="/vocabulary/scene/supermarket-herbs">
+            <Link to="/vocabulary/scene/supermarket-herbs" onClick={(e) => handleVocabularyClick(e, '/vocabulary/scene/supermarket-herbs')}>
               <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                 <div className="h-20 bg-green-50 dark:bg-green-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-950/30 transition-colors">
                   <span className="text-4xl">🌿</span>
@@ -243,7 +259,7 @@ const VocabularyHome = () => {
               </Card>
             </Link>
 
-            <Link to="/vocabulary/scene/coffee-shop">
+            <Link to="/vocabulary/scene/coffee-shop" onClick={(e) => handleVocabularyClick(e, '/vocabulary/scene/coffee-shop')}>
               <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                 <div className="h-20 bg-amber-50 dark:bg-amber-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-amber-100 dark:group-hover:bg-amber-950/30 transition-colors">
                   <span className="text-4xl">☕</span>
@@ -253,7 +269,7 @@ const VocabularyHome = () => {
               </Card>
             </Link>
 
-            <Link to="/vocabulary/scene/gym">
+            <Link to="/vocabulary/scene/gym" onClick={(e) => handleVocabularyClick(e, '/vocabulary/scene/gym')}>
               <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                 <div className="h-20 bg-red-50 dark:bg-red-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-red-100 dark:group-hover:bg-red-950/30 transition-colors">
                   <span className="text-4xl">💪</span>
@@ -263,7 +279,7 @@ const VocabularyHome = () => {
               </Card>
             </Link>
 
-            <Link to="/vocabulary/scene/airport">
+            <Link to="/vocabulary/scene/airport" onClick={(e) => handleVocabularyClick(e, '/vocabulary/scene/airport')}>
               <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                 <div className="h-20 bg-blue-50 dark:bg-blue-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-950/30 transition-colors">
                   <span className="text-4xl">✈️</span>
@@ -273,7 +289,7 @@ const VocabularyHome = () => {
               </Card>
             </Link>
 
-            <Link to="/vocabulary/scene/restaurant">
+            <Link to="/vocabulary/scene/restaurant" onClick={(e) => handleVocabularyClick(e, '/vocabulary/scene/restaurant')}>
               <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                 <div className="h-20 bg-orange-50 dark:bg-orange-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-orange-100 dark:group-hover:bg-orange-950/30 transition-colors">
                   <span className="text-4xl">🍽️</span>
@@ -283,7 +299,7 @@ const VocabularyHome = () => {
               </Card>
             </Link>
 
-            <Link to="/vocabulary/scene/library">
+            <Link to="/vocabulary/scene/library" onClick={(e) => handleVocabularyClick(e, '/vocabulary/scene/library')}>
               <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group">
                 <div className="h-20 bg-purple-50 dark:bg-purple-950/20 rounded-lg mb-3 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-950/30 transition-colors">
                   <span className="text-4xl">📚</span>

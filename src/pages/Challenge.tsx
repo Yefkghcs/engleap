@@ -288,7 +288,7 @@ const Challenge = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-20">
+    <div className="min-h-screen h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-card border-b px-4 py-4">
         <div className="max-w-4xl mx-auto">

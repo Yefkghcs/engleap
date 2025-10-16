@@ -226,7 +226,7 @@ const Learn = () => {
 
   // Main Learning Screen
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-20">
+    <div className="min-h-screen h-screen bg-background flex flex-col overflow-hidden">
       <div className="p-4 border-b border-border">
         <div className="max-w-4xl mx-auto flex items-start justify-between">
           <div className="flex-1">

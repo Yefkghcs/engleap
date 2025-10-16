@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Eye, EyeOff, Volume2, ChevronDown, LayoutGrid, List } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import useUserInfo from "@/models/user";
 import LoginBtn from "@/components/loginBtn";
 import useWordStore, { WordsMapItem, WordStatus } from "@/models/word";
@@ -34,6 +35,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [isPageSizeOpen, setIsPageSizeOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "cards">("cards");
+  const [isLoading, setIsLoading] = useState(true);
 
   const getWordData = useWordStore((state) => state.getWordData);
   const wordsMap = useWordStore((state) => state.wordsMap);
@@ -58,22 +60,24 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
 
   useEffect(() => {
     if (!bookId) return;
+    setIsLoading(true);
     getWordData({
       page: currentPage,
       limit: itemsPerPage,
       subcategory: bookId,
       status: StatusMap[filter],
-    });
+    }).finally(() => setIsLoading(false));
   }, [bookId, currentPage, filter, getWordData, itemsPerPage]);
 
   useEffect(() => {
     if (!customId) return;
+    setIsLoading(true);
     getCustomWords({
       page: currentPage,
       limit: itemsPerPage,
       subcategory: customId,
       status: StatusMap[filter],
-    });
+    }).finally(() => setIsLoading(false));
   }, [currentPage, customId, filter, getCustomWords, itemsPerPage]);
 
   // Update itemsPerPage when viewMode changes
@@ -299,7 +303,27 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
             </div>
 
             <div className="divide-y divide-border">
-              {currentWords.length === 0 ? (
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="px-6 py-3 grid grid-cols-12 gap-4">
+                    <div className="col-span-2 space-y-2">
+                      <Skeleton className="h-5 w-24" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    <div className="col-span-1">
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                    <div className="col-span-6 space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                    <div className="col-span-3 flex gap-2">
+                      <Skeleton className="h-9 w-16" />
+                      <Skeleton className="h-9 w-16" />
+                    </div>
+                  </div>
+                ))
+              ) : currentWords.length === 0 ? (
                 <div className="px-6 py-16 text-center">
                   <p className="text-muted-foreground text-lg">暂无单词</p>
                   <p className="text-muted-foreground text-sm mt-2">
@@ -431,7 +455,26 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
 
           {/* Mobile List View */}
           <div className="sm:hidden space-y-3">
-            {currentWords.length === 0 ? (
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <Card key={i} className="p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-2 flex-1">
+                        <Skeleton className="h-6 w-32" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                    </div>
+                    <Skeleton className="h-20 w-full" />
+                    <div className="flex gap-2">
+                      <Skeleton className="h-9 flex-1" />
+                      <Skeleton className="h-9 flex-1" />
+                    </div>
+                  </div>
+                </Card>
+              ))
+            ) : currentWords.length === 0 ? (
               <Card className="p-8">
                 <div className="text-center">
                   <p className="text-muted-foreground">暂无单词</p>
@@ -568,7 +611,33 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
       {/* Cards View */}
       {viewMode === "cards" && (
         <div>
-          {currentWords.length === 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Card key={i} className="p-4 flex flex-col h-full">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-7 w-32" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                    </div>
+                    <Skeleton className="h-4 w-24" />
+                    <div className="flex gap-1">
+                      <Skeleton className="h-6 w-12" />
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Skeleton className="h-9 flex-1" />
+                      <Skeleton className="h-9 flex-1" />
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : currentWords.length === 0 ? (
             <Card className="p-16">
               <div className="text-center">
                 <p className="text-muted-foreground text-lg">暂无单词</p>

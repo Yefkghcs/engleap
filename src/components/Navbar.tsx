@@ -16,6 +16,14 @@ const Navbar = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Hide navbar on learning pages
+  const hiddenPaths = ['/learn', '/challenge', '/learn-cards'];
+  const shouldHide = hiddenPaths.some(path => location.pathname.includes(path));
+  
+  if (shouldHide) {
+    return null;
+  }
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
