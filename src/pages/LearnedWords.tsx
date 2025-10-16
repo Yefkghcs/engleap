@@ -27,19 +27,23 @@ const LearnedWordsDetail = () => {
   const [selectedWords, setSelectedWords] = useState<WordsMapItem[]>([]);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const wordsPerPage = 30;
 
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.ALL);
 
   const learnedMap = useWordStore((state) => state.learnedMap);
   const getLearnedWords = useWordStore((state) => state.getLearnedWords);
   const displayedWords = learnedMap?.data || [];
+  const totalPages = learnedMap?.pages || 1;
 
   const selectedIds = selectedWords?.map?.((item) => `${item.subcategory}-${item.id}`);
 
   useEffect(() => {
-    getLearnedWords(StatusMap[filter]);
-  }, [filter]);
+    getLearnedWords({
+      statusList: StatusMap[filter],
+      page: currentPage,
+      limit: 30,
+    });
+  }, [currentPage, filter]);
 
   // Play audio function
   const playAudio = (text: string) => {
@@ -81,12 +85,6 @@ const LearnedWordsDetail = () => {
 
   // Filter words based on status
   const filteredWords = displayedWords;
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredWords.length / wordsPerPage);
-  const startIndex = (currentPage - 1) * wordsPerPage;
-  const endIndex = startIndex + wordsPerPage;
-  const currentWords = filteredWords.slice(startIndex, endIndex);
 
   // Reset to page 1 when filter changes
   useEffect(() => {
@@ -164,7 +162,7 @@ const LearnedWordsDetail = () => {
         ) : (
           <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {currentWords.map((word) => (
+            {displayedWords.map((word) => (
               <Card
                 key={`${word.subcategory}-${word.id}`}
                 className={`p-4 cursor-pointer transition-all ${

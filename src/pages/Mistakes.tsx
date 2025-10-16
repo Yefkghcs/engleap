@@ -23,21 +23,23 @@ const MistakesDetail = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const wordsPerPage = 30;
 
   const getWordDataByMistakes = useWordStore((state) => state.getWordDataByMistakes);
   const mistakesMap = useWordStore((state) => state.mistakesMap);
   const deleteMistake = useWordStore((state) => state.deleteMistake);
 
   const displayedWords = mistakesMap?.data || [];
+  const totalPages = mistakesMap?.pages || 1;
 
   const selectedIds = selectedWords?.map?.((item) => `${item.subcategory}-${item.id}`);
 
   const updateMistakeData = useCallback(() => {
     const dateStrings = selectedDates.map(d => format(d, "yyyy-MM-dd"));
-    getWordDataByMistakes(dateStrings?.length > 0 ? dateStrings : undefined);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDates]);
+    getWordDataByMistakes({
+      page: currentPage,
+      dates: dateStrings?.length > 0 ? dateStrings : undefined,
+    });
+  }, [currentPage, selectedDates]);
 
   // Load mistakes on mount and when dates change
   useEffect(() => {
@@ -103,16 +105,10 @@ const MistakesDetail = () => {
     updateMistakeData();
   };
 
-  // Pagination logic
-  const totalPages = Math.ceil(displayedWords.length / wordsPerPage);
-  const startIndex = (currentPage - 1) * wordsPerPage;
-  const endIndex = startIndex + wordsPerPage;
-  const currentWords = displayedWords.slice(startIndex, endIndex);
-
   // Reset to page 1 when displayed words change
   useEffect(() => {
     setCurrentPage(1);
-  }, [displayedWords.length]);
+  }, [selectedDates]);
 
   return (
     <>      
@@ -216,7 +212,7 @@ const MistakesDetail = () => {
         ) : (
           <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {currentWords.map((word) => (
+            {displayedWords.map((word) => (
               <Card
                 key={`${word.subcategory}-${word.id}`}
                 className={`p-4 cursor-pointer transition-all ${

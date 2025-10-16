@@ -39,9 +39,15 @@ export interface WordData {
     };
     mistakesMap: {
         data: WordsMapItem[];
+        total: number;
+        pages: number;
+        limit: number;
     };
     learnedMap: {
         data: WordsMapItem[];
+        total: number;
+        pages: number;
+        limit: number;
     };
     getTotalData: () => Promise<void>;
     getWordData: ({page, limit, subcategory, status}: {
@@ -50,13 +56,18 @@ export interface WordData {
         subcategory: string;
         status?: WordStatus;
     }) => Promise<void>;
-    getLearnedWords: (statusList: WordStatus[]) => Promise<void>;
+    getLearnedWords: ({statusList, page, limit}: {
+        statusList: WordStatus[];
+        page: number;
+        limit: number;
+    }) => Promise<void>;
     updateWordStatus: ({category, subcategory, id, status}: {
         category: string, subcategory: string, id: number, status: WordStatus
     }) => Promise<void>;
     addMistake: (word: WordsMapItem) => Promise<void>;
     deleteMistake: (words: WordsMapItem[]) => Promise<void>;
-    getWordDataByMistakes: (dates?: string[]) => Promise<void>;
+    getWordDataByMistakes: ({dates, page}: { page: number; dates?: string[] }) => Promise<void>;
+    clearWordData: () => void;
 }
 
 const useWordStore = create<WordData>((set, get) => ({
@@ -74,9 +85,15 @@ const useWordStore = create<WordData>((set, get) => ({
     },
     mistakesMap: {
         data: [],
+        total: 0,
+        pages: 1,
+        limit: 0,
     },
     learnedMap: {
         data: [],
+        total: 0,
+        pages: 1,
+        limit: 0,
     },
     getTotalData: async () => {
         const res = await fetch('/api/userWords/total/get', {
@@ -102,6 +119,12 @@ const useWordStore = create<WordData>((set, get) => ({
         });
         if (res.code === 200) {
             const { wordsMap } = get();
+            const known = status
+                ? (status === WordStatus.KNOWN ? res?.data?.pagination?.total : wordsMap?.known)
+                : res?.data?.stats?.known;
+            const unknown = status
+                ? (status === WordStatus.UNKNOWN ? res?.data?.pagination?.total : wordsMap?.unknown)
+                : res?.data?.stats?.unknown;
             set({
                 wordsMap: {
                     data: [
@@ -110,23 +133,28 @@ const useWordStore = create<WordData>((set, get) => ({
                     total: res?.data?.pagination?.total,
                     pages: res?.data?.pagination?.pages,
                     limit: res?.data?.pagination?.limit,
-                    known: status ? wordsMap?.known : res?.data?.stats?.known,
-                    unknown: status ? wordsMap?.unknown : res?.data?.stats?.unknown,
+                    known: known || 0,
+                    unknown: unknown || 0,
                 },
             });
         }
     },
-    getLearnedWords: async (statusList: WordStatus[]) => {
+    getLearnedWords: async ({statusList, page, limit}) => {
         const res = await fetch('/api/userWords/status/all/get', {
             method: 'POST',
             data: {
-                statusList
+                statusList,
+                page,
+                limit,
             }
         })
         if (res?.code === 200) {
             set({
                 learnedMap: {
                     data: res?.data?.words || [],
+                    total: res?.data?.pagination?.total || 0,
+                    pages: res?.data?.pagination?.pages || 1,
+                    limit: res?.data?.pagination?.limit || 0,
                 },
             });
         }
@@ -208,22 +236,23 @@ const useWordStore = create<WordData>((set, get) => ({
         });
         if (res?.code === 200) {
             const { mistakesMap } = get();
-            const ids = words?.map?.((item) => item.id);
-            const data = mistakesMap?.data?.filter?.((item) => !ids.includes(item?.id)) || [];
+            const ids = words?.map?.((item) => `${item.subcategory}-${item.id}`);
+            const data = mistakesMap?.data?.filter?.((item) => !ids.includes(`${item.subcategory}-${item.id}`)) || [];
             set({
                 mistakesMap: {
+                    ...mistakesMap,
                     data,
                 },
             });
         }
     },
-    getWordDataByMistakes: async (dates?: string[]) => {
+    getWordDataByMistakes: async ({dates, page}) => {
         const res = await fetch(dates 
             ? '/api/userWords/mistakes/date/get' 
             : '/api/userWords/mistakes/get', {
             method: 'POST',
             data: {
-                page: 1,
+                page,
                 limit: 30,
                 dates,
             },
@@ -232,9 +261,24 @@ const useWordStore = create<WordData>((set, get) => ({
             set({
                 mistakesMap: {
                     data: res?.data?.words || [],
+                    total: res?.data?.pagination?.total || 0,
+                    pages: res?.data?.pagination?.pages || 1,
+                    limit: res?.data?.pagination?.limit || 0,
                 },
             });
         }
+    },
+    clearWordData: () => {
+        set({
+            wordsMap: {
+                data: [],
+                total: 0,
+                pages: 1,
+                limit: 0,
+                known: 0,
+                unknown: 0,
+            },
+        });
     },
 }));
 
