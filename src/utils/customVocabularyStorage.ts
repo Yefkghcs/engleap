@@ -1,5 +1,7 @@
 export interface CustomWord {
-  id: string;
+  id: number;
+  category: string;
+  subcategory: string;
   word: string;
   meaning: string;
   example?: string;

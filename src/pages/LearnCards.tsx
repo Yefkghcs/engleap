@@ -24,11 +24,11 @@ import { toast } from "@/hooks/use-toast";
 import CelebrationEffect from "@/components/CelebrationEffect";
 import useWordStore, { WordStatus } from "@/models/word";
 import useUserInfo from "@/models/user";
+import useCustomWordStore from "@/models/custom";
 
 const LearnCards = () => {
   const navigate = useNavigate();
-  const { bookId } = useParams();
-  
+  const { customId, bookId } = useParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showTranslation, setShowTranslation] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
@@ -40,7 +40,11 @@ const LearnCards = () => {
 
   const wordsMap = useWordStore((state) => state.wordsMap);
   const updateWordStatus = useWordStore((state) => state.updateWordStatus);
-  const words = wordsMap?.data || [];
+
+  const customWordsMap = useCustomWordStore((state) => state.customWordsMap);
+  const updateCustomWordStatus = useCustomWordStore((state) => state.updateCustomWordStatus);
+
+  const words = (customId ? customWordsMap?.data : wordsMap?.data) || [];
   const knownCount = words?.filter?.((item) => item.status === WordStatus.KNOWN)?.length || 0;
   const unknownCount = words?.filter?.((item) => item.status === WordStatus.UNKNOWN)?.length || 0;
 
@@ -61,9 +65,9 @@ const LearnCards = () => {
         description: "请返回词汇书选择要学习的单词",
         variant: "destructive",
       });
-      navigate(`/vocabulary/${bookId}`);
+      navigate(`/vocabulary/${customId ? `custom/${customId}` : bookId}`);
     }
-  }, [words, navigate, bookId]);
+  }, [bookId, customId, navigate, words.length]);
 
   // Auto-play when word changes
   useEffect(() => {
@@ -97,13 +101,22 @@ const LearnCards = () => {
   const handleKnown = () => {
     addCheckStatus();
 
-    updateWordStatus({
-      category: currentWord.category,
-      subcategory: currentWord.subcategory,
-      id: currentWord.id,
-      status: WordStatus.KNOWN,
-    });
-
+    if (customId) {
+      updateCustomWordStatus({
+        category: currentWord.category,
+        subcategory: currentWord.subcategory,
+        id: currentWord.id,
+        status: WordStatus.KNOWN,
+      });
+    } else {
+      updateWordStatus({
+        category: currentWord.category,
+        subcategory: currentWord.subcategory,
+        id: currentWord.id,
+        status: WordStatus.KNOWN,
+      });
+    }
+    
     setWordStatuses((prev) => ({
       ...prev,
       [currentWord.id]: WordStatus.KNOWN,
@@ -112,7 +125,7 @@ const LearnCards = () => {
     
     // Auto advance to next word or complete
     if (currentIndex < words.length - 1) {
-      setTimeout(() => goToNextWord(), 300);
+      // setTimeout(() => goToNextWord(), 300);
     } else {
       setTimeout(() => handleComplete(), 300);
     }
@@ -121,12 +134,21 @@ const LearnCards = () => {
   const handleUnknown = () => {    
     addCheckStatus();
     
-    updateWordStatus({
-      category: currentWord.category,
-      subcategory: currentWord.subcategory,
-      id: currentWord.id,
-      status: WordStatus.UNKNOWN,
-    });
+    if (customId) {
+      updateCustomWordStatus({
+        category: currentWord.category,
+        subcategory: currentWord.subcategory,
+        id: currentWord.id,
+        status: WordStatus.UNKNOWN,
+      });
+    } else {
+      updateWordStatus({
+        category: currentWord.category,
+        subcategory: currentWord.subcategory,
+        id: currentWord.id,
+        status: WordStatus.UNKNOWN,
+      });
+    }
 
     setWordStatuses((prev) => ({
       ...prev,
@@ -136,7 +158,7 @@ const LearnCards = () => {
     
     // Auto advance to next word or complete
     if (currentIndex < words.length - 1) {
-      setTimeout(() => goToNextWord(), 300);
+      // setTimeout(() => goToNextWord(), 300);
     } else {
       setTimeout(() => handleComplete(), 300);
     }
@@ -168,7 +190,7 @@ const LearnCards = () => {
   };
 
   const handleConfirmExit = () => {
-    navigate(`/vocabulary/${bookId}`);
+    navigate(`/vocabulary/${customId ? `custom/${customId}` : bookId}`);
   };
 
   if (showCompletion) {

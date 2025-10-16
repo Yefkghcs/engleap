@@ -19,6 +19,7 @@ import CelebrationEffect from "@/components/CelebrationEffect";
 import { toast } from "@/hooks/use-toast";
 import useWordStore, { WordsMapItem } from "@/models/word";
 import useUserInfo from "@/models/user";
+import useCustomWordStore from "@/models/custom";
 
 interface Question {
   type: "en-to-cn" | "cn-to-en" | "spelling";
@@ -31,7 +32,7 @@ interface Question {
 const Challenge = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { bookId } = useParams();
+  const { customId, bookId } = useParams();
   const words = (location.state?.words as WordsMapItem[]) || [];
   
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -48,8 +49,9 @@ const Challenge = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
-  const addMistake = useWordStore((state) => state.addMistake);
-
+  const addCommonMistake = useWordStore((state) => state.addMistake);
+  const addCustomMistake = useCustomWordStore((state) => state.addCustomMistake);
+  const addMistake = customId ? addCustomMistake : addCommonMistake;
   const addCheckStatus = useUserInfo((state) => state.addCheckStatus);
 
   useEffect(() => {
@@ -62,7 +64,7 @@ const Challenge = () => {
       if (location.pathname.includes('scene/challenge')) {
         navigate('/vocabulary');
       } else {
-        navigate(`/vocabulary/${bookId}`);
+        navigate(`/vocabulary/${customId ? `custom/${customId}` : bookId}`);
       }
       return;
     }
@@ -70,7 +72,7 @@ const Challenge = () => {
     // Generate questions
     const generatedQuestions = generateQuestions(words);
     setQuestions(generatedQuestions);
-  }, [words, navigate, bookId, location.pathname]);
+  }, [bookId, customId, location.pathname, navigate, words]);
 
   // Timer countdown
   useEffect(() => {
@@ -239,7 +241,7 @@ const Challenge = () => {
       const sceneId = location.pathname.split('/').pop();
       navigate(`/vocabulary/scene/${sceneId}`);
     } else {
-      navigate(`/vocabulary/${bookId}`);
+      navigate(`/vocabulary/${customId ? `custom/${customId}` : bookId}`);
     }
   };
 

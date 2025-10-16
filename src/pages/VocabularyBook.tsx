@@ -9,6 +9,7 @@ import useUserInfo from "@/models/user";
 import LoginBtn from "@/components/loginBtn";
 import useWordStore, { WordsMapItem, WordStatus } from "@/models/word";
 import useWordCategoryStore from "@/models/wordCategory";
+import useCustomWordStore from "@/models/custom";
 
 enum FilterStatus {
   ALL = 'all',
@@ -24,11 +25,10 @@ const StatusMap = {
   [FilterStatus.KNOWN]: WordStatus.KNOWN,
 };
 
-const VocabularyBookDetail = () => {
+const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
   const { bookId, customId } = useParams();
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.ALL);
   const [currentPage, setCurrentPage] = useState(1);
-  const actualBookId = customId ? "custom" : (bookId || "ielts");
   const [visibleTranslations, setVisibleTranslations] = useState<Set<number>>(new Set());
   const [globalTranslationVisible, setGlobalTranslationVisible] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(20);
@@ -38,12 +38,16 @@ const VocabularyBookDetail = () => {
   const getWordData = useWordStore((state) => state.getWordData);
   const wordsMap = useWordStore((state) => state.wordsMap);
   const updateWordStatus = useWordStore((state) => state.updateWordStatus);
+
+  const getCustomWords = useCustomWordStore((state) => state.getCustomWords);
+  const customWordsMap = useCustomWordStore((state) => state.customWordsMap);
+  const updateCustomWordStatus = useCustomWordStore((state) => state.updateCustomWordStatus);
   
-  const words = wordsMap?.data || [];
-  const totalWords = wordsMap?.total || 0;
-  const totalPages = wordsMap?.pages || 1;
-  const known = wordsMap?.known || 0;
-  const unknown = wordsMap?.unknown || 0;
+  const words = (customId ? customWordsMap?.data : wordsMap?.data) || [];
+  const totalWords = (customId ? customWordsMap?.total : wordsMap?.total) || 0;
+  const totalPages = (customId ? customWordsMap?.pages : wordsMap?.pages) || 1;
+  const known = (customId ? customWordsMap?.known : wordsMap?.known) || 0;
+  const unknown = (customId ? customWordsMap?.unknown : wordsMap?.unknown) || 0;
 
   const filterTotalMap = {
     [FilterStatus.ALL]: known + unknown,
@@ -52,17 +56,25 @@ const VocabularyBookDetail = () => {
     [FilterStatus.UNMARKED]: 0,
   };
 
-  const getSubcategoryNameById = useWordCategoryStore((state) => state.getSubcategoryNameById);
-  const bookName = getSubcategoryNameById(bookId);
-
   useEffect(() => {
+    if (!bookId) return;
     getWordData({
       page: currentPage,
       limit: itemsPerPage,
-      subcategory: actualBookId,
-      status: StatusMap[filter]
+      subcategory: bookId,
+      status: StatusMap[filter],
     });
-  }, [actualBookId, currentPage, filter, itemsPerPage]);
+  }, [bookId, currentPage, filter, getWordData, itemsPerPage]);
+
+  useEffect(() => {
+    if (!customId) return;
+    getCustomWords({
+      page: currentPage,
+      limit: itemsPerPage,
+      subcategory: customId,
+      status: StatusMap[filter],
+    });
+  }, [currentPage, customId, filter, getCustomWords, itemsPerPage]);
 
   // Update itemsPerPage when viewMode changes
   useEffect(() => {
@@ -91,12 +103,21 @@ const VocabularyBookDetail = () => {
 
   // Toggle word status
   const toggleWordStatus = async (word: WordsMapItem, newStatus: WordStatus) => {
-    updateWordStatus({
-      category: word.category,
-      subcategory: word.subcategory,
-      id: word.id,
-      status: newStatus,
-    });
+    if (word.category === 'custom') {
+      updateCustomWordStatus({
+        category: word.category,
+        subcategory: word.subcategory,
+        id: word.id,
+        status: newStatus,
+      });
+    } else {
+      updateWordStatus({
+        category: word.category,
+        subcategory: word.subcategory,
+        id: word.id,
+        status: newStatus,
+      });
+    }
   };
 
   // Toggle translation visibility
@@ -154,8 +175,8 @@ const VocabularyBookDetail = () => {
       {/* Book Info */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          <h2 className="text-lg sm:text-xl font-bold">{bookName}单词库</h2>
-          <span className="text-xs sm:text-sm text-muted-foreground">已学 {filterTotalMap?.[filter] || 0} / {totalWords}</span>
+          <h2 className="text-lg sm:text-xl font-bold">{actualName}单词库</h2>
+          <span className="text-xs sm:text-sm text-muted-foreground">已学 {filterTotalMap?.[filter] > 0 ? filterTotalMap?.[filter] : 0} / {totalWords}</span>
           <Button 
             variant="ghost" 
             size="icon"
@@ -183,21 +204,21 @@ const VocabularyBookDetail = () => {
         <div className="flex flex-col gap-4 mb-6">
           <div className="flex gap-2 sm:gap-4">
             <Link 
-              to={`/vocabulary/${bookId}/learn-cards`}
+              to={`/vocabulary/${customId ? `custom/${customId}` : bookId}/learn-cards`}
               state={{ words: currentWords }}
               className="flex-1"
             >
               <Button className="w-full text-xs sm:text-sm">学习</Button>
             </Link>
             <Link 
-              to={`/vocabulary/${bookId}/learn`}
+              to={`/vocabulary/${customId ? `custom/${customId}` : bookId}/learn`}
               state={{ words: currentWords, mode: 'dictation' }}
               className="flex-1"
             >
               <Button className="w-full text-xs sm:text-sm">听写</Button>
             </Link>
             <Link 
-              to={`/vocabulary/${bookId}/challenge`}
+              to={`/vocabulary/${customId ? `custom/${customId}` : bookId}/challenge`}
               state={{ words: currentWords }}
               className="flex-1"
             >
@@ -813,19 +834,27 @@ const VocabularyBook = () => {
   const email = useUserInfo((state) => state.email);
   
   const getWordCategories = useWordCategoryStore((state) => state.getWordCategories);
-  const categoryList = useWordCategoryStore((state) => state.categoryList);
   const getSubcategoryNameById = useWordCategoryStore((state) => state.getSubcategoryNameById);
-  const [bookName, setBookName] = useState<string>('');
+  const categoryList = useWordCategoryStore((state) => state.categoryList);
+
+  const customCategories = useCustomWordStore((state) => state.customCategories);
+  const getCustomCategories = useCustomWordStore((state) => state.getCustomCategories);
+
+  const [actualName, setName] = useState<string>('');
 
   useEffect(() => {
-    getWordCategories();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (customId) getCustomCategories();    
+  }, [customId, getCustomCategories]);
 
   useEffect(() => {
-    const name = getSubcategoryNameById(bookId);
-    setBookName(name);
-  }, [bookId, categoryList]);
+    if (bookId) getWordCategories();
+  }, [bookId, getWordCategories]);
+
+  useEffect(() => {
+    const bookName = getSubcategoryNameById(bookId) || '';
+    const customName = customCategories?.find?.((item) => item?.subcategory === customId)?.subcategoryName || '';
+    setName(customName || bookName);
+  }, [bookId, customCategories, customId, categoryList]);
 
   return (
     <div className="min-h-screen">
@@ -842,14 +871,14 @@ const VocabularyBook = () => {
         </div>
         
         <div className="relative max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-2">{bookName}</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-2">{actualName}</h1>
           {/* TODO */}
           {/* <p className="text-lg text-muted-foreground">{customId ? "自定义单词库" : "IELTS Vocabulary"}</p> */}
         </div>
       </div>
 
       {email ? (
-        <VocabularyBookDetail />
+        <VocabularyBookDetail actualName={actualName} />
       ) : (
         <LoginBtn />
       )}

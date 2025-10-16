@@ -25,10 +25,11 @@ import {
 import CelebrationEffect from "@/components/CelebrationEffect";
 import useWordStore, { WordsMapItem } from "@/models/word";
 import useUserInfo from "@/models/user";
+import useCustomWordStore from "@/models/custom";
 
 const Learn = () => {
   const navigate = useNavigate();
-  const { bookId } = useParams();
+  const { customId, bookId } = useParams();
   const location = useLocation();
   const words = (location.state?.words as WordsMapItem[]) || [];
   
@@ -45,6 +46,8 @@ const Learn = () => {
   const [showCelebration, setShowCelebration] = useState(false);
 
   const addMistake = useWordStore((state) => state.addMistake);
+  const addCustomMistake = useCustomWordStore((state) => state.addCustomMistake);
+
   const totalWords = words.length;
   const currentWord = words[currentIndex];
 
@@ -79,10 +82,10 @@ const Learn = () => {
       } else if (location.pathname.includes('scene/dictation')) {
         navigate('/vocabulary');
       } else {
-        navigate(`/vocabulary/${bookId}`);
+        navigate(`/vocabulary/${customId ? `custom/${customId}` : bookId}`);
       }
     }
-  }, [words, bookId, navigate, location.pathname]);
+  }, [bookId, customId, location.pathname, navigate, words.length]);
 
   const handleSubmit = () => {
     if (!showResult) {
@@ -95,8 +98,9 @@ const Learn = () => {
       if (correct) {
         setCorrectCount(prev => prev + 1);
       } else {
-        // Add to mistakes and track incorrect words
-        addMistake(currentWord);
+        const isCustom = currentWord?.category === 'custom';
+        if (isCustom) addCustomMistake(currentWord);
+        else addMistake(currentWord);        
       }
     } else {
       // Move to next word
@@ -165,7 +169,7 @@ const Learn = () => {
       const sceneId = location.pathname.split('/').pop();
       navigate(`/vocabulary/scene/${sceneId}`);
     } else {
-      navigate(`/vocabulary/${bookId}`);
+      navigate(`/vocabulary/${customId ? `custom/${customId}` : bookId }`);
     }
   };
 

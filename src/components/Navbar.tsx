@@ -62,7 +62,7 @@ const Navbar = () => {
               >
                 <User className="h-4 w-4" />
                 <span className="hidden sm:inline">登录</span>
-              </Link>}
+              </Link>)}
           </div>
         </div>
       </div>

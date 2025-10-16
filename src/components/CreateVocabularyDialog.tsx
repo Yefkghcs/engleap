@@ -5,11 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
-import { saveCustomVocabulary, CustomWord } from "@/utils/customVocabularyStorage";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import useUserInfo from "@/models/user";
 import LoginBtn from "./loginBtn";
+import useCustomWordStore, { CustomWord } from "@/models/custom";
 
 const EMOJI_LIST = ["📚", "✈️", "🏫", "🎯", "🌟", "⭐", "🏛️", "🎒", "📝", "🌱", "💡", "🎓", "🍔", "🏠", "👔", "💊", "🚗", "🏨", "🛒", "🎮", "💻", "💼", "💰", "🏥", "🌤️", "🏙️"];
 
@@ -25,8 +25,9 @@ const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogP
   const [wordsText, setWordsText] = useState("");
   const { toast } = useToast();
   const email = useUserInfo((state) => state.email);
+  const addCustomData = useCustomWordStore((state) => state.addCustomData);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!name.trim()) {
       toast({
         title: "请输入单词库名称",
@@ -39,18 +40,20 @@ const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogP
     const lines = wordsText.split('\n').filter(line => line.trim());
     const words: CustomWord[] = [];
     
-    for (const line of lines) {
+    const subcategoryId = `custom_${Date.now()}`;
+
+    lines?.forEach?.((line, index) => {
       const parts = line.split(/[,，\t]/).map(p => p.trim());
       if (parts.length >= 2) {
         words.push({
-          id: `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          word: parts[0],
-          meaning: parts[1],
-          example: parts[2] || undefined,
-          exampleCn: parts[3] || undefined,
+          id: index,
+          word: parts?.[0],
+          meaning: parts?.[1],
+          example: parts?.[2] || '',
+          exampleCn: parts?.[3] || '',
         });
       }
-    }
+    });
 
     if (words.length === 0) {
       toast({
@@ -61,15 +64,14 @@ const CreateVocabularyDialog = ({ onSuccess, children }: CreateVocabularyDialogP
       return;
     }
 
-    const vocabulary = {
-      id: `custom_${Date.now()}`,
-      name: name.trim(),
+    await addCustomData({
+      category: 'custom',
+      categoryName: '自定义词库',
+      subcategory: subcategoryId,
+      subcategoryName: name.trim(),
       emoji,
       words,
-      createdAt: new Date().toISOString(),
-    };
-
-    saveCustomVocabulary(vocabulary);
+    });
     
     toast({
       title: "创建成功",

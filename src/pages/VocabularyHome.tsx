@@ -14,9 +14,9 @@ import useWordCategoryStore from "@/models/wordCategory";
 import { VOCABULARY_HOME_UI_MAP } from "@/utils/uiMap";
 import useWordStore from "@/models/word";
 import useUserInfo from "@/models/user";
+import useCustomWordStore from "@/models/custom";
 
 const VocabularyHome = () => {
-  const [customVocabularies, setCustomVocabularies] = useState(getCustomVocabularies());
   const { toast } = useToast();
 
   const getWordCategories = useWordCategoryStore((state) => state.getWordCategories);
@@ -31,24 +31,24 @@ const VocabularyHome = () => {
   const weekStatus = getWeekCheckInStatus(checkStatus);
   const checkedInToday = hasCheckedInToday(checkStatus);
 
+  const getCustomCategories = useCustomWordStore((state) => state.getCustomCategories);
+  const deleteCustomData = useCustomWordStore((state) => state.deleteCustomData);
+  const customCategories = useCustomWordStore((state) => state.customCategories);
+
   useEffect(() => {
     getWordCategories();
     getTotalData();
     getCheckStatus();
+    getCustomCategories();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    setCustomVocabularies(getCustomVocabularies());
-  }, []);
-
   const handleDeleteCustomVocabulary = (id: string, name: string) => {
-    if (confirm(`确定要删除「${name}」词库吗？`)) {
-      deleteCustomVocabulary(id);
-      setCustomVocabularies(getCustomVocabularies());
+    if (confirm(`确定要删除「${name || ''}」词库吗？`)) {
+      deleteCustomData(id);
       toast({
         title: "删除成功",
-        description: `已删除「${name}」词库`,
+        description: `已删除「${name || ''}」词库`,
       });
     }
   };
@@ -164,7 +164,7 @@ const VocabularyHome = () => {
             <TabsList className="w-full justify-start mb-6">
               {categoryList?.map?.((item) => (
                 <TabsTrigger key={`tabTrigger_${item?.category}`} value={item.category} className="flex-1 sm:flex-none">
-                  {`${item?.categoryName || ''} (${item?.subcategories?.length} || 0)`}
+                  {`${item?.categoryName || ''} (${(item?.category === 'custom' ? customCategories?.length : item?.subcategories?.length) || 0})`}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -190,7 +190,7 @@ const VocabularyHome = () => {
             <TabsContent value="custom">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {/* Create New Vocabulary Card */}
-                <CreateVocabularyDialog onSuccess={() => setCustomVocabularies(getCustomVocabularies())}>
+                <CreateVocabularyDialog onSuccess={() => {}}>
                   <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden group border-dashed border-2 border-primary/30 hover:border-primary/50">
                     <div className="h-20 bg-primary/5 dark:bg-primary/10 rounded-lg mb-3 flex items-center justify-center group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors">
                       <span className="text-4xl">➕</span>
@@ -201,19 +201,19 @@ const VocabularyHome = () => {
                 </CreateVocabularyDialog>
 
                 {/* Existing Custom Vocabularies */}
-                {customVocabularies.map((book) => (
-                  <div key={book.id} className="relative group">
-                    <Link to={`/vocabulary/custom/${book.id}`}>
+                {customCategories?.map((book) => (
+                  <div key={book?.subcategory} className="relative group">
+                    <Link to={`/vocabulary/custom/${book?.subcategory}`}>
                       <Card className="p-3 hover:shadow-md transition-all cursor-pointer overflow-hidden">
                         <div className="h-20 bg-accent/50 rounded-lg mb-3 flex items-center justify-center group-hover:bg-accent/70 transition-colors">
-                          <span className="text-4xl">{book.emoji}</span>
+                          <span className="text-4xl">{book?.emoji || '📚'}</span>
                         </div>
-                        <h3 className="text-base font-bold mb-1 truncate">{book.name}</h3>
-                        <p className="text-xs text-muted-foreground">{book.words.length}个单词</p>
+                        <h3 className="text-base font-bold mb-1 truncate">{book?.subcategoryName || ''}</h3>
+                        <p className="text-xs text-muted-foreground">{book?.wordCount || 0}个单词</p>
                       </Card>
                     </Link>
                     <button
-                      onClick={() => handleDeleteCustomVocabulary(book.id, book.name)}
+                      onClick={() => handleDeleteCustomVocabulary(book?.subcategory, book?.subcategoryName)}
                       className="absolute top-1 right-1 p-1.5 bg-destructive text-destructive-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
                       title="删除词库"
                     >
