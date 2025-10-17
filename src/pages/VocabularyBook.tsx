@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Eye, EyeOff, Volume2, ChevronDown, LayoutGrid, List } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import useUserInfo from "@/models/user";
-import LoginBtn from "@/components/loginBtn";
 import useWordStore, { WordsMapItem, WordStatus } from "@/models/word";
 import useWordCategoryStore from "@/models/wordCategory";
 import useCustomWordStore from "@/models/custom";
@@ -899,6 +898,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
 };
 
 const VocabularyBook = () => {
+  const navigate = useNavigate();
   const { customId, bookId } = useParams();
   const email = useUserInfo((state) => state.email);
   
@@ -910,6 +910,12 @@ const VocabularyBook = () => {
   const getCustomCategories = useCustomWordStore((state) => state.getCustomCategories);
 
   const [actualName, setName] = useState<string>('');
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/auth");
+    }
+  }, [email, navigate]);
 
   useEffect(() => {
     if (customId) getCustomCategories();    
@@ -925,8 +931,12 @@ const VocabularyBook = () => {
     setName(customName || bookName);
   }, [bookId, customCategories, customId, categoryList]);
 
+  if (!email) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16">
       <Navbar />
       
       {/* Hero Section with Gradient */}
@@ -946,11 +956,7 @@ const VocabularyBook = () => {
         </div>
       </div>
 
-      {email ? (
-        <VocabularyBookDetail actualName={actualName} />
-      ) : (
-        <LoginBtn />
-      )}
+      <VocabularyBookDetail actualName={actualName} />
     </div>
   );
 }

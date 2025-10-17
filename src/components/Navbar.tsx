@@ -27,7 +27,7 @@ const Navbar = () => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-  return <nav className="border-b bg-white/60 backdrop-blur-lg dark:bg-card/60 dark:border-border relative z-10">
+  return <nav className="fixed top-0 left-0 right-0 border-b bg-white/60 backdrop-blur-lg dark:bg-card/60 dark:border-border z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="text-xl font-bold text-primary">EngLeap 英语学习</Link>

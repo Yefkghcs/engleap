@@ -13,7 +13,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useUserInfo from "@/models/user";
-import LoginBtn from "@/components/loginBtn";
 import useWordStore, { WordsMapItem } from "@/models/word";
 
 const MistakesDetail = () => {
@@ -327,20 +326,26 @@ const MistakesDetail = () => {
 };
 
 const Mistakes = () => {
+  const navigate = useNavigate();
   const email = useUserInfo((state) => state.email);
 
+  useEffect(() => {
+    if (!email) {
+      navigate("/auth");
+    }
+  }, [email, navigate]);
+
+  if (!email) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">我的错题本</h1>
-
-       {email ? (
-          <MistakesDetail />
-        ) : (
-          <LoginBtn />
-        )}
+       <MistakesDetail />
       </div>
     </div>
   );

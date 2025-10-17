@@ -8,7 +8,7 @@ const Index = () => {
     <>
       <Navbar />
 
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background">
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background pt-16">
         {/* Background Gradient Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-primary/20 rounded-full blur-3xl animate-pulse" />

@@ -7,7 +7,6 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Volume2 } from "lucide-react";
 import useUserInfo from "@/models/user";
-import LoginBtn from "@/components/loginBtn";
 import useWordStore, { WordsMapItem, WordStatus } from "@/models/word";
 
 enum FilterStatus {
@@ -265,20 +264,26 @@ const LearnedWordsDetail = () => {
 };
 
 const LearnedWords = () => {
+  const navigate = useNavigate();
   const email = useUserInfo((state) => state.email);
 
+  useEffect(() => {
+    if (!email) {
+      navigate("/auth");
+    }
+  }, [email, navigate]);
+
+  if (!email) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">你学过的单词</h1>
-
-        {email ? (
-          <LearnedWordsDetail />
-        ) : (
-          <LoginBtn />
-        )}
+        <LearnedWordsDetail />
       </div>
     </div>
   );

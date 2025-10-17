@@ -65,7 +65,7 @@ const VocabularyHome = () => {
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16">
       <Navbar />
       
       {/* Hero Section with Gradient */}
