@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import fetch from "@/utils/fetch";
 import useUserInfo from "@/models/user";
@@ -21,6 +21,10 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Validation states
   const [inviteCodeError, setInviteCodeError] = useState("");
@@ -194,18 +198,28 @@ const Auth = () => {
                     忘记密码？
                   </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="输入密码"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setPasswordError("");
-                  }}
-                  disabled={isLoading}
-                  className={passwordError ? "border-destructive" : ""}
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="输入密码"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError("");
+                    }}
+                    disabled={isLoading}
+                    className={passwordError ? "border-destructive pr-10" : "pr-10"}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    disabled={isLoading}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
                 {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
               </div>
               <Button
@@ -263,33 +277,53 @@ const Auth = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password">设置密码</Label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  placeholder="至少8位字符"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setPasswordError("");
-                  }}
-                  disabled={isLoading}
-                  className={passwordError ? "border-destructive" : ""}
-                />
+                <div className="relative">
+                  <Input
+                    id="register-password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="至少8位字符"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError("");
+                    }}
+                    disabled={isLoading}
+                    className={passwordError ? "border-destructive pr-10" : "pr-10"}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    disabled={isLoading}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">确认密码</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="再次输入密码"
-                  value={confirmPassword}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                    setPasswordError("");
-                  }}
-                  disabled={isLoading}
-                  className={passwordError ? "border-destructive" : ""}
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="再次输入密码"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setPasswordError("");
+                    }}
+                    disabled={isLoading}
+                    className={passwordError ? "border-destructive pr-10" : "pr-10"}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    disabled={isLoading}
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
                 {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
               </div>
               <Button
