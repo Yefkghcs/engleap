@@ -231,13 +231,13 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
         </div>
 
       {/* Filter and View Toggle */}
-      <div className="flex flex-col lg:flex-row gap-3 mb-6 items-start lg:items-center justify-between">
-        <div className="flex gap-1 sm:gap-2 bg-card rounded-lg p-1 overflow-x-auto">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6 items-stretch sm:items-center justify-between">
+        <div className="flex gap-1 sm:gap-2 bg-card rounded-lg p-1 w-full sm:w-auto overflow-x-auto scrollbar-hide">
           <Button
             variant={filter === "all" ? "default" : "ghost"}
             size="sm"
             onClick={() => handleFilterChange(FilterStatus.ALL)}
-            className="text-xs sm:text-sm whitespace-nowrap"
+            className="text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none"
           >
             全部
           </Button>
@@ -245,7 +245,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
             variant={filter === "unmarked" ? "default" : "ghost"}
             size="sm"
             onClick={() => handleFilterChange(FilterStatus.UNMARKED)}
-            className="text-xs sm:text-sm whitespace-nowrap"
+            className="text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none"
           >
             未标注
           </Button>
@@ -253,7 +253,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
             variant={filter === "known" ? "default" : "ghost"}
             size="sm"
             onClick={() => handleFilterChange(FilterStatus.KNOWN)}
-            className="text-xs sm:text-sm whitespace-nowrap"
+            className="text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none"
           >
             认识
           </Button>
@@ -261,18 +261,18 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
             variant={filter === "unknown" ? "default" : "ghost"}
             size="sm"
             onClick={() => handleFilterChange(FilterStatus.UNKNOWN)}
-            className="text-xs sm:text-sm whitespace-nowrap"
+            className="text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none"
           >
             不认识
           </Button>
         </div>
 
-          <div className="flex gap-2 bg-card rounded-lg p-1">
+          <div className="flex gap-2 bg-card rounded-lg p-1 w-full sm:w-auto">
             <Button
               variant={viewMode === "list" ? "default" : "ghost"}
               size="sm"
               onClick={() => setViewMode("list")}
-              className="gap-2"
+              className="gap-2 flex-1 sm:flex-none"
             >
               <List className="h-4 w-4" />
               <span className="hidden sm:inline">列表</span>
@@ -281,7 +281,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
               variant={viewMode === "cards" ? "default" : "ghost"}
               size="sm"
               onClick={() => setViewMode("cards")}
-              className="gap-2"
+              className="gap-2 flex-1 sm:flex-none"
             >
               <LayoutGrid className="h-4 w-4" />
               <span className="hidden sm:inline">卡片</span>
@@ -771,43 +771,46 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
         )}
 
         {/* Pagination */}
-      <div className="flex items-center justify-center gap-4 mt-8">
-        <span className="text-sm text-muted-foreground">每一页展示</span>
-        
-        <Popover open={isPageSizeOpen} onOpenChange={setIsPageSizeOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="secondary" size="sm" className="gap-2">
-              {itemsPerPage}条 / 页
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-32 p-2">
-            <div className="flex flex-col gap-1">
-              {(viewMode === "cards" ? [20, 40, 80, 100] : [10, 20, 50, 100]).map((size) => (
-                <Button
-                  key={size}
-                  variant={itemsPerPage === size ? "default" : "ghost"}
-                  size="sm"
-                  className="justify-start"
-                  onClick={() => {
-                    setItemsPerPage(size);
-                    setCurrentPage(1);
-                    setIsPageSizeOpen(false);
-                  }}
-                >
-                  {size}条 / 页
-                </Button>
-              ))}
-            </div>
-          </PopoverContent>
-        </Popover>
-        
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8">
         <div className="flex items-center gap-2">
+          <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">每页</span>
+          
+          <Popover open={isPageSizeOpen} onOpenChange={setIsPageSizeOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="secondary" size="sm" className="gap-1 sm:gap-2 h-8">
+                <span className="text-xs sm:text-sm">{itemsPerPage}条</span>
+                <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-28 sm:w-32 p-2">
+              <div className="flex flex-col gap-1">
+                {(viewMode === "cards" ? [20, 40, 80, 100] : [10, 20, 50, 100]).map((size) => (
+                  <Button
+                    key={size}
+                    variant={itemsPerPage === size ? "default" : "ghost"}
+                    size="sm"
+                    className="justify-start text-xs sm:text-sm"
+                    onClick={() => {
+                      setItemsPerPage(size);
+                      setCurrentPage(1);
+                      setIsPageSizeOpen(false);
+                    }}
+                  >
+                    {size}条
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+        
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button 
             variant="ghost" 
             size="icon"
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            className="h-8 w-8"
           >
             &lt;
           </Button>
@@ -820,6 +823,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
                 variant={currentPage === page ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setCurrentPage(page)}
+                className="h-8 min-w-8 text-xs sm:text-sm"
               >
                 {page}
               </Button>
@@ -831,11 +835,12 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
                 variant={currentPage === 1 ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setCurrentPage(1)}
+                className="h-8 min-w-8 text-xs sm:text-sm"
               >
                 1
               </Button>
               
-              {currentPage > 3 && <span className="text-muted-foreground">...</span>}
+              {currentPage > 3 && <span className="text-muted-foreground text-xs sm:text-sm">...</span>}
               
               {currentPage > 2 && currentPage < totalPages - 1 && (
                 <>
@@ -844,11 +849,12 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => setCurrentPage(currentPage - 1)}
+                      className="h-8 min-w-8 text-xs sm:text-sm"
                     >
                       {currentPage - 1}
                     </Button>
                   )}
-                  <Button variant="default" size="sm">
+                  <Button variant="default" size="sm" className="h-8 min-w-8 text-xs sm:text-sm">
                     {currentPage}
                   </Button>
                   {currentPage < totalPages - 2 && (
@@ -856,6 +862,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => setCurrentPage(currentPage + 1)}
+                      className="h-8 min-w-8 text-xs sm:text-sm"
                     >
                       {currentPage + 1}
                     </Button>
@@ -864,18 +871,19 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
               )}
               
               {currentPage === 2 && (
-                <Button variant="default" size="sm">
+                <Button variant="default" size="sm" className="h-8 min-w-8 text-xs sm:text-sm">
                   2
                 </Button>
               )}
               
-              {currentPage < totalPages - 2 && <span className="text-muted-foreground">...</span>}
+              {currentPage < totalPages - 2 && <span className="text-muted-foreground text-xs sm:text-sm">...</span>}
               
               {totalPages > 1 && (
                 <Button
                   variant={currentPage === totalPages ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setCurrentPage(totalPages)}
+                  className="h-8 min-w-8 text-xs sm:text-sm"
                 >
                   {totalPages}
                 </Button>
@@ -888,6 +896,7 @@ const VocabularyBookDetail = ({ actualName }: { actualName: string }) => {
             size="icon"
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(p => Math.max(0, Math.min(totalPages, p + 1)))}
+            className="h-8 w-8"
           >
             &gt;
           </Button>

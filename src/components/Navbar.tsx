@@ -32,43 +32,39 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="text-xl font-bold text-primary">EngLeap 英语学习</Link>
           
-          <div className="flex items-center gap-3 sm:gap-6 md:gap-8">
-            <Link to="/" className={`text-sm font-medium transition-all duration-200 hover:text-primary ${isActive("/") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
-              <span className="hidden sm:inline">首页</span>
-              <span className="sm:hidden">首页</span>
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
+            <Link to="/" className={`text-xs sm:text-sm font-medium transition-all duration-200 hover:text-primary whitespace-nowrap ${isActive("/") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
+              首页
             </Link>
-            <Link to="/vocabulary" className={`text-sm font-medium transition-all duration-200 hover:text-primary ${isActive("/vocabulary") || location.pathname.startsWith("/vocabulary") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
+            <Link to="/vocabulary" className={`text-xs sm:text-sm font-medium transition-all duration-200 hover:text-primary whitespace-nowrap ${isActive("/vocabulary") || location.pathname.startsWith("/vocabulary") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
               背单词
             </Link>
-            <Link to="/mistakes" className={`text-sm font-medium transition-all duration-200 hover:text-primary ${isActive("/mistakes") ? "text-primary font-semibold" : "text-muted-foreground"}`}>
-              错题本
-            </Link>
 
-            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="h-8 w-8">
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0">
+              <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-3.5 w-3.5 sm:h-4 sm:w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">切换主题</span>
             </Button>
             
             {email ? (
               <Link
                 to="/profile"
-                className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:text-primary ${
+                className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium transition-all duration-200 hover:text-primary whitespace-nowrap ${
                   isActive("/profile") ? "text-primary font-semibold" : "text-muted-foreground"
                 }`}
                 title={email}
               >
-                <User className="h-4 w-4" />
-                <span className="hidden lg:inline max-w-[150px] xl:max-w-[200px] truncate">{email}</span>
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span className="hidden md:inline max-w-[120px] lg:max-w-[150px] xl:max-w-[200px] truncate">{email}</span>
               </Link>
             ) : (
               <Link
                 to="/auth"
-                className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:text-primary ${
+                className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium transition-all duration-200 hover:text-primary whitespace-nowrap ${
                   isActive("/auth") ? "text-primary font-semibold" : "text-muted-foreground"
                 }`}
               >
-                <User className="h-4 w-4" />
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
                 <span className="hidden sm:inline">登录</span>
               </Link>)}
           </div>
