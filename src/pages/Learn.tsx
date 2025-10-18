@@ -227,10 +227,10 @@ const Learn = () => {
   // Main Learning Screen
   return (
     <div className="min-h-screen h-screen bg-background flex flex-col overflow-hidden">
-      <div className="p-4 border-b border-border">
-        <div className="max-w-4xl mx-auto flex items-start justify-between">
-          <div className="flex-1">
-            <h1 className="text-xl font-bold mb-2">
+      <div className="p-3 sm:p-4 border-b border-border">
+        <div className="max-w-4xl mx-auto flex items-start justify-between gap-2 sm:gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 truncate">
               {location.pathname.includes('mistakes') 
                 ? '错题本听写' 
                 : location.pathname.includes('learned')
@@ -239,17 +239,18 @@ const Learn = () => {
                 ? '场景单词听写'
                 : (bookId === "ielts" ? "雅思" : bookId)}
             </h1>
-            <p className="text-sm text-muted-foreground mb-4">全部单词</p>
-            <div className="flex items-center gap-4">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-4">全部单词</p>
+            <div className="flex items-center gap-2 sm:gap-4">
               <Progress value={(currentIndex / totalWords) * 100} className="flex-1 h-2" />
-              <span className="text-sm">{currentIndex}/{totalWords}</span>
+              <span className="text-xs sm:text-sm whitespace-nowrap">{currentIndex}/{totalWords}</span>
             </div>
           </div>
           {showResult && (
             <Button 
               onClick={handleViewMistakes}
               variant="outline"
-              className="ml-4"
+              className="ml-2 sm:ml-4 text-xs sm:text-sm px-2 sm:px-4"
+              size="sm"
             >
               错题本
             </Button>
@@ -257,20 +258,20 @@ const Learn = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full space-y-8">
-          <div className="text-center space-y-4">
+      <div className="flex-1 flex items-center justify-center p-3 sm:p-4 md:p-6">
+        <div className="max-w-2xl w-full space-y-4 sm:space-y-6 md:space-y-8">
+          <div className="text-center space-y-3 sm:space-y-4">
             {showResult && (
-              <div className="mb-4">
-                <h3 className="text-3xl font-bold mb-2">{currentWord.word}</h3>
+              <div className="mb-2 sm:mb-4">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">{currentWord.word}</h3>
               </div>
             )}
             {showTranslation && (
               <div className="space-y-2">
-                <h2 className="text-4xl font-bold">{currentWord.meaning}</h2>
-                <div className="flex items-center justify-center gap-2">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold px-2">{currentWord.meaning}</h2>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
                   {currentWord?.partOfSpeech?.map((tag, i) => (
-                    <span key={i} className="inline-block bg-black dark:bg-black text-white px-3 py-1 rounded text-sm">
+                    <span key={i} className="inline-block bg-black dark:bg-black text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm">
                       {tag}
                     </span>
                   ))}
@@ -279,13 +280,13 @@ const Learn = () => {
             )}
             <button 
               onClick={handlePlayClick}
-              className="p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+              className="p-3 sm:p-4 rounded-full bg-muted hover:bg-muted/80 transition-colors"
             >
-              <Play className="w-6 h-6" />
+              <Play className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4 px-2 sm:px-0">
             <Input
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
@@ -294,7 +295,7 @@ const Learn = () => {
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck={false}
-              className={`text-center text-3xl py-4 placeholder:text-muted-foreground/40 placeholder:text-base bg-transparent border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 ${
+              className={`text-center text-xl sm:text-2xl md:text-3xl py-3 sm:py-4 placeholder:text-muted-foreground/40 placeholder:text-xs sm:placeholder:text-sm md:placeholder:text-base bg-transparent border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 ${
                 showResult 
                   ? isCorrect 
                     ? "text-green-600 dark:text-green-400 border-green-500 dark:border-green-500" 
@@ -304,7 +305,7 @@ const Learn = () => {
               disabled={showResult}
             />
             {showResult && (
-              <div className={`text-center text-sm font-medium ${
+              <div className={`text-center text-xs sm:text-sm font-medium px-2 ${
                 isCorrect ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
               }`}>
                 {isCorrect ? "✓ 回答正确！" : `✗ 回答错误，正确答案是：${currentWord.word}`}
@@ -314,7 +315,7 @@ const Learn = () => {
               <Button 
                 onClick={handleSubmit}
                 disabled={!showResult && !userInput.trim()}
-                className="bg-foreground text-background hover:bg-foreground/90 py-6 px-16 disabled:opacity-50"
+                className="bg-foreground text-background hover:bg-foreground/90 py-4 sm:py-5 md:py-6 px-8 sm:px-12 md:px-16 disabled:opacity-50 text-sm sm:text-base"
               >
                 {showResult ? "下一题" : "确认"}
               </Button>

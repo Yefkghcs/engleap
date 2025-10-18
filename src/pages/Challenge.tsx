@@ -290,14 +290,14 @@ const Challenge = () => {
   return (
     <div className="min-h-screen h-screen bg-background flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-card border-b px-4 py-4">
+      <div className="bg-card border-b px-3 sm:px-4 py-3 sm:py-4">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-xl font-bold mb-2">挑战模式</h1>
-          <div className="flex items-center gap-6">
-            <span className="text-sm text-muted-foreground">
+          <h1 className="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2">挑战模式</h1>
+          <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
+            <span className="text-xs sm:text-sm text-muted-foreground">
               题目 {currentIndex + 1} / {questions.length}
             </span>
-            <span className="text-sm font-medium text-green-600">
+            <span className="text-xs sm:text-sm font-medium text-green-600">
               正确 {correctCount} 题
             </span>
           </div>
@@ -305,12 +305,12 @@ const Challenge = () => {
       </div>
 
       {/* Question */}
-      <div className="flex-1 max-w-3xl mx-auto px-4 py-8 w-full">
+      <div className="flex-1 max-w-3xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 w-full">
         <Card className="overflow-hidden">
           {/* Timer Bar */}
-          <div className="relative h-20 bg-gradient-to-br from-primary/10 to-primary/5 border-b flex items-center justify-center">
+          <div className="relative h-16 sm:h-20 bg-gradient-to-br from-primary/10 to-primary/5 border-b flex items-center justify-center">
             <div className="text-center">
-              <div className={`text-4xl font-bold mb-1 transition-colors ${timeLeft <= 3 ? 'text-red-600 animate-pulse' : 'text-primary'}`}>
+              <div className={`text-3xl sm:text-4xl font-bold mb-0.5 sm:mb-1 transition-colors ${timeLeft <= 3 ? 'text-red-600 animate-pulse' : 'text-primary'}`}>
                 {timeLeft}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">秒</div>
@@ -322,46 +322,46 @@ const Challenge = () => {
             />
           </div>
 
-          <div className="p-8">
+          <div className="p-4 sm:p-6 md:p-8">
             {/* Question Text */}
-            <div className="mb-8">
-              <div className="text-center mb-6">
-                <p className="text-sm text-muted-foreground mb-3 uppercase tracking-wide">
+            <div className="mb-6 sm:mb-8">
+              <div className="text-center mb-4 sm:mb-6">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 uppercase tracking-wide">
                   {currentQuestion.type === "en-to-cn" && "选择正确的中文释义"}
                   {currentQuestion.type === "cn-to-en" && "选择正确的英文单词"}
                   {currentQuestion.type === "spelling" && "选择正确的拼写"}
                 </p>
                 {currentQuestion.type !== "spelling" ? (
-                  <div className="flex items-center justify-center gap-3">
-                    <h2 className="text-3xl font-semibold text-foreground">{currentQuestion.question}</h2>
+                  <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground break-words max-w-full">{currentQuestion.question}</h2>
                     <Button 
                       variant="ghost" 
                       size="icon"
-                      className="h-10 w-10"
+                      className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0"
                       onClick={() => playAudio(currentQuestion.word.word)}
                     >
-                      <Volume2 className="h-5 w-5" />
+                      <Volume2 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </Button>
                   </div>
                 ) : (
-                  <h2 className="text-3xl font-semibold text-foreground">{currentQuestion.question}</h2>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground px-2">{currentQuestion.question}</h2>
                 )}
               </div>
             </div>
 
             {/* Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
               {currentQuestion.options.map((option, index) => {
                 const isSelected = selectedAnswer === option;
                 const isCorrect = option === currentQuestion.correctAnswer;
                 const showCorrect = showResult && isCorrect;
                 const showWrong = showResult && isSelected && !isCorrect;
                 
-                let buttonClass = "h-auto min-h-[72px] text-base justify-start px-5 py-4 relative group transition-all";
+                let buttonClass = "h-auto min-h-[56px] sm:min-h-[64px] md:min-h-[72px] text-sm sm:text-base justify-start px-3 sm:px-4 md:px-5 py-3 sm:py-3.5 md:py-4 relative group transition-all";
                 if (showCorrect) {
-                  buttonClass += " bg-green-50 border-2 border-green-500 text-green-700 hover:bg-green-50";
+                  buttonClass += " bg-green-50 border-2 border-green-500 text-green-700 hover:bg-green-50 dark:bg-green-950/20 dark:text-green-400";
                 } else if (showWrong) {
-                  buttonClass += " bg-red-50 border-2 border-red-500 text-red-700 hover:bg-red-50";
+                  buttonClass += " bg-red-50 border-2 border-red-500 text-red-700 hover:bg-red-50 dark:bg-red-950/20 dark:text-red-400";
                 } else if (isSelected) {
                   buttonClass += " border-2 border-primary";
                 }
@@ -374,11 +374,11 @@ const Challenge = () => {
                     onClick={() => handleAnswer(option)}
                     disabled={showResult}
                   >
-                    <span className="flex items-center gap-3 w-full">
-                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                    <span className="flex items-center gap-2 sm:gap-3 w-full">
+                      <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs sm:text-sm">
                         {String.fromCharCode(65 + index)}
                       </span>
-                      <span className="flex-1 text-left font-medium">{option}</span>
+                      <span className="flex-1 text-left font-medium break-words">{option}</span>
                     </span>
                   </Button>
                 );
@@ -387,25 +387,25 @@ const Challenge = () => {
 
             {/* Result Message */}
             {showResult && (
-              <div className="mb-6 animate-fade-in">
+              <div className="mb-4 sm:mb-6 animate-fade-in">
                 {selectedAnswer === currentQuestion.correctAnswer ? (
-                  <div className="p-5 bg-green-50 border-2 border-green-200 rounded-xl">
-                    <p className="text-green-700 font-semibold text-center text-lg flex items-center justify-center gap-2">
-                      <span className="text-2xl">✓</span> 回答正确！
+                  <div className="p-3 sm:p-4 md:p-5 bg-green-50 border-2 border-green-200 rounded-xl dark:bg-green-950/20 dark:border-green-800">
+                    <p className="text-green-700 dark:text-green-400 font-semibold text-center text-sm sm:text-base md:text-lg flex items-center justify-center gap-2">
+                      <span className="text-xl sm:text-2xl">✓</span> 回答正确！
                     </p>
                   </div>
                 ) : selectedAnswer === null ? (
-                  <div className="p-5 bg-orange-50 border-2 border-orange-200 rounded-xl">
-                    <p className="text-orange-700 font-semibold text-center flex flex-col gap-1">
-                      <span className="text-lg">⏱ 时间到了！</span>
-                      <span className="text-sm">正确答案是：<span className="font-bold">{currentQuestion.correctAnswer}</span></span>
+                  <div className="p-3 sm:p-4 md:p-5 bg-orange-50 border-2 border-orange-200 rounded-xl dark:bg-orange-950/20 dark:border-orange-800">
+                    <p className="text-orange-700 dark:text-orange-400 font-semibold text-center flex flex-col gap-1">
+                      <span className="text-sm sm:text-base md:text-lg">⏱ 时间到了！</span>
+                      <span className="text-xs sm:text-sm">正确答案是：<span className="font-bold break-words">{currentQuestion.correctAnswer}</span></span>
                     </p>
                   </div>
                 ) : (
-                  <div className="p-5 bg-red-50 border-2 border-red-200 rounded-xl">
-                    <p className="text-red-700 font-semibold text-center flex flex-col gap-1">
-                      <span className="text-lg">✗ 回答错误</span>
-                      <span className="text-sm">正确答案是：<span className="font-bold">{currentQuestion.correctAnswer}</span></span>
+                  <div className="p-3 sm:p-4 md:p-5 bg-red-50 border-2 border-red-200 rounded-xl dark:bg-red-950/20 dark:border-red-800">
+                    <p className="text-red-700 dark:text-red-400 font-semibold text-center flex flex-col gap-1">
+                      <span className="text-sm sm:text-base md:text-lg">✗ 回答错误</span>
+                      <span className="text-xs sm:text-sm">正确答案是：<span className="font-bold break-words">{currentQuestion.correctAnswer}</span></span>
                     </p>
                   </div>
                 )}
@@ -416,7 +416,7 @@ const Challenge = () => {
             {showResult && (
               <Button 
                 onClick={handleNext} 
-                className="w-full h-12 text-base font-semibold" 
+                className="w-full h-10 sm:h-11 md:h-12 text-sm sm:text-base font-semibold" 
                 size="lg"
               >
                 {currentIndex < questions.length - 1 ? "下一题 →" : "完成挑战 🎉"}

@@ -260,19 +260,19 @@ const SceneLearning = () => {
               return (
                 <Card key={word.id} className="p-4 hover:shadow-md transition-all">
                   {/* Word Header */}
-                  <div className="mb-4">
+                  <div className="mb-3 sm:mb-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <h4 className={`text-xl font-bold ${wordColorClass}`}>{word.word}</h4>
+                      <h4 className={`text-base sm:text-lg md:text-xl font-bold break-words flex-1 ${wordColorClass}`}>{word.word}</h4>
                     <button
                       onClick={() => playAudio(word.word)}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="flex flex-col gap-2">
                     <p className="text-xs text-muted-foreground">{word.phonetic}</p>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1 sm:gap-2">
                       {word.tags.map((tag, i) => (
                         <span key={i} className="bg-foreground text-background text-xs px-2 py-0.5 rounded">
                           {tag}
